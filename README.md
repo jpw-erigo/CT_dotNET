@@ -3,11 +3,13 @@ A simple .NET library which writes floating-point data in CloudTurbine format.
 
 Class documentation is available at https://jpw-erigo.github.io/CT_dotNET/class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html
 
-An array of channel names is given to the class constructor.  The same number of entries must be supplied in the data array given to method putData(); there should be a one-to-one correspondance between the channel name index and the index in the data array.
+Some notes on using this library:
 
-Only double-precision floating point data is currently supported.
+* An array of channel names is given to the class constructor.  The same number of entries must be supplied in the data array given to method putData(); there should be a one-to-one correspondance between the channel name index and the index in the data array.
 
-Timestamps can either be in milliseconds or seconds, as specified by the boolean argument to the constructor.
+* Only double-precision floating point data is currently supported.
+
+* Timestamps are automatically supplied; they can either be in milliseconds or seconds, as specified by the boolean argument to the constructor.
 
 For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github.com/cycronix/cloudturbine.
 
@@ -15,9 +17,9 @@ To compile and use this library:
 
 Make a local clone of this GitHub repository (https://github.com/jpw-erigo/CT_dotNET.git)
 
-Compile the library (I used "Express 2015 for Windows Desktop"); perform a Release build to compile the library; the dll should be located at "<install_dir>\bin\Release\CT_dotNET.dll".
+Compile the library (I used Microsoft Visual Studio Express 2015 for Windows Desktop); perform a Release build to compile the library; the dll should be located at "<install_dir>\bin\Release\CT_dotNET.dll".
 
-You can use the simple C# program shown below to test the library.  Create a new "Console application" project; make sure to add a Reference in the project to the compiled library, CT_dotNET.dll.
+Use the simple C# program shown below to try out the library.  Create a new "Console application" project; make sure to add a Reference in the project to the compiled library, CT_dotNET.dll.
 
 Here's an example application:
 
@@ -110,7 +112,7 @@ namespace CTdemo
 }
 ```
 
-Here's a screenshot of the data from this sample application displayed using WebScan/CTweb:
+Screenshot of the data from this sample application displayed using WebScan/CTweb:
 
 ![](images/CT_dotNET_demo.png)
 
