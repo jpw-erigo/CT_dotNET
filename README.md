@@ -1,5 +1,5 @@
 # CT_dotNET
-A simple Windows library project which writes floating-point data out in CloudTurbine format.
+A simple .NET library which writes floating-point data in CloudTurbine format.
 
 Class documentation is available at https://jpw-erigo.github.io/CT_dotNET/class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html
 
