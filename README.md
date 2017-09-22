@@ -1,7 +1,7 @@
 # CT_dotNET
-This class mimics some very simple CloudTurbine CTwriter functionality.
+A simple Windows library project which writes floating-point data out in CloudTurbine format.
 
-An array of channel names is given to the Constructor.  The same number of entries must be supplied in the data array given to putData(); there should be a one-to-one correspondance between the channel name index and the index in the data array.
+An array of channel names is given to the class constructor.  The same number of entries must be supplied in the data array given to method putData(); there should be a one-to-one correspondance between the channel name index and the index in the data array.
 
 Only double-precision floating point data is currently supported.
 
@@ -13,9 +13,9 @@ To compile and use this library:
 
 Make a local clone of this GitHub repository (https://github.com/jpw-erigo/CT_dotNET.git)
 
-Compile the library; I have used "Express 2015 for Windows Desktop"; perform a Release build to compile the library; the dll should be located at "<install_dir>\bin\Release\CT_dotNET.dll".
+Compile the library (I used "Express 2015 for Windows Desktop"); perform a Release build to compile the library; the dll should be located at "<install_dir>\bin\Release\CT_dotNET.dll".
 
-To test the library, you can use the simple C# program shown below.  Create a new "Console application" and make sure to add a new Reference in the project to the compiled library, CT_dotNET.dll.
+You can use the simple C# program shown below to test the library.  Create a new "Console application" project; make sure to add a Reference in the project to the compiled library, CT_dotNET.dll.
 
 Here's an example application:
 

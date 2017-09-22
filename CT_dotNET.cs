@@ -25,7 +25,7 @@ namespace CT_dotNET
     /// CT_dotNET
     ///
     /// <summary>
-    /// This class mimics some very simple CloudTurbine CTwriter functionality.
+    /// This class writes floating-point data out in CloudTurbine format.
     ///
     /// An array of channel names is given to the Constructor.  The same number
     /// of entries must be supplied in the data array given to putData(); there
