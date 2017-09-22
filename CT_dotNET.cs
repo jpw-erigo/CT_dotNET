@@ -15,23 +15,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-//
-// CT_dotNET
-//
-// This class mimics some very simple CTlib.CTwriter functionality.
-//
-// An array of channel names is given to the Constructor.  There must be a
-// one-to-one correspondance of these channels in the data array given to
-// putData().  Calling flush() writes data to the current Block and
-// then closes the current Block.
-//
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace CT_dotNET
 {
+    ///
+    /// CT_dotNET
+    ///
+    /// <summary>
+    /// This class mimics some very simple CloudTurbine CTwriter functionality.
+    ///
+    /// An array of channel names is given to the Constructor.  The same number
+    /// of entries must be supplied in the data array given to putData(); there
+    /// should be a one-to-one correspondance between the channel name index and
+    /// the index in the data array.
+    /// 
+    /// Only double-precision floating point data is currently supported.
+    /// 
+    /// Timestamps can either be in milliseconds or seconds, as specified by
+    /// the boolean argument to the constructor.
+    /// </summary>
+    ///
     public class CT_dotNET
     {
 
@@ -42,19 +48,27 @@ namespace CT_dotNET
         int currentBlockNum = 0;
         // Packed data gets staged in a temporary file and then moved to the real CT
         List<double>[] ctData;
-        long startTimeSec = -1;         // Absolute start time for the whole source
-        long segmentStartTimeSec = -1;  // Absolute start time for an individual segment
-        long blockStartTimeSec = -1;    // Absolute start time for an individual block
-        long lastDataPtTimeSec = -1;    // Absolute time of the latest data point
+        long startTime = -1;            // Absolute start time for the whole source
+        long segmentStartTime = -1;     // Absolute start time for an individual segment
+        long blockStartTime = -1;       // Absolute start time for an individual block
+        long lastDataPtTime = -1;       // Absolute time of the latest data point
+        bool bUseMilliseconds = false;  // Output times are milliseconds?
 
-        //
-        // Constructor
-        //
-        public CT_dotNET(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI)
+        ///
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="baseCTOutputFolderI">The root folder where the output source is to be written.</param>
+        /// <param name="chanNamesI">Array of channel names.</param>
+        /// <param name="numBlocksPerSegmentI">Number of blocks per segment in the source folder hierarchy.  Use 0 to not include a segment layer.</param>
+        /// <param name="bOutputTimesAreMillisI">Output times should be in milliseconds?  Needed if blocks are written (i.e., flush() is called) at a rate greater than 1Hz.</param>
+        ///
+        public CT_dotNET(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, bool bOutputTimesAreMillisI)
         {
             baseCTOutputFolder = baseCTOutputFolderI;
             chanNames = chanNamesI;
             numBlocksPerSegment = numBlocksPerSegmentI;
+            bUseMilliseconds = bOutputTimesAreMillisI;
 
             numChans = chanNames.Length;
 
@@ -65,48 +79,72 @@ namespace CT_dotNET
             }
         }
 
-        //
-        // Add data to the Lists.  There must be a one-to-one correspondance between the entries
-        // in this data array and the channel name array given to the Constructor.
-        //
+        ///
+        /// <summary>
+        /// Store additional data for each channel.  There must be a one-to-one
+        /// correspondance between the entries in the given data array and the
+        /// channel name array that was provided to the Constructor.  As a minimal
+        /// check, these arrays must be the same size or else this method will
+        /// throw an exception.
+        /// </summary>
+        /// <param name="dataI">Array containing one new data point per channel.</param>
+        /// <exception cref="System.ArgumentException">Thrown when the size of the given data array doesn't match the number of channels (as given to the constructor).</exception>
+        ///
         public void putData(double[] dataI)
         {
             if ((dataI == null) || (dataI.Length != numChans))
             {
                 throw new System.ArgumentException("Data array is the wrong size", "dataI");
             }
-            lastDataPtTimeSec = (long)((DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
-            if (startTimeSec == -1)
+
+            // Update time
+            // Calculate the new time in either seconds or milliseconds
+            TimeSpan deltaTime = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            if (bUseMilliseconds)
+            {
+                lastDataPtTime = (long)deltaTime.TotalMilliseconds;
+            }
+            else
+            {
+                lastDataPtTime = (long)deltaTime.TotalSeconds;
+            }
+            if (startTime == -1)
             {
                 // Start time for the whole source
-                startTimeSec = lastDataPtTimeSec;
+                startTime = lastDataPtTime;
             }
-            if ((numBlocksPerSegment > 0) && (segmentStartTimeSec == -1))
+            if ((numBlocksPerSegment > 0) && (segmentStartTime == -1))
             {
                 // Start time of the next Segment
-                segmentStartTimeSec = lastDataPtTimeSec;
+                segmentStartTime = lastDataPtTime;
             }
             if (ctData[0].Count == 0)
             {
                 // Start time of this Block
-                blockStartTimeSec = lastDataPtTimeSec;
+                blockStartTime = lastDataPtTime;
             }
+
+            // Save data
             for (int i = 0; i < numChans; ++i)
             {
                 ctData[i].Add(dataI[i]);
             }
         }
 
-        //
-        // Write data out to one Block
-        // The Block will contain one packed data file
-        // Name of the file is made up of the following parts:
-        // 1. base folder name (given to the constructor and stored in baseCTOutputFolder)
-        // 2. source start time (absolute)
-        // 3. [optional] segment start time (relative to the source start time)
-        // 3. block start time (relative to either the source start time or the relative segment start time)
-        // 4. block duration
-        //
+        ///
+        /// <summary>
+        /// Write data out to one block.  Each block contains one packed CSV data file
+        /// per channel.
+        /// 
+        /// The folder containing these channel data files is made up of the following parts:
+        /// 1. base folder name (given to the constructor)
+        /// 2. source start time (absolute epoch time)
+        /// 3. [optional] segment start time (relative to the source start time)
+        /// 3. block start time (relative to either the source start time or the relative segment start time)
+        /// 4. block duration
+        /// </summary>
+        /// <exception cref="System.IO.IOException">Thrown when there is no data ready to flush to file.</exception>
+        /// 
         public void flush()
         {
             if (ctData[0].Count == 0)
@@ -115,19 +153,19 @@ namespace CT_dotNET
             }
 
             // Construct a folder to contain the packed data file
-            long blockDuration = lastDataPtTimeSec - blockStartTimeSec;
-            long segmentStartTimeRel = segmentStartTimeSec - startTimeSec;
-            long blockStartTimeRel = blockStartTimeSec - startTimeSec;
+            long blockDuration = lastDataPtTime - blockStartTime;
+            long segmentStartTimeRel = segmentStartTime - startTime;
+            long blockStartTimeRel = blockStartTime - startTime;
             if (numBlocksPerSegment > 0)
             {
                 // We are using Segment layer
-                blockStartTimeRel = blockStartTimeSec - segmentStartTimeSec;
+                blockStartTimeRel = blockStartTime - segmentStartTime;
             }
-            String directoryName = baseCTOutputFolder + startTimeSec.ToString() + "\\" + blockStartTimeRel.ToString() + "\\" + blockDuration.ToString() + "\\";
+            String directoryName = baseCTOutputFolder + startTime.ToString() + "\\" + blockStartTimeRel.ToString() + "\\" + blockDuration.ToString() + "\\";
             if (numBlocksPerSegment > 0)
             {
                 // We are using Segment layer
-                directoryName = baseCTOutputFolder + startTimeSec.ToString() + "\\" + segmentStartTimeRel.ToString() + "\\" + blockStartTimeRel.ToString() + "\\" + blockDuration.ToString() + "\\";
+                directoryName = baseCTOutputFolder + startTime.ToString() + "\\" + segmentStartTimeRel.ToString() + "\\" + blockStartTimeRel.ToString() + "\\" + blockDuration.ToString() + "\\";
             }
             System.IO.Directory.CreateDirectory(directoryName);
 
@@ -137,7 +175,7 @@ namespace CT_dotNET
                 StreamWriter ctFile = new StreamWriter(File.Open(directoryName + chanNames[i], FileMode.Create));
                 foreach (double dataPt in ctData[i])
                 {
-                    ctFile.Write("{0:F2},", dataPt);
+                    ctFile.Write("{0:G},", dataPt);
                 }
                 ctFile.Close();
             }
@@ -155,15 +193,16 @@ namespace CT_dotNET
                 if (currentBlockNum == numBlocksPerSegment)
                 {
                     currentBlockNum = 0;
-                    segmentStartTimeSec = -1;
+                    segmentStartTime = -1;
                 }
             }
         }
 
-        //
-        // Close this CT writer
-        // For now, just flush
-        //
+        ///
+        /// <summary>
+        /// Flush any remaining data to the output source.
+        /// </summary>
+        /// 
         public void close()
         {
             flush();
