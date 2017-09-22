@@ -15,11 +15,11 @@ For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github
 
 To compile and use this library:
 
-Make a local clone of this GitHub repository (https://github.com/jpw-erigo/CT_dotNET.git)
+* Make a local clone of this GitHub repository (https://github.com/jpw-erigo/CT_dotNET.git)
 
-Compile the library (I used Microsoft Visual Studio Express 2015 for Windows Desktop); perform a Release build to compile the library; the dll should be located at "<install_dir>\bin\Release\CT_dotNET.dll".
+* Compile the library (I used Microsoft Visual Studio Express 2015 for Windows Desktop); perform a Release build to compile the library; the dll should be located at "<install_dir>\bin\Release\CT_dotNET.dll".
 
-Use the simple C# program shown below to try out the library.  Create a new "Console application" project; make sure to add a Reference in the project to the compiled library, CT_dotNET.dll.
+* Use the simple C# program shown below to try out the library.  Create a new "Console application" project; make sure to add a Reference in the project to the compiled library, CT_dotNET.dll.
 
 Here's an example application:
 
