@@ -20,21 +20,21 @@ You can use the simple C# program shown below to test the library.  Create a new
 Here's an example application:
 
 ```C#
-/*
-Copyright 2017 Erigo Technologies LLC
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+//
+// Use the CT_dotNET library to write data out in CloudTurbine format.
+//
+// This sample program writes out 2 channels:
+//   o "chan1.csv" (contains an incrementing index)
+//   o "chan2.csv" (contains a more interesting waveform, including a random component)
+//
+// The period between samples (in msec) is specified by DATA_PERIOD_MSEC.
+//
+// Each output file ("chan1.csv" and "chan2.csv") contains the number of points specified by NUM_PTS_PER_CT_FILE in CSV format.
+//
+// Each output CloudTurbine "block" contains one output file per channel; i.e., each block will contain one
+// "chan1.csv" file and one "chan2.csv" file.  The number of blocks per segment is specified by numBlocksPerSegment.
+// For information on the CloudTurbine file hierarchy, see http://www.cloudturbine.com/structure/.
+//
 
 using System;
 using System.IO;
@@ -53,12 +53,12 @@ namespace CTdemo
             ctChanNames[1] = "chan2.csv";
             double[] ctChanData = new double[numCTChans];
             int DATA_PERIOD_MSEC = 100;      // Period between data points
-            int NUM_PTS_PER_CT_FILE = 10;    // Number of points per channel file
+            int NUM_PTS_PER_CT_FILE = 10;    // Number of points per channel per file
             int numBlocksPerSegment = 10;
             String baseCTOutputFolder = ".\\CTdata\\CTdemo\\";
             CT_dotNET.CT_dotNET ctFile = new CT_dotNET.CT_dotNET(baseCTOutputFolder, ctChanNames, numBlocksPerSegment,true);
 
-            // TO help generating data
+            // To add a random element to chan2.csv
             Random rnd = new Random();
 
             // Write data to the CloudTurbine source
