@@ -13,6 +13,7 @@
 # Search on "JPW" in this file to see fields I changed:
 #     
 #     DISABLE_INDEX was set to YES; disabling the index presents a cleaner interface
+#     HTML_OUTPUT was set to docs; this is the folder being used in GitHub for publishing content
 #
 # If you want to limit the files that doxygen parses, use the INPUT field;
 # for example, to only parse the main source code file ("CT_dotNET.cs"), use
@@ -1153,7 +1154,8 @@ GENERATE_HTML          = YES
 # The default directory is: html.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_OUTPUT            = html
+# JPW: Save output to docs folder (this is the folder being used in GitHub for publishing content)
+HTML_OUTPUT            = docs
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for each
 # generated HTML page (for example: .htm, .php, .asp).
