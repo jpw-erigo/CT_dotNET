@@ -1,6 +1,8 @@
 # CT_dotNET
 A simple Windows library project which writes floating-point data out in CloudTurbine format.
 
+Class documentation is available at https://jpw-erigo.github.io/CT_dotNET/class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html
+
 An array of channel names is given to the class constructor.  The same number of entries must be supplied in the data array given to method putData(); there should be a one-to-one correspondance between the channel name index and the index in the data array.
 
 Only double-precision floating point data is currently supported.
