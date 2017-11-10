@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flush',['flush',['../class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#a63d82b119cd8e71d93f68f2b8c2eb489',1,'CT_dotNET::CT_dotNET']]]
+  ['flush',['flush',['../class_c_twriter_1_1_c_twriter.html#a02e098d85ebd5d931f3806e6f557a5f0',1,'CTwriter::CTwriter']]]
 ];

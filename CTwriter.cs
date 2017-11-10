@@ -19,10 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace CT_dotNET
+namespace CTwriter
 {
     ///
-    /// CT_dotNET
+    /// CTwriter
     ///
     /// <summary>
     /// This class writes floating-point data out in CloudTurbine format.
@@ -38,13 +38,14 @@ namespace CT_dotNET
     /// the boolean argument to the constructor.
     /// </summary>
     ///
-    public class CT_dotNET
+    public class CTwriter
     {
 
         String baseCTOutputFolder;
         String[] chanNames;
         int numChans;
         int numBlocksPerSegment;
+        int totNumSegments;
         int currentBlockNum = 0;
         // Packed data gets staged in a temporary file and then moved to the real CT
         List<double>[] ctData;
@@ -61,13 +62,20 @@ namespace CT_dotNET
         /// <param name="baseCTOutputFolderI">The root folder where the output source is to be written.</param>
         /// <param name="chanNamesI">Array of channel names.</param>
         /// <param name="numBlocksPerSegmentI">Number of blocks per segment in the source folder hierarchy.  Use 0 to not include a segment layer.</param>
+        /// <param name="totNumSegmentsI">When using a segment layer, this specifies the total number of segments to maintain. Older segments will be trimmed. Only used if value is greater than 0.</param>
         /// <param name="bOutputTimesAreMillisI">Output times should be in milliseconds?  Needed if blocks are written (i.e., flush() is called) at a rate greater than 1Hz.</param>
         ///
-        public CT_dotNET(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, bool bOutputTimesAreMillisI)
+        public CTwriter(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int totNumSegmentsI, bool bOutputTimesAreMillisI)
         {
             baseCTOutputFolder = baseCTOutputFolderI;
+            // If baseCTOutputFolder ends in a directory separator character, remove it (it will be added later)
+            if (baseCTOutputFolder.EndsWith(Char.ToString(Path.DirectorySeparatorChar)))
+            {
+                baseCTOutputFolder = baseCTOutputFolder.Substring(0, baseCTOutputFolder.Length-1);
+            }
             chanNames = chanNamesI;
             numBlocksPerSegment = numBlocksPerSegmentI;
+            totNumSegments = totNumSegmentsI;
             bUseMilliseconds = bOutputTimesAreMillisI;
 
             numChans = chanNames.Length;
@@ -161,11 +169,12 @@ namespace CT_dotNET
                 // We are using Segment layer
                 blockStartTimeRel = blockStartTime - segmentStartTime;
             }
-            String directoryName = baseCTOutputFolder + startTime.ToString() + "\\" + blockStartTimeRel.ToString() + "\\" + blockDuration.ToString() + "\\";
+            char sepChar = Path.DirectorySeparatorChar;
+            String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + blockDuration.ToString() + sepChar;
             if (numBlocksPerSegment > 0)
             {
                 // We are using Segment layer
-                directoryName = baseCTOutputFolder + startTime.ToString() + "\\" + segmentStartTimeRel.ToString() + "\\" + blockStartTimeRel.ToString() + "\\" + blockDuration.ToString() + "\\";
+                directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + blockDuration.ToString() + sepChar;
             }
             System.IO.Directory.CreateDirectory(directoryName);
 
@@ -186,14 +195,26 @@ namespace CT_dotNET
                 ctData[i].Clear();
             }
 
-            // See if it is time to switch to a new Segment folder
+            // See if it is time to switch to a new Segment folder or trim/delete old segment folders.
             if (numBlocksPerSegment > 0)
             {
+                // We are using segments
                 ++currentBlockNum;
                 if (currentBlockNum == numBlocksPerSegment)
                 {
                     currentBlockNum = 0;
                     segmentStartTime = -1;
+                }
+                if (totNumSegments> 0)
+                {
+                    // User wants to trim/delete old segments
+                    String dirPath = baseCTOutputFolder + sepChar + startTime.ToString();
+                    List<string> dirs = new List<string>(Directory.EnumerateDirectories(dirPath));
+                    Console.WriteLine("Segment folders:");
+                    foreach (var dir in dirs)
+                    {
+                        Console.WriteLine("{0}", dir.Substring(dir.LastIndexOf(Char.ToString(sepChar)) + 1));
+                    }
                 }
             }
         }

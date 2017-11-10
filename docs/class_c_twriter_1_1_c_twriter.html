@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>CT_dotNET: CT_dotNET.CT_dotNET Class Reference</title>
+<title>CTwriter: CTwriter.CTwriter Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -24,7 +24,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">CT_dotNET
+   <div id="projectname">CTwriter
    </div>
   </td>
    <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -67,46 +67,46 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespace_c_t__dot_n_e_t.html">CT_dotNET</a></li><li class="navelem"><a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html">CT_dotNET</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespace_c_twriter.html">CTwriter</a></li><li class="navelem"><a class="el" href="class_c_twriter_1_1_c_twriter.html">CTwriter</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t-members.html">List of all members</a>  </div>
+<a href="class_c_twriter_1_1_c_twriter-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">CT_dotNET.CT_dotNET Class Reference</div>  </div>
+<div class="title">CTwriter.CTwriter Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p>This class writes floating-point data out in CloudTurbine format.  
- <a href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#details">More...</a></p>
+ <a href="class_c_twriter_1_1_c_twriter.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9319a53b116508c60c0ad53ab2a40a5c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#a9319a53b116508c60c0ad53ab2a40a5c">CT_dotNET</a> (String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, bool bOutputTimesAreMillisI)</td></tr>
-<tr class="memdesc:a9319a53b116508c60c0ad53ab2a40a5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a9319a53b116508c60c0ad53ab2a40a5c">More...</a><br /></td></tr>
-<tr class="separator:a9319a53b116508c60c0ad53ab2a40a5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6e0497e58a4f883d220eb2f6b814cd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#ab6e0497e58a4f883d220eb2f6b814cd7">putData</a> (double[] dataI)</td></tr>
-<tr class="memdesc:ab6e0497e58a4f883d220eb2f6b814cd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store additional data for each channel. There must be a one-to-one correspondance between the entries in the given data array and the channel name array that was provided to the Constructor. As a minimal check, these arrays must be the same size or else this method will throw an exception.  <a href="#ab6e0497e58a4f883d220eb2f6b814cd7">More...</a><br /></td></tr>
-<tr class="separator:ab6e0497e58a4f883d220eb2f6b814cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63d82b119cd8e71d93f68f2b8c2eb489"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#a63d82b119cd8e71d93f68f2b8c2eb489">flush</a> ()</td></tr>
-<tr class="memdesc:a63d82b119cd8e71d93f68f2b8c2eb489"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write data out to one block. Each block contains one packed CSV data file per channel.  <a href="#a63d82b119cd8e71d93f68f2b8c2eb489">More...</a><br /></td></tr>
-<tr class="separator:a63d82b119cd8e71d93f68f2b8c2eb489"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9a2d3840a95d326a480a7ae8690495e"><td class="memItemLeft" align="right" valign="top"><a id="ae9a2d3840a95d326a480a7ae8690495e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#ae9a2d3840a95d326a480a7ae8690495e">close</a> ()</td></tr>
-<tr class="memdesc:ae9a2d3840a95d326a480a7ae8690495e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush any remaining data to the output source. <br /></td></tr>
-<tr class="separator:ae9a2d3840a95d326a480a7ae8690495e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ff88171a5cd5da928d3e8500fbc3977"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_twriter_1_1_c_twriter.html#a0ff88171a5cd5da928d3e8500fbc3977">CTwriter</a> (String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int totNumSegmentsI, bool bOutputTimesAreMillisI)</td></tr>
+<tr class="memdesc:a0ff88171a5cd5da928d3e8500fbc3977"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a0ff88171a5cd5da928d3e8500fbc3977">More...</a><br /></td></tr>
+<tr class="separator:a0ff88171a5cd5da928d3e8500fbc3977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82f8181e2950ac92ab6373a4fb0f6f17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_twriter_1_1_c_twriter.html#a82f8181e2950ac92ab6373a4fb0f6f17">putData</a> (double[] dataI)</td></tr>
+<tr class="memdesc:a82f8181e2950ac92ab6373a4fb0f6f17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store additional data for each channel. There must be a one-to-one correspondance between the entries in the given data array and the channel name array that was provided to the Constructor. As a minimal check, these arrays must be the same size or else this method will throw an exception.  <a href="#a82f8181e2950ac92ab6373a4fb0f6f17">More...</a><br /></td></tr>
+<tr class="separator:a82f8181e2950ac92ab6373a4fb0f6f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02e098d85ebd5d931f3806e6f557a5f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_twriter_1_1_c_twriter.html#a02e098d85ebd5d931f3806e6f557a5f0">flush</a> ()</td></tr>
+<tr class="memdesc:a02e098d85ebd5d931f3806e6f557a5f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write data out to one block. Each block contains one packed CSV data file per channel.  <a href="#a02e098d85ebd5d931f3806e6f557a5f0">More...</a><br /></td></tr>
+<tr class="separator:a02e098d85ebd5d931f3806e6f557a5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d6e5e1c2316332c36a153321b782901"><td class="memItemLeft" align="right" valign="top"><a id="a4d6e5e1c2316332c36a153321b782901"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_twriter_1_1_c_twriter.html#a4d6e5e1c2316332c36a153321b782901">close</a> ()</td></tr>
+<tr class="memdesc:a4d6e5e1c2316332c36a153321b782901"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush any remaining data to the output source. <br /></td></tr>
+<tr class="separator:a4d6e5e1c2316332c36a153321b782901"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class writes floating-point data out in CloudTurbine format. </p>
-<p><a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html" title="This class writes floating-point data out in CloudTurbine format. ">CT_dotNET</a></p>
-<p>An array of channel names is given to the Constructor. The same number of entries must be supplied in the data array given to <a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#ab6e0497e58a4f883d220eb2f6b814cd7" title="Store additional data for each channel. There must be a one-to-one correspondance between the entries...">putData()</a>; there should be a one-to-one correspondance between the channel name index and the index in the data array.</p>
+<p><a class="el" href="class_c_twriter_1_1_c_twriter.html" title="This class writes floating-point data out in CloudTurbine format. ">CTwriter</a></p>
+<p>An array of channel names is given to the Constructor. The same number of entries must be supplied in the data array given to <a class="el" href="class_c_twriter_1_1_c_twriter.html#a82f8181e2950ac92ab6373a4fb0f6f17" title="Store additional data for each channel. There must be a one-to-one correspondance between the entries...">putData()</a>; there should be a one-to-one correspondance between the channel name index and the index in the data array.</p>
 <p>Only double-precision floating point data is currently supported.</p>
 <p>Timestamps can either be in milliseconds or seconds, as specified by the boolean argument to the constructor. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a9319a53b116508c60c0ad53ab2a40a5c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9319a53b116508c60c0ad53ab2a40a5c">&#9670;&nbsp;</a></span>CT_dotNET()</h2>
+<a id="a0ff88171a5cd5da928d3e8500fbc3977"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ff88171a5cd5da928d3e8500fbc3977">&#9670;&nbsp;</a></span>CTwriter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -115,7 +115,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">CT_dotNET.CT_dotNET.CT_dotNET </td>
+          <td class="memname">CTwriter.CTwriter.CTwriter </td>
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>baseCTOutputFolderI</em>, </td>
@@ -131,6 +131,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>numBlocksPerSegmentI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>totNumSegmentsI</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -157,7 +163,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">baseCTOutputFolderI</td><td>The root folder where the output source is to be written.</td></tr>
     <tr><td class="paramname">chanNamesI</td><td>Array of channel names.</td></tr>
     <tr><td class="paramname">numBlocksPerSegmentI</td><td>Number of blocks per segment in the source folder hierarchy. Use 0 to not include a segment layer.</td></tr>
-    <tr><td class="paramname">bOutputTimesAreMillisI</td><td>Output times should be in milliseconds? Needed if blocks are written (i.e., <a class="el" href="class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html#a63d82b119cd8e71d93f68f2b8c2eb489" title="Write data out to one block. Each block contains one packed CSV data file per channel. ">flush()</a> is called) at a rate greater than 1Hz.</td></tr>
+    <tr><td class="paramname">totNumSegmentsI</td><td>When using a segment layer, this specifies the total number of segments to maintain. Older segments will be trimmed. Only used if value is greater than 0.</td></tr>
+    <tr><td class="paramname">bOutputTimesAreMillisI</td><td>Output times should be in milliseconds? Needed if blocks are written (i.e., <a class="el" href="class_c_twriter_1_1_c_twriter.html#a02e098d85ebd5d931f3806e6f557a5f0" title="Write data out to one block. Each block contains one packed CSV data file per channel. ">flush()</a> is called) at a rate greater than 1Hz.</td></tr>
   </table>
   </dd>
 </dl>
@@ -165,8 +172,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a63d82b119cd8e71d93f68f2b8c2eb489"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a63d82b119cd8e71d93f68f2b8c2eb489">&#9670;&nbsp;</a></span>flush()</h2>
+<a id="a02e098d85ebd5d931f3806e6f557a5f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02e098d85ebd5d931f3806e6f557a5f0">&#9670;&nbsp;</a></span>flush()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,7 +182,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void CT_dotNET.CT_dotNET.flush </td>
+          <td class="memname">void CTwriter.CTwriter.flush </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -207,8 +214,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 
 </div>
 </div>
-<a id="ab6e0497e58a4f883d220eb2f6b814cd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6e0497e58a4f883d220eb2f6b814cd7">&#9670;&nbsp;</a></span>putData()</h2>
+<a id="a82f8181e2950ac92ab6373a4fb0f6f17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82f8181e2950ac92ab6373a4fb0f6f17">&#9670;&nbsp;</a></span>putData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,7 +224,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void CT_dotNET.CT_dotNET.putData </td>
+          <td class="memname">void CTwriter.CTwriter.putData </td>
           <td>(</td>
           <td class="paramtype">double []&#160;</td>
           <td class="paramname"><em>dataI</em></td><td>)</td>
@@ -248,7 +255,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>CT_dotNET.cs</li>
+<li>CTwriter.cs</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
