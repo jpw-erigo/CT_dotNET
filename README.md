@@ -1,7 +1,7 @@
 # CTlib
 A simple version of the CloudTurbine library written in C#.  CTwriter (the only currently implemented class) writes floating-point data in CloudTurbine format.
 
-Class documentation is available at https://jpw-erigo.github.io/CT_dotNET/class_c_t__dot_n_e_t_1_1_c_t__dot_n_e_t.html
+CTwriter class documentation is available at https://jpw-erigo.github.io/CTlib_csharp/class_c_tlib_1_1_c_twriter.html
 
 Notes on using CTwriter:
 
@@ -15,11 +15,11 @@ For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github
 
 To compile and use this library:
 
-* Make a local clone of this GitHub repository (https://github.com/jpw-erigo/CT_dotNET.git)
+* Make a local clone of this GitHub repository (https://github.com/jpw-erigo/CTlib_csharp.git)
 
-* Compile the library (I used Microsoft Visual Studio Express 2015 for Windows Desktop); perform a Release build to compile the library; the dll should be located at "<install_dir>\bin\Release\CTlib.dll".
+* Compile the library (I used Microsoft Visual Studio Express 2015 for Windows Desktop); after performing a Release build, the library should be located at "<install_dir>\bin\Release\CTlib.dll".
 
-* Use the simple C# program shown below to try out the library.  Create a new "Console application" project; add a Reference in the project to the compiled library, CTlib.dll.
+* Use the simple C# program shown below to try out the library.  Create a new "Console application" project in Visual Studio; add a Reference in the project to the compiled library, CTlib.dll.
 
 A C# example which uses the CTwriter class from the CTlib.dll library is shown below.
 
