@@ -1,4 +1,4 @@
-# CTlib
+# CTlib_csharp
 A simple version of the CloudTurbine library written in C#.  CTwriter (the only currently implemented class) writes floating-point data in CloudTurbine format.
 
 CTwriter class documentation is available at https://jpw-erigo.github.io/CTlib_csharp/class_c_tlib_1_1_c_twriter.html
