@@ -32,14 +32,18 @@ A C# example which uses the CTwriter class from the CTlib.dll library is shown b
 //   o "chan1.csv" (contains an incrementing index)
 //   o "chan2.csv" (waveform with random noise)
 //
-// The period between samples (in msec) is specified by DATA_PERIOD_MSEC.
+// The period between samples (in msec) is specified by dataPeriodMsec.
 //
-// Each output file ("chan1.csv" and "chan2.csv") contains the number of points
-// specified by numPtsPerCTFile in CSV format.
+// Each output file ("chan1.csv" and "chan2.csv") contains the number of
+// points specified by numPtsPerCTFile in CSV format.
 //
-// Each output CloudTurbine "block" contains one output file per channel; i.e.,
-// each block will contain one "chan1.csv" file and one "chan2.csv" file.
-// The number of blocks per segment is specified by numBlocksPerSegment.
+// Each output CloudTurbine "block" contains one output file per channel,
+// i.e., one "chan1.csv" file and one "chan2.csv" file. The number of
+// blocks per segment is specified by numBlocksPerSegment.
+//
+// The number of segment folders maintained in the output source is
+// specified by totNumSegments; older segment folders are trimmed.
+//
 // For information on the CloudTurbine file hierarchy, see
 // http://www.cloudturbine.com/structure/.
 //
@@ -62,8 +66,8 @@ namespace CTdemo
             double[] ctChanData = new double[numCTChans];
             int dataPeriodMsec = 100;      // Period between data points
             int numPtsPerCTFile = 10;      // Number of points per channel per file
-            int numBlocksPerSegment = 10;  // Number of blocks in each segment (0 for no segment layer)
-            int totNumSegments = 3;        // Total number of segments to keep (0 for no trim, keep all)
+            int numBlocksPerSegment = 10;  // Number of blocks in each segment (set to 0 for no segment layer)
+            int totNumSegments = 3;        // Total number of segments to keep (set to 0 to keep everything)
             String baseCTOutputFolder = ".\\CTdata\\CTdemo\\";
             CTlib.CTwriter ctw =
                 new CTlib.CTwriter(baseCTOutputFolder, ctChanNames, numBlocksPerSegment, totNumSegments, true);
