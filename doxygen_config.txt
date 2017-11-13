@@ -1,6 +1,6 @@
 
 #
-# doxygen configuration file for the CTwriter project
+# doxygen configuration file for the CTlib project
 #
 # 2017-09-22  John P. Wilson  Erigo Technologies
 #
@@ -16,10 +16,10 @@
 #     HTML_OUTPUT was set to docs; this is the folder being used in GitHub for publishing content
 #
 # If you want to limit the files that doxygen parses, use the INPUT field;
-# for example, to only parse the main source code file ("CTwriter.cs"), use
+# for example, to only parse the main source code file ("CTlib.cs"), use
 # the following:
 #
-#     INPUT                  = CTwriter.cs
+#     INPUT                  = CTlib.cs
 #
 
 # Doxyfile 1.8.13
@@ -56,7 +56,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "CTwriter"
+PROJECT_NAME           = "CTlib"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
