@@ -151,8 +151,8 @@ namespace CTlib
         /// 1. base folder name (given to the constructor)
         /// 2. source start time (absolute epoch time)
         /// 3. [optional] segment start time (relative to the source start time)
-        /// 3. block start time (relative to either the source start time or the relative segment start time)
-        /// 4. block duration
+        /// 4. block start time (relative to either the source start time or the relative segment start time)
+        /// 5. block duration
         /// </summary>
         /// <exception cref="System.IO.IOException">Thrown when there is no data ready to flush to file.</exception>
         /// 
