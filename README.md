@@ -34,15 +34,19 @@ A C# example which uses the CTwriter class from the CTlib.dll library is shown b
 //
 // The period between samples (in msec) is specified by dataPeriodMsec.
 //
-// Each output file ("chan1.csv" and "chan2.csv") contains the number of
-// points specified by numPtsPerCTFile in CSV format.
+// Each output file ("chan1.csv" and "chan2.csv") contains the number of points
+// specified by numPtsPerCTFile in CSV format.
 //
-// Each output CloudTurbine "block" contains one output file per channel,
-// i.e., one "chan1.csv" file and one "chan2.csv" file. The number of
-// blocks per segment is specified by numBlocksPerSegment.
+// Each output CloudTurbine "block" contains one output file per channel; i.e.,
+// each block will contain one "chan1.csv" file and one "chan2.csv" file,
+// where each file contains a number of points in CSV format.
 //
-// The number of segment folders maintained in the output source is
-// specified by totNumSegments; older segment folders are trimmed.
+// The number of blocks per segment is specified by numBlocksPerSegment.
+// Set this to 0 to not have a segment layer.
+//
+// The desired number of segment folders is specified by numSegmentsToKeep.
+// Older segment folders are deleted.  To keep all segment folders, set this
+// value to 0.
 //
 // For information on the CloudTurbine file hierarchy, see
 // http://www.cloudturbine.com/structure/.
@@ -66,11 +70,11 @@ namespace CTdemo
             double[] ctChanData = new double[numCTChans];
             int dataPeriodMsec = 100;      // Period between data points
             int numPtsPerCTFile = 10;      // Number of points per channel per file
-            int numBlocksPerSegment = 10;  // Number of blocks in each segment (set to 0 for no segment layer)
-            int totNumSegments = 3;        // Total number of segments to keep (set to 0 to keep everything)
+            int numBlocksPerSegment = 10;  // Number of blocks in each segment (0 for no segment layer)
+            int numSegmentsToKeep = 3;     // Number of segments to keep, older segment folders are trimmed (0 for no trim, keep all)
             String baseCTOutputFolder = ".\\CTdata\\CTdemo\\";
             CTlib.CTwriter ctw =
-                new CTlib.CTwriter(baseCTOutputFolder, ctChanNames, numBlocksPerSegment, totNumSegments, true);
+                new CTlib.CTwriter(baseCTOutputFolder, ctChanNames, numBlocksPerSegment, numSegmentsToKeep, true);
 
             // To add a random element to chan2.csv
             Random rnd = new Random();

@@ -48,7 +48,7 @@ namespace CTlib
         String[] chanNames;
         int numChans;
         int numBlocksPerSegment;
-        int totNumSegments;
+        int numSegmentsToKeep;
         int currentBlockNum = 0;
         List<double>[] ctData;          // Packed data gets staged in a List and then written to CT file when flush() is called
         long startTime = -1;            // Absolute start time for the whole source
@@ -65,10 +65,10 @@ namespace CTlib
         /// <param name="baseCTOutputFolderI">The root folder where the output source is to be written.</param>
         /// <param name="chanNamesI">Array of channel names.</param>
         /// <param name="numBlocksPerSegmentI">Number of blocks per segment in the source folder hierarchy.  Use 0 to not include a segment layer.</param>
-        /// <param name="totNumSegmentsI">When using a segment layer, this specifies the total number of segments to maintain. Older segments will be trimmed. Only used if value is greater than 1 (i.e., to activate trim, the min value is 2; at a minimum, we will keep the currently active segment as well as the previous one).</param>
+        /// <param name="numSegmentsToKeepI">When using a segment layer, this specifies the total number of segments to keep. Older segments will be trimmed. Minimum value is 2.</param>
         /// <param name="bOutputTimesAreMillisI">Output times should be in milliseconds?  Needed if blocks are written (i.e., flush() is called) at a rate greater than 1Hz.</param>
         ///
-        public CTwriter(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int totNumSegmentsI, bool bOutputTimesAreMillisI)
+        public CTwriter(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI)
         {
             baseCTOutputFolder = baseCTOutputFolderI;
             // If baseCTOutputFolder ends in a directory separator character, remove it (it will be added later)
@@ -78,7 +78,7 @@ namespace CTlib
             }
             chanNames = chanNamesI;
             numBlocksPerSegment = numBlocksPerSegmentI;
-            totNumSegments = totNumSegmentsI;
+            numSegmentsToKeep = numSegmentsToKeepI;
             bUseMilliseconds = bOutputTimesAreMillisI;
 
             numChans = chanNames.Length;
@@ -208,9 +208,9 @@ namespace CTlib
                     currentBlockNum = 0;
                     segmentStartTime = -1;
                 }
-                if (totNumSegments > 1)
+                if (numSegmentsToKeep > 1)
                 {
-                    // User wants to trim/delete old segments
+                    // Trim old segment folders
                     Boolean bNewFolder = false;
                     // Update our list of segment folders
                     String dirPath = baseCTOutputFolder + sepChar + startTime.ToString();
@@ -218,6 +218,7 @@ namespace CTlib
                     foreach (var dir in dirs)
                     {
                         String folderName = dir.Substring(dir.LastIndexOf(Char.ToString(sepChar)) + 1);
+                        // Store the segment folder names as numbers, not strings, so they get sorted correctly
                         long folderNameLong = long.Parse(folderName);
                         if (!masterSegmentList.Contains(folderNameLong))
                         {
@@ -226,7 +227,7 @@ namespace CTlib
                             masterSegmentList.Add(folderNameLong);
                         }
                     }
-                    // Only need to consider trimming if there has been a new folder added
+                    // Only need to consider trimming if a new folder was added
                     if (bNewFolder)
                     {
                         // A new folder is in the list, so we need to re-sort
@@ -237,9 +238,9 @@ namespace CTlib
                         //     Console.WriteLine("{0}", folderNum);
                         // }
                         // Trim to maintain desired number of segments
-                        if (masterSegmentList.Count > totNumSegments)
+                        if (masterSegmentList.Count > numSegmentsToKeep)
                         {
-                            int numToTrim = masterSegmentList.Count - totNumSegments;
+                            int numToTrim = masterSegmentList.Count - numSegmentsToKeep;
                             for (int i=0; i<numToTrim; ++i)
                             {
                                 // Each time through this loop, remove the oldest entry (at index 0) from the list
@@ -251,6 +252,7 @@ namespace CTlib
                                 Console.WriteLine("Delete segment folder {0}", dirToDelete);
                                 try
                                 {
+                                    // BE CAREFUL...this does a recursive delete
                                     Directory.Delete(dirToDelete, true);
                                 }
                                 catch (Exception e)

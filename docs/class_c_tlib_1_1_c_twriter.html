@@ -84,9 +84,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2ed49bf6c357bc02fe85186fc30cc05a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a2ed49bf6c357bc02fe85186fc30cc05a">CTwriter</a> (String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int totNumSegmentsI, bool bOutputTimesAreMillisI)</td></tr>
-<tr class="memdesc:a2ed49bf6c357bc02fe85186fc30cc05a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a2ed49bf6c357bc02fe85186fc30cc05a">More...</a><br /></td></tr>
-<tr class="separator:a2ed49bf6c357bc02fe85186fc30cc05a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fb40e1edba69a1e9bac9b171777adcc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a5fb40e1edba69a1e9bac9b171777adcc">CTwriter</a> (String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI)</td></tr>
+<tr class="memdesc:a5fb40e1edba69a1e9bac9b171777adcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a5fb40e1edba69a1e9bac9b171777adcc">More...</a><br /></td></tr>
+<tr class="separator:a5fb40e1edba69a1e9bac9b171777adcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a365b7877ac266ba896764738b5e2cd2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a365b7877ac266ba896764738b5e2cd2b">putData</a> (double[] dataI)</td></tr>
 <tr class="memdesc:a365b7877ac266ba896764738b5e2cd2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store additional data for each channel. There must be a one-to-one correspondance between the entries in the given data array and the channel name array that was provided to the Constructor. As a minimal check, these arrays must be the same size or else this method will throw an exception.  <a href="#a365b7877ac266ba896764738b5e2cd2b">More...</a><br /></td></tr>
 <tr class="separator:a365b7877ac266ba896764738b5e2cd2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,8 +105,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Only double-precision floating point data is currently supported.</p>
 <p>Timestamps can either be in milliseconds or seconds, as specified by the boolean argument to the constructor. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a2ed49bf6c357bc02fe85186fc30cc05a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ed49bf6c357bc02fe85186fc30cc05a">&#9670;&nbsp;</a></span>CTwriter()</h2>
+<a id="a5fb40e1edba69a1e9bac9b171777adcc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fb40e1edba69a1e9bac9b171777adcc">&#9670;&nbsp;</a></span>CTwriter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -136,7 +136,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>totNumSegmentsI</em>, </td>
+          <td class="paramname"><em>numSegmentsToKeepI</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -163,7 +163,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">baseCTOutputFolderI</td><td>The root folder where the output source is to be written.</td></tr>
     <tr><td class="paramname">chanNamesI</td><td>Array of channel names.</td></tr>
     <tr><td class="paramname">numBlocksPerSegmentI</td><td>Number of blocks per segment in the source folder hierarchy. Use 0 to not include a segment layer.</td></tr>
-    <tr><td class="paramname">totNumSegmentsI</td><td>When using a segment layer, this specifies the total number of segments to maintain. Older segments will be trimmed. Only used if value is greater than 1 (i.e., to activate trim, the min value is 2; at a minimum, we will keep the currently active segment as well as the previous one).</td></tr>
+    <tr><td class="paramname">numSegmentsToKeepI</td><td>When using a segment layer, this specifies the total number of segments to keep. Older segments will be trimmed. Minimum value is 2.</td></tr>
     <tr><td class="paramname">bOutputTimesAreMillisI</td><td>Output times should be in milliseconds? Needed if blocks are written (i.e., <a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af" title="Write data out to one block. Each block contains one packed CSV data file per channel. ">flush()</a> is called) at a rate greater than 1Hz.</td></tr>
   </table>
   </dd>
