@@ -163,7 +163,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">baseCTOutputFolderI</td><td>The root folder where the output source is to be written.</td></tr>
     <tr><td class="paramname">chanNamesI</td><td>Array of channel names.</td></tr>
     <tr><td class="paramname">numBlocksPerSegmentI</td><td>Number of blocks per segment in the source folder hierarchy. Use 0 to not include a segment layer.</td></tr>
-    <tr><td class="paramname">numSegmentsToKeepI</td><td>When using a segment layer, this specifies the total number of segments to keep. Older segments will be trimmed. Minimum value is 2.</td></tr>
+    <tr><td class="paramname">numSegmentsToKeepI</td><td>When using a segment layer, this specifies the number of full segments to keep. Older segments will be trimmed. Set to 0 to keep all segments.</td></tr>
     <tr><td class="paramname">bOutputTimesAreMillisI</td><td>Output times should be in milliseconds? Needed if blocks are written (i.e., <a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af" title="Write data out to one block. Each block contains one packed CSV data file per channel. ">flush()</a> is called) at a rate greater than 1Hz.</td></tr>
   </table>
   </dd>

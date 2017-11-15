@@ -65,7 +65,7 @@ namespace CTlib
         /// <param name="baseCTOutputFolderI">The root folder where the output source is to be written.</param>
         /// <param name="chanNamesI">Array of channel names.</param>
         /// <param name="numBlocksPerSegmentI">Number of blocks per segment in the source folder hierarchy.  Use 0 to not include a segment layer.</param>
-        /// <param name="numSegmentsToKeepI">When using a segment layer, this specifies the total number of segments to keep. Older segments will be trimmed. Minimum value is 2.</param>
+        /// <param name="numSegmentsToKeepI">When using a segment layer, this specifies the number of full segments to keep. Older segments will be trimmed. Set to 0 to keep all segments.</param>
         /// <param name="bOutputTimesAreMillisI">Output times should be in milliseconds?  Needed if blocks are written (i.e., flush() is called) at a rate greater than 1Hz.</param>
         ///
         public CTwriter(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI)
@@ -205,16 +205,19 @@ namespace CTlib
                 ++currentBlockNum;
                 if (currentBlockNum == numBlocksPerSegment)
                 {
+                    // Start a new segment
                     currentBlockNum = 0;
                     segmentStartTime = -1;
                 }
-                if (numSegmentsToKeep > 1)
+                if (numSegmentsToKeep > 0)
                 {
                     // Trim old segment folders
                     Boolean bNewFolder = false;
                     // Update our list of segment folders
                     String dirPath = baseCTOutputFolder + sepChar + startTime.ToString();
-                    List<string> dirs = new List<string>(Directory.EnumerateDirectories(dirPath));
+                    // To stay .NET 3.5 compatible (eg, compatible with Unity 5.5) don't use EnumerateDirectories method
+                    // List<string> dirs = new List<string>(Directory.EnumerateDirectories(dirPath));
+                    List<string> dirs = new List<string>(Directory.GetDirectories(dirPath));
                     foreach (var dir in dirs)
                     {
                         String folderName = dir.Substring(dir.LastIndexOf(Char.ToString(sepChar)) + 1);
@@ -238,9 +241,12 @@ namespace CTlib
                         //     Console.WriteLine("{0}", folderNum);
                         // }
                         // Trim to maintain desired number of segments
-                        if (masterSegmentList.Count > numSegmentsToKeep)
+                        // Note that numSegmentsToKeep is the number of *full* segments to keep;
+                        // we will keep this number of segments plus the partial segment folder
+                        // we are currently writing to.
+                        if (masterSegmentList.Count > (numSegmentsToKeep+1))
                         {
-                            int numToTrim = masterSegmentList.Count - numSegmentsToKeep;
+                            int numToTrim = masterSegmentList.Count - (numSegmentsToKeep+1);
                             for (int i=0; i<numToTrim; ++i)
                             {
                                 // Each time through this loop, remove the oldest entry (at index 0) from the list
