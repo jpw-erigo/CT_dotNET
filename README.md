@@ -9,7 +9,9 @@ Notes on using CTwriter:
 
 * Only double-precision floating point data is currently supported.
 
-* Timestamps are automatically supplied; they can either be in milliseconds or seconds, as specified by a boolean argument to the constructor.
+* Timestamps are automatically supplied; they can either be in milliseconds or seconds, as specified by the "bOutputTimesAreMillisI" boolean argument to the constructor.
+
+* Old data can optionally be deleted from an existing source folder at startup by setting the "bDeleteOldDataAtStartupI" boolean argument to the constructor to true.
 
 For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github.com/cycronix/cloudturbine.
 
@@ -74,7 +76,7 @@ namespace CTdemo
             int numSegmentsToKeep = 3;     // Number of segments to keep, older segment folders are trimmed (0 for no trim, keep all)
             String baseCTOutputFolder = ".\\CTdata\\CTdemo\\";
             CTlib.CTwriter ctw =
-                new CTlib.CTwriter(baseCTOutputFolder, ctChanNames, numBlocksPerSegment, numSegmentsToKeep, true);
+                new CTlib.CTwriter(baseCTOutputFolder, ctChanNames, numBlocksPerSegment, numSegmentsToKeep, true, false);
 
             // To add a random element to chan2.csv
             Random rnd = new Random();

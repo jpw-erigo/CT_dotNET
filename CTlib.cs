@@ -57,6 +57,7 @@ namespace CTlib
         long lastDataPtTime = -1;       // Absolute time of the latest data point
         bool bUseMilliseconds = false;  // Output times are milliseconds?
         List<long> masterSegmentList = new List<long>();  // List of segment folders
+        char sepChar = Path.DirectorySeparatorChar;       // character that separates folder segments in a full path name
 
         ///
         /// <summary>
@@ -67,8 +68,9 @@ namespace CTlib
         /// <param name="numBlocksPerSegmentI">Number of blocks per segment in the source folder hierarchy.  Use 0 to not include a segment layer.</param>
         /// <param name="numSegmentsToKeepI">When using a segment layer, this specifies the number of full segments to keep. Older segments will be trimmed. Set to 0 to keep all segments.</param>
         /// <param name="bOutputTimesAreMillisI">Output times should be in milliseconds?  Needed if blocks are written (i.e., flush() is called) at a rate greater than 1Hz.</param>
+        /// <param name="bDeleteOldDataAtStartupI">Delete old data from this source at startup?</param>
         ///
-        public CTwriter(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI)
+        public CTwriter(String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bDeleteOldDataAtStartupI)
         {
             baseCTOutputFolder = baseCTOutputFolderI;
             // If baseCTOutputFolder ends in a directory separator character, remove it (it will be added later)
@@ -87,6 +89,49 @@ namespace CTlib
             for (int i = 0; i < numChans; ++i)
             {
                 ctData[i] = new List<double>();
+            }
+
+            // If requested, delete old/existing data in the source
+            if (bDeleteOldDataAtStartupI)
+            {
+                Console.WriteLine("Deleting old data from source \"{0}\"",baseCTOutputFolder);
+                List<string> topFolders = null;
+                try
+                {
+                    topFolders = new List<string>(Directory.GetDirectories(baseCTOutputFolder));
+                }
+                catch (Exception e)
+                {
+                    topFolders = null;
+                    Console.WriteLine("\tUnable to delete old source data:\n\t\t{0}",e.Message);
+                }
+                if ((topFolders == null) || (topFolders.Count <= 0))
+                {
+                    Console.WriteLine("\tNo old data to delete.");
+                }
+                else
+                {
+                    foreach (var dir in topFolders)
+                    {
+                        String folderName = dir.Substring(dir.LastIndexOf(Char.ToString(sepChar)) + 1);
+                        // Only delete this folder and its content if it is an integer/long greater than 0
+                        try
+                        {
+                            long folderNameLong = long.Parse(folderName);
+                            if (folderNameLong <= 0)
+                            {
+                                throw new Exception(String.Format("The name of sub-folder \"{0}\" is an integer which is less than or equal to 0.",folderName));
+                            }
+                            // BE CAREFUL...this does a recursive delete
+                            Directory.Delete(dir, true);
+                            Console.WriteLine("\tDeleted old data sub-folder \"{0}\"", dir);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("\tSub-folder \"{0}\" will not be deleted:\n\t\t{1}",folderName,e.Message);
+                        }
+                    }
+                }
             }
         }
 
@@ -172,7 +217,6 @@ namespace CTlib
                 // We are using Segment layer
                 blockStartTimeRel = blockStartTime - segmentStartTime;
             }
-            char sepChar = Path.DirectorySeparatorChar;
             String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + blockDuration.ToString() + sepChar;
             if (numBlocksPerSegment > 0)
             {
