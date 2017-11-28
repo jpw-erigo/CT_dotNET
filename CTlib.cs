@@ -85,6 +85,41 @@ namespace CTlib
 
             numChans = chanNames.Length;
 
+            //
+            // Firewall: baseCTOutputFolder must be at the same level as the application working directory or a sub-directory under it
+            //
+            bool bVerifiedDirectories = false;
+            string appWorkingDir = Directory.GetCurrentDirectory();
+            // First, test if the application's working directory is the same as the source directory
+            string absWorking = Path.GetFullPath(appWorkingDir);
+            string absSource = Path.GetFullPath(baseCTOutputFolder);
+            if (absWorking.Equals(absSource))
+            {
+                // The working directory is the same as the source directory, this is OK
+                bVerifiedDirectories = true;
+            }
+            else
+            {
+                // Second, make sure the source directory is a sub-folder under the application's working directory;
+                // do this by crawling up the source folder hierarchy.
+                // This code was copied from https://stackoverflow.com/questions/5617320/given-full-path-check-if-path-is-subdirectory-of-some-other-path-or-otherwise
+                DirectoryInfo workingDirInfo = new DirectoryInfo(appWorkingDir);
+                DirectoryInfo sourceDirInfo = new DirectoryInfo(baseCTOutputFolder);
+                while (sourceDirInfo.Parent != null)
+                {
+                    if (sourceDirInfo.Parent.FullName.Equals(workingDirInfo.FullName))
+                    {
+                        bVerifiedDirectories = true;
+                        break;
+                    }
+                    else sourceDirInfo = sourceDirInfo.Parent;
+                }
+            }
+            if (!bVerifiedDirectories)
+            {
+                throw new Exception("The source folder must be in or under the application's working directory (i.e., at or under the folder where the application starts)");
+            }
+
             ctData = new List<double>[numChans];
             for (int i = 0; i < numChans; ++i)
             {
