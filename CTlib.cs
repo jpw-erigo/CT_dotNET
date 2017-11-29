@@ -18,6 +18,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 /// <summary>
 /// A C# implementation of CloudTurbine.
@@ -45,16 +46,17 @@ namespace CTlib
     {
 
         String baseCTOutputFolder;
-        String[] chanNames;
-        int numChans;
-        int numBlocksPerSegment;
-        int numSegmentsToKeep;
-        int currentBlockNum = 0;
-        List<double>[] ctData;          // Packed data gets staged in a List and then written to CT file when flush() is called
+        String[] chanNames;             // Array of channel names for the packed data channels
+        int numChans;                   // Number of packed data channels (ie, size of chanNames)
+        int numBlocksPerSegment;        // Number of blocks to store in each segment
+        int numSegmentsToKeep;          // Number of full segments to maintain; older segments will be trimmed
+        int currentBlockNum = 0;        // The current block number in the current segment
+        List<double>[] ctData;          // Packed double-precision floating point data gets staged in this List and then written to CT file when flush() is called
+        List<CTbinary> ctBinary;        // List of CTbinary objects, for storing byte array channel data
         long startTime = -1;            // Absolute start time for the whole source
         long segmentStartTime = -1;     // Absolute start time for an individual segment
         long blockStartTime = -1;       // Absolute start time for an individual block
-        long lastDataPtTime = -1;       // Absolute time of the latest data point
+        long lastPackedDataPtTime = -1; // Absolute time of the latest packed data point
         bool bUseMilliseconds = false;  // Output times are milliseconds?
         List<long> masterSegmentList = new List<long>();  // List of segment folders
         char sepChar = Path.DirectorySeparatorChar;       // character that separates folder segments in a full path name
@@ -83,7 +85,11 @@ namespace CTlib
             numSegmentsToKeep = numSegmentsToKeepI;
             bUseMilliseconds = bOutputTimesAreMillisI;
 
-            numChans = chanNames.Length;
+            numChans = 0;
+            if (chanNames != null)
+            {
+                numChans = chanNames.Length;
+            }
 
             //
             // Firewall: baseCTOutputFolder must be at the same level as the application working directory or a sub-directory under it
@@ -120,13 +126,19 @@ namespace CTlib
                 throw new Exception("The source folder must be in or under the application's working directory (i.e., at or under the folder where the application starts)");
             }
 
+            //
+            // Initialize the data lists
+            //
             ctData = new List<double>[numChans];
             for (int i = 0; i < numChans; ++i)
             {
                 ctData[i] = new List<double>();
             }
+            ctBinary = new List<CTbinary>();
 
+            //
             // If requested, delete old/existing data in the source
+            //
             if (bDeleteOldDataAtStartupI)
             {
                 Console.WriteLine("Deleting old data from source \"{0}\"",baseCTOutputFolder);
@@ -172,11 +184,11 @@ namespace CTlib
 
         ///
         /// <summary>
-        /// Store additional data for each channel.  There must be a one-to-one
-        /// correspondance between the entries in the given data array and the
-        /// channel name array that was provided to the Constructor.  As a minimal
-        /// check, these arrays must be the same size or else this method will
-        /// throw an exception.
+        /// Store additional data in each of the packed channels.  There must
+        /// be a one-to-one correspondance between the entries in the given
+        /// data array and the channel name array that was provided to the
+        /// Constructor.  As a minimal check, these arrays must be the same
+        /// size or else this method will throw an exception.
         /// </summary>
         /// <param name="dataI">Array containing one new data point per channel.</param>
         /// <exception cref="System.ArgumentException">Thrown when the size of the given data array doesn't match the number of channels (as given to the constructor).</exception>
@@ -189,37 +201,292 @@ namespace CTlib
             }
 
             // Update time
-            // Calculate the new time in either seconds or milliseconds
-            TimeSpan deltaTime = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            if (bUseMilliseconds)
-            {
-                lastDataPtTime = (long)deltaTime.TotalMilliseconds;
-            }
-            else
-            {
-                lastDataPtTime = (long)deltaTime.TotalSeconds;
-            }
-            if (startTime == -1)
-            {
-                // Start time for the whole source
-                startTime = lastDataPtTime;
-            }
-            if ((numBlocksPerSegment > 0) && (segmentStartTime == -1))
-            {
-                // Start time of the next Segment
-                segmentStartTime = lastDataPtTime;
-            }
-            if (ctData[0].Count == 0)
-            {
-                // Start time of this Block
-                blockStartTime = lastDataPtTime;
-            }
+            lastPackedDataPtTime = getTimestamp();
 
             // Save data
             for (int i = 0; i < numChans; ++i)
             {
                 ctData[i].Add(dataI[i]);
             }
+        }
+
+        ///
+        /// <summary>
+        /// Store string data for the given channel at the current timestamp.
+        /// The given channel name must not match any of the packed data
+        /// channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Re-throws any exception that is thrown by the underlying <see cref="putData(string,byte[])"/> call.</exception>
+        ///
+        public void putData(string channameI, String dataI)
+        {
+            try
+            {
+                putData(channameI, Encoding.UTF8.GetBytes(dataI));
+            }
+            catch (ArgumentException ex)
+            {
+                throw;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Store a double-precision data value for the given channel at the
+        /// current timestamp. The given channel name must not match any of
+        /// the packed data channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Re-throws any exception that is thrown by the underlying <see cref="putData(string,byte[])"/> call.</exception>
+        ///
+        public void putData(string channameI, double dataI)
+        {
+            try
+            {
+                if (channameI.EndsWith(".f64"))
+                {
+                    // store the bytes that make up the double value
+                    // note that we store this data in the standard endian-ness of this machine
+                    putData(channameI, BitConverter.GetBytes(dataI));
+                }
+                else
+                {
+                    // store a string representation of the double
+                    putData(channameI, dataI.ToString());
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Store a single-precision data value for the given channel at the
+        /// current timestamp. The given channel name must not match any of
+        /// the packed data channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Re-throws any exception that is thrown by the underlying <see cref="putData(string,byte[])"/> call.</exception>
+        ///
+        public void putData(string channameI, float dataI)
+        {
+            try
+            {
+                if (channameI.EndsWith(".f32"))
+                {
+                    // store the bytes that make up the float value
+                    // note that we store this data in the standard endian-ness of this machine
+                    putData(channameI, BitConverter.GetBytes(dataI));
+                }
+                else
+                {
+                    // store a string representation of the float
+                    putData(channameI, dataI.ToString());
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Store a long integer data value for the given channel at the
+        /// current timestamp. The given channel name must not match any of
+        /// the packed data channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Re-throws any exception that is thrown by the underlying <see cref="putData(string,byte[])"/> call.</exception>
+        ///
+        public void putData(string channameI, long dataI)
+        {
+            try
+            {
+                if (channameI.EndsWith(".i64"))
+                {
+                    // store the bytes that make up the long value
+                    // note that we store this data in the standard endian-ness of this machine
+                    putData(channameI, BitConverter.GetBytes(dataI));
+                }
+                else
+                {
+                    // store a string representation of the long
+                    putData(channameI, dataI.ToString());
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Store an integer data value for the given channel at the
+        /// current timestamp. The given channel name must not match any of
+        /// the packed data channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Re-throws any exception that is thrown by the underlying <see cref="putData(string,byte[])"/> call.</exception>
+        ///
+        public void putData(string channameI, int dataI)
+        {
+            try
+            {
+                if (channameI.EndsWith(".i32"))
+                {
+                    // store the bytes that make up the integer value
+                    // note that we store this data in the standard endian-ness of this machine
+                    putData(channameI, BitConverter.GetBytes(dataI));
+                }
+                else
+                {
+                    // store a string representation of the integer
+                    putData(channameI, dataI.ToString());
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Store a short integer data value for the given channel at the
+        /// current timestamp. The given channel name must not match any of
+        /// the packed data channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Re-throws any exception that is thrown by the underlying <see cref="putData(string,byte[])"/> call.</exception>
+        ///
+        public void putData(string channameI, short dataI)
+        {
+            try
+            {
+                if (channameI.EndsWith(".i16"))
+                {
+                    // store the bytes that make up the short integer value
+                    // note that we store this data in the standard endian-ness of this machine
+                    putData(channameI, BitConverter.GetBytes(dataI));
+                }
+                else
+                {
+                    // store a string representation of the short integer
+                    putData(channameI, dataI.ToString());
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                throw;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Store a character data value for the given channel at the
+        /// current timestamp. The given channel name must not match any of
+        /// the packed data channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Re-throws any exception that is thrown by the underlying <see cref="putData(string,byte[])"/> call.</exception>
+        ///
+        public void putData(string channameI, char dataI)
+        {
+            try
+            {
+                // store a string representation of the character
+                putData(channameI, dataI.ToString());
+            }
+            catch (ArgumentException ex)
+            {
+                throw;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Store binary data array for the given channel at the current timestamp.
+        /// The given channel name must not match any of the packed data channels.
+        /// </summary>
+        /// <param name="channameI">Channel to store the given data in.</param>
+        /// <param name="dataI">The data to store at the current timestamp for the given channel name.</param>
+        /// <exception cref="System.ArgumentException">Thrown if the specified channel name is empty or it matches one of the packed channel names.</exception>
+        ///
+        public void putData(string channameI, byte[] dataI)
+        {
+            if ((dataI == null) || (dataI.Length == 0))
+            {
+                return;
+            }
+
+            if ( (channameI == null) || (channameI.Length == 0) )
+            {
+                throw new System.ArgumentException("Empty channel name", "channameI");
+            }
+
+            // Make sure the given channel name isn't one of the packed data channels
+            // (ie, can't be both a packed channel and also a binary byte array channel)
+            for (int i=0; i<numChans; ++i)
+            {
+                if (channameI.Equals(chanNames[i]))
+                {
+                    throw new System.ArgumentException(String.Format("The given channel name,\"{0}\", matches the name of one of the packed channels"), "channameI");
+                }
+            }
+
+            ctBinary.Add(new CTbinary(this, channameI, dataI));
+        }
+
+        ///
+        /// <summary>
+        /// Calculate the time of the next datapoint.  This can be
+        /// in seconds or milliseconds, as specified by the user.
+        /// As needed, we will also set startTime, segmentStartTime
+        /// and blockStartTime.
+        /// </summary>
+        /// <returns>The next timestamp.</returns>
+        /// 
+        private long getTimestamp()
+        {
+            long initialBlockStartTime = blockStartTime;
+            long nextTime = -1;
+            TimeSpan deltaTime = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            if (bUseMilliseconds)
+            {
+                nextTime = (long)deltaTime.TotalMilliseconds;
+            }
+            else
+            {
+                nextTime = (long)deltaTime.TotalSeconds;
+            }
+            if (startTime == -1)
+            {
+                // Start time for the whole source
+                startTime = nextTime;
+            }
+            if ((numBlocksPerSegment > 0) && (segmentStartTime == -1))
+            {
+                // Start time of the next Segment
+                segmentStartTime = nextTime;
+            }
+            if (blockStartTime == -1)
+            {
+                // Start time of this Block
+                blockStartTime = nextTime;
+            }
+            return nextTime;
         }
 
         ///
@@ -238,13 +505,22 @@ namespace CTlib
         /// 
         public void flush()
         {
-            if (ctData[0].Count == 0)
+
+            bool isPackedData = false;
+            if ( (numChans > 0) && (ctData[0].Count > 0) )
+            {
+                isPackedData = true;
+            }
+
+            if ( (!isPackedData) && (ctBinary.Count == 0) )
             {
                 throw new System.IO.IOException("No data ready to flush");
             }
 
-            // Construct a folder to contain the packed data file
-            long blockDuration = lastDataPtTime - blockStartTime;
+            //
+            // Times used in constructing the output data folders
+            //
+            long blockDuration = lastPackedDataPtTime - blockStartTime;
             long segmentStartTimeRel = segmentStartTime - startTime;
             long blockStartTimeRel = blockStartTime - startTime;
             if (numBlocksPerSegment > 0)
@@ -252,30 +528,62 @@ namespace CTlib
                 // We are using Segment layer
                 blockStartTimeRel = blockStartTime - segmentStartTime;
             }
-            String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + blockDuration.ToString() + sepChar;
-            if (numBlocksPerSegment > 0)
-            {
-                // We are using Segment layer
-                directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + blockDuration.ToString() + sepChar;
-            }
-            System.IO.Directory.CreateDirectory(directoryName);
 
-            // Write one packed CSV data file for each channel
-            for (int i = 0; i < numChans; ++i)
+            //
+            // Write one packed CSV data file for each packed data channel
+            //
+            if (isPackedData)
             {
-                StreamWriter ctFile = new StreamWriter(File.Open(directoryName + chanNames[i], FileMode.Create));
-                foreach (double dataPt in ctData[i])
+                // First, construct a folder to contain the packed data file
+                String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + blockDuration.ToString() + sepChar;
+                if (numBlocksPerSegment > 0)
                 {
-                    ctFile.Write("{0:G},", dataPt);
+                    // We are using Segment layer
+                    directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + blockDuration.ToString() + sepChar;
                 }
-                ctFile.Close();
+                System.IO.Directory.CreateDirectory(directoryName);
+                // Second, write out the packed data
+                for (int i = 0; i < numChans; ++i)
+                {
+                    StreamWriter ctFile = new StreamWriter(File.Open(directoryName + chanNames[i], FileMode.Create));
+                    foreach (double dataPt in ctData[i])
+                    {
+                        ctFile.Write("{0:G},", dataPt);
+                    }
+                    ctFile.Close();
+                }
             }
 
-            // Clear out the data arrays
+            //
+            // Write out byte array data
+            //
+            foreach (var ctbin in ctBinary)
+            {
+                long timestamp = ctbin.timestamp;
+                // Create the output folder
+                long pointTimeRel = timestamp - blockStartTime;
+                String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
+                if (numBlocksPerSegment > 0)
+                {
+                    // We are using Segment layer
+                    directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
+                }
+                System.IO.Directory.CreateDirectory(directoryName);
+                // Write out binary data to the channel file in this new folder
+                File.WriteAllBytes(directoryName + ctbin.channame, ctbin.data);
+            }
+
+            //
+            // Clear out the data lists
+            //
             for (int i = 0; i < numChans; ++i)
             {
                 ctData[i].Clear();
             }
+            ctBinary.Clear();
+
+            // Reset the block start time
+            blockStartTime = -1;
 
             // See if it is time to switch to a new Segment folder or trim/delete old segment folders.
             if (numBlocksPerSegment > 0)
@@ -360,5 +668,47 @@ namespace CTlib
         {
             flush();
         }
+
+        ///
+        /// CTbinary
+        /// 
+        /// <summary>
+        /// This class stores one sample of a binary array.
+        /// </summary>
+        /// 
+        private class CTbinary
+        {
+            public long timestamp = -1;
+            public string channame = null;
+            public byte[] data = null;
+
+            ///
+            /// <summary>
+            /// Constructor for the CTbinary class
+            /// </summary>
+            /// <param name="ctwI">Reference to the parent CTwriter class</param>
+            /// <param name="channameI">Channel name</param>
+            /// <param name="dataI">The binary array</param>
+            /// 
+            public CTbinary(CTwriter ctwI, string channameI, byte[] dataI)
+            {
+                if ((channameI == null) || (channameI.Trim().Length == 0))
+                {
+                    throw new Exception("The given channel name is empty");
+                }
+                else if ((dataI == null) || (dataI.Length == 0))
+                {
+                    throw new Exception("The given data array is empty");
+                }
+                else
+                {
+                    channame = channameI;
+                    data = dataI;
+                    timestamp = ctwI.getTimestamp();
+                }
+            }
+        } // end class CTbinary
+
     } // end class CTwriter
+
 } // end namespace CTlib
