@@ -80,43 +80,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Write floating-point data out in CloudTurbine format.  
+<p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. All timestamps are auto-generated (i.e., the user cannot supply timestamps).  
  <a href="class_c_tlib_1_1_c_twriter.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa3dcf3b83d13e6474d7a3cb8331aa9e6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#aa3dcf3b83d13e6474d7a3cb8331aa9e6">CTwriter</a> (String baseCTOutputFolderI, String[] chanNamesI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bDeleteOldDataAtStartupI)</td></tr>
-<tr class="memdesc:aa3dcf3b83d13e6474d7a3cb8331aa9e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#aa3dcf3b83d13e6474d7a3cb8331aa9e6">More...</a><br /></td></tr>
-<tr class="separator:aa3dcf3b83d13e6474d7a3cb8331aa9e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a365b7877ac266ba896764738b5e2cd2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a365b7877ac266ba896764738b5e2cd2b">putData</a> (double[] dataI)</td></tr>
-<tr class="memdesc:a365b7877ac266ba896764738b5e2cd2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store additional data in each of the packed channels. There must be a one-to-one correspondance between the entries in the given data array and the channel name array that was provided to the Constructor. As a minimal check, these arrays must be the same size or else this method will throw an exception.  <a href="#a365b7877ac266ba896764738b5e2cd2b">More...</a><br /></td></tr>
-<tr class="separator:a365b7877ac266ba896764738b5e2cd2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a938eecadeebc04554ffb367238aceacd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a938eecadeebc04554ffb367238aceacd">CTwriter</a> (String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI)</td></tr>
+<tr class="memdesc:a938eecadeebc04554ffb367238aceacd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a938eecadeebc04554ffb367238aceacd">More...</a><br /></td></tr>
+<tr class="separator:a938eecadeebc04554ffb367238aceacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6">putData</a> (string[] channamesI, double[] dataI)</td></tr>
+<tr class="memdesc:af2e84f24be1d330409de4c9dbb0f6df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an additional double data point in each of the specified channels.  <a href="#af2e84f24be1d330409de4c9dbb0f6df6">More...</a><br /></td></tr>
+<tr class="separator:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac54badfe2bda9513813c130247209b80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ac54badfe2bda9513813c130247209b80">putData</a> (string channameI, String dataI)</td></tr>
-<tr class="memdesc:ac54badfe2bda9513813c130247209b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store string data for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#ac54badfe2bda9513813c130247209b80">More...</a><br /></td></tr>
+<tr class="memdesc:ac54badfe2bda9513813c130247209b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a new string in the given channel.  <a href="#ac54badfe2bda9513813c130247209b80">More...</a><br /></td></tr>
 <tr class="separator:ac54badfe2bda9513813c130247209b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7ea9bfe5c52c00d37a798c65796157d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ac7ea9bfe5c52c00d37a798c65796157d">putData</a> (string channameI, double dataI)</td></tr>
-<tr class="memdesc:ac7ea9bfe5c52c00d37a798c65796157d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a double-precision data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#ac7ea9bfe5c52c00d37a798c65796157d">More...</a><br /></td></tr>
+<tr class="memdesc:ac7ea9bfe5c52c00d37a798c65796157d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a double-precision float data value for the given channel.  <a href="#ac7ea9bfe5c52c00d37a798c65796157d">More...</a><br /></td></tr>
 <tr class="separator:ac7ea9bfe5c52c00d37a798c65796157d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a945c3e0e5c15537fae842dbb5826b349"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a945c3e0e5c15537fae842dbb5826b349">putData</a> (string channameI, float dataI)</td></tr>
-<tr class="memdesc:a945c3e0e5c15537fae842dbb5826b349"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a single-precision data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#a945c3e0e5c15537fae842dbb5826b349">More...</a><br /></td></tr>
+<tr class="memdesc:a945c3e0e5c15537fae842dbb5826b349"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a single-precision float data value for the given channel.  <a href="#a945c3e0e5c15537fae842dbb5826b349">More...</a><br /></td></tr>
 <tr class="separator:a945c3e0e5c15537fae842dbb5826b349"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6135a27d7dfea7f341049ddd9e5c0ea5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a6135a27d7dfea7f341049ddd9e5c0ea5">putData</a> (string channameI, long dataI)</td></tr>
-<tr class="memdesc:a6135a27d7dfea7f341049ddd9e5c0ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a long integer data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">More...</a><br /></td></tr>
+<tr class="memdesc:a6135a27d7dfea7f341049ddd9e5c0ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a long integer data value for the given channel.  <a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">More...</a><br /></td></tr>
 <tr class="separator:a6135a27d7dfea7f341049ddd9e5c0ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a486e4da3ecb4b54bceac8a9309b31dde"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a486e4da3ecb4b54bceac8a9309b31dde">putData</a> (string channameI, int dataI)</td></tr>
-<tr class="memdesc:a486e4da3ecb4b54bceac8a9309b31dde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an integer data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#a486e4da3ecb4b54bceac8a9309b31dde">More...</a><br /></td></tr>
+<tr class="memdesc:a486e4da3ecb4b54bceac8a9309b31dde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an integer data value for the given channel.  <a href="#a486e4da3ecb4b54bceac8a9309b31dde">More...</a><br /></td></tr>
 <tr class="separator:a486e4da3ecb4b54bceac8a9309b31dde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a2d306512b91eede219eab5447c3424"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a8a2d306512b91eede219eab5447c3424">putData</a> (string channameI, short dataI)</td></tr>
-<tr class="memdesc:a8a2d306512b91eede219eab5447c3424"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a short integer data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#a8a2d306512b91eede219eab5447c3424">More...</a><br /></td></tr>
+<tr class="memdesc:a8a2d306512b91eede219eab5447c3424"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a short integer data value for the given channel.  <a href="#a8a2d306512b91eede219eab5447c3424">More...</a><br /></td></tr>
 <tr class="separator:a8a2d306512b91eede219eab5447c3424"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3897421afb6e3875c6a365e49a1d335"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#aa3897421afb6e3875c6a365e49a1d335">putData</a> (string channameI, char dataI)</td></tr>
-<tr class="memdesc:aa3897421afb6e3875c6a365e49a1d335"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a character data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#aa3897421afb6e3875c6a365e49a1d335">More...</a><br /></td></tr>
+<tr class="memdesc:aa3897421afb6e3875c6a365e49a1d335"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a character data value for the given channel.  <a href="#aa3897421afb6e3875c6a365e49a1d335">More...</a><br /></td></tr>
 <tr class="separator:aa3897421afb6e3875c6a365e49a1d335"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39c307e6317e44ced6f20be9ea387672"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a39c307e6317e44ced6f20be9ea387672">putData</a> (string channameI, byte[] dataI)</td></tr>
-<tr class="memdesc:a39c307e6317e44ced6f20be9ea387672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store binary data array for the given channel at the current timestamp. The given channel name must not match any of the packed data channels.  <a href="#a39c307e6317e44ced6f20be9ea387672">More...</a><br /></td></tr>
+<tr class="memdesc:a39c307e6317e44ced6f20be9ea387672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store binary data array for the given channel.  <a href="#a39c307e6317e44ced6f20be9ea387672">More...</a><br /></td></tr>
 <tr class="separator:a39c307e6317e44ced6f20be9ea387672"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5aafdbfe2569148093d4c99be1ea22af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af">flush</a> ()</td></tr>
-<tr class="memdesc:a5aafdbfe2569148093d4c99be1ea22af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write data out to one block. Each block contains one packed CSV data file per channel.  <a href="#a5aafdbfe2569148093d4c99be1ea22af">More...</a><br /></td></tr>
+<tr class="memdesc:a5aafdbfe2569148093d4c99be1ea22af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write out all data that has been queued up for this block.  <a href="#a5aafdbfe2569148093d4c99be1ea22af">More...</a><br /></td></tr>
 <tr class="separator:a5aafdbfe2569148093d4c99be1ea22af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf9112dd0456d4f26e59722076c98189"><td class="memItemLeft" align="right" valign="top"><a id="adf9112dd0456d4f26e59722076c98189"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#adf9112dd0456d4f26e59722076c98189">close</a> ()</td></tr>
@@ -124,14 +124,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:adf9112dd0456d4f26e59722076c98189"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Write floating-point data out in CloudTurbine format. </p>
-<p><a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write floating-point data out in CloudTurbine format. ">CTwriter</a></p>
-<p>An array of channel names is given to the Constructor. The same number of entries must be supplied in the data array given to <a class="el" href="class_c_tlib_1_1_c_twriter.html#a365b7877ac266ba896764738b5e2cd2b" title="Store additional data in each of the packed channels. There must be a one-to-one correspondance betwe...">putData()</a>; there should be a one-to-one correspondance between the channel name index and the index in the data array.</p>
-<p>Only double-precision floating point data is currently supported.</p>
-<p>Timestamps can either be in milliseconds or seconds, as specified by the boolean argument to the constructor. </p>
+<div class="textblock"><p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. All timestamps are auto-generated (i.e., the user cannot supply timestamps). </p>
+<p><a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa3dcf3b83d13e6474d7a3cb8331aa9e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3dcf3b83d13e6474d7a3cb8331aa9e6">&#9670;&nbsp;</a></span>CTwriter()</h2>
+<a id="a938eecadeebc04554ffb367238aceacd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a938eecadeebc04554ffb367238aceacd">&#9670;&nbsp;</a></span>CTwriter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -144,12 +141,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td>(</td>
           <td class="paramtype">String&#160;</td>
           <td class="paramname"><em>baseCTOutputFolderI</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">String []&#160;</td>
-          <td class="paramname"><em>chanNamesI</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -173,6 +164,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bPackI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bZipI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
           <td class="paramname"><em>bDeleteOldDataAtStartupI</em>&#160;</td>
         </tr>
         <tr>
@@ -191,11 +194,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <p>Constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">baseCTOutputFolderI</td><td>The root folder where the output source is to be written.</td></tr>
-    <tr><td class="paramname">chanNamesI</td><td>Array of channel names.</td></tr>
+    <tr><td class="paramname">baseCTOutputFolderI</td><td>The root folder where the output source is to be written. This must be at the same level as the application working directory or a sub-directory under it.</td></tr>
     <tr><td class="paramname">numBlocksPerSegmentI</td><td>Number of blocks per segment in the source folder hierarchy. Use 0 to not include a segment layer.</td></tr>
     <tr><td class="paramname">numSegmentsToKeepI</td><td>When using a segment layer, this specifies the number of full segments to keep. Older segments will be trimmed. Set to 0 to keep all segments.</td></tr>
-    <tr><td class="paramname">bOutputTimesAreMillisI</td><td>Output times should be in milliseconds? Needed if blocks are written (i.e., <a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af" title="Write data out to one block. Each block contains one packed CSV data file per channel. ">flush()</a> is called) at a rate greater than 1Hz.</td></tr>
+    <tr><td class="paramname">bOutputTimesAreMillisI</td><td>Output times should be in milliseconds? Needed if blocks are written (i.e., <a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af" title="Write out all data that has been queued up for this block. ">flush()</a> is called) at a rate greater than 1Hz.</td></tr>
+    <tr><td class="paramname">bPackI</td><td>Pack data at the block folder level? Packed data times are linearly interpolated from the block start time to the time of the final datapoint in the packed channel.</td></tr>
+    <tr><td class="paramname">bZipI</td><td>ZIP data at the block folder level?</td></tr>
     <tr><td class="paramname">bDeleteOldDataAtStartupI</td><td>Delete old data from this source at startup?</td></tr>
   </table>
   </dd>
@@ -227,25 +231,25 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Write data out to one block. Each block contains one packed CSV data file per channel. </p>
-<p>The folder containing these channel data files is made up of the following parts:</p><ol type="1">
-<li>base folder name (given to the constructor)</li>
-<li>source start time (absolute epoch time)</li>
+<p>Write out all data that has been queued up for this block. </p>
+<p>The folder hierarchy in which the data files reside is made up of the following parts:</p><ol type="1">
+<li>base folder name (given to the <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> constructor)</li>
+<li>source start time (absolute epoch time of the first data point for the entire source)</li>
 <li>[optional] segment start time (relative to the source start time)</li>
 <li>block start time (relative to either the source start time or the relative segment start time)</li>
-<li>block duration </li>
+<li>channel data files are in point folders, whose times are relative to the block start time </li>
 </ol>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">System.IO.IOException</td><td>Thrown when there is no data ready to flush to file.</td></tr>
+    <tr><td class="paramname">System.IO.IOException</td><td>Thrown when there is no data to flush to file.</td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a365b7877ac266ba896764738b5e2cd2b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a365b7877ac266ba896764738b5e2cd2b">&#9670;&nbsp;</a></span>putData() <span class="overload">[1/9]</span></h2>
+<a id="af2e84f24be1d330409de4c9dbb0f6df6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2e84f24be1d330409de4c9dbb0f6df6">&#9670;&nbsp;</a></span>putData() <span class="overload">[1/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -256,9 +260,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">void CTlib.CTwriter.putData </td>
           <td>(</td>
-          <td class="paramtype">double []&#160;</td>
-          <td class="paramname"><em>dataI</em></td><td>)</td>
+          <td class="paramtype">string []&#160;</td>
+          <td class="paramname"><em>channamesI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">double []&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -268,16 +282,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store additional data in each of the packed channels. There must be a one-to-one correspondance between the entries in the given data array and the channel name array that was provided to the Constructor. As a minimal check, these arrays must be the same size or else this method will throw an exception. </p>
+<p>Store an additional double data point in each of the specified channels. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">channamesI</td><td>The names of the channels to which new data will be added.</td></tr>
     <tr><td class="paramname">dataI</td><td>Array containing one new data point per channel.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">System.ArgumentException</td><td>Thrown when the size of the given data array doesn't match the number of channels (as given to the constructor).</td></tr>
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the channel or data arrays are empty of their sizes don't match.</td></tr>
   </table>
   </dd>
 </dl>
@@ -318,11 +333,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store string data for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store a new string in the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
@@ -369,11 +384,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store a double-precision data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store a double-precision float data value for the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
@@ -420,11 +435,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store a single-precision data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store a single-precision float data value for the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
@@ -471,11 +486,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store a long integer data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store a long integer data value for the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
@@ -522,11 +537,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store an integer data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store an integer data value for the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
@@ -573,11 +588,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store a short integer data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store a short integer data value for the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
@@ -624,11 +639,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store a character data value for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store a character data value for the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
@@ -675,17 +690,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table>
 </div><div class="memdoc">
 
-<p>Store binary data array for the given channel at the current timestamp. The given channel name must not match any of the packed data channels. </p>
+<p>Store binary data array for the given channel. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
-    <tr><td class="paramname">dataI</td><td>The data to store at the current timestamp for the given channel name.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the specified channel name is empty or it matches one of the packed channel names.</td></tr>
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the specified channel name or data array is empty.</td></tr>
   </table>
   </dd>
 </dl>
