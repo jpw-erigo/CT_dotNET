@@ -91,6 +91,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6">putData</a> (string[] channamesI, double[] dataI)</td></tr>
 <tr class="memdesc:af2e84f24be1d330409de4c9dbb0f6df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an additional double data point in each of the specified channels.  <a href="#af2e84f24be1d330409de4c9dbb0f6df6">More...</a><br /></td></tr>
 <tr class="separator:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55b28cbc530c73b4d0b4d06be1c0fa74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a55b28cbc530c73b4d0b4d06be1c0fa74">putData</a> (string[] channamesI, float[] dataI)</td></tr>
+<tr class="memdesc:a55b28cbc530c73b4d0b4d06be1c0fa74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an additional single-precision float data point in each of the specified channels.  <a href="#a55b28cbc530c73b4d0b4d06be1c0fa74">More...</a><br /></td></tr>
+<tr class="separator:a55b28cbc530c73b4d0b4d06be1c0fa74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac54badfe2bda9513813c130247209b80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ac54badfe2bda9513813c130247209b80">putData</a> (string channameI, String dataI)</td></tr>
 <tr class="memdesc:ac54badfe2bda9513813c130247209b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a new string in the given channel.  <a href="#ac54badfe2bda9513813c130247209b80">More...</a><br /></td></tr>
 <tr class="separator:ac54badfe2bda9513813c130247209b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -249,7 +252,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="af2e84f24be1d330409de4c9dbb0f6df6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2e84f24be1d330409de4c9dbb0f6df6">&#9670;&nbsp;</a></span>putData() <span class="overload">[1/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af2e84f24be1d330409de4c9dbb0f6df6">&#9670;&nbsp;</a></span>putData() <span class="overload">[1/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -296,11 +299,64 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_tlib_1_1_c_twriter.html#a55b28cbc530c73b4d0b4d06be1c0fa74" title="Store an additional single-precision float data point in each of the specified channels. ">putData(string[] channamesI, float[] dataI)</a></dd></dl>
+
+</div>
+</div>
+<a id="a55b28cbc530c73b4d0b4d06be1c0fa74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55b28cbc530c73b4d0b4d06be1c0fa74">&#9670;&nbsp;</a></span>putData() <span class="overload">[2/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string []&#160;</td>
+          <td class="paramname"><em>channamesI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float []&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store an additional single-precision float data point in each of the specified channels. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channamesI</td><td>The names of the channels to which new data will be added.</td></tr>
+    <tr><td class="paramname">dataI</td><td>Array containing one new data point per channel.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the channel or data arrays are empty of their sizes don't match.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData(string[] channamesI, double[] dataI)</a></dd></dl>
 
 </div>
 </div>
 <a id="ac54badfe2bda9513813c130247209b80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac54badfe2bda9513813c130247209b80">&#9670;&nbsp;</a></span>putData() <span class="overload">[2/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac54badfe2bda9513813c130247209b80">&#9670;&nbsp;</a></span>putData() <span class="overload">[3/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -351,7 +407,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="ac7ea9bfe5c52c00d37a798c65796157d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7ea9bfe5c52c00d37a798c65796157d">&#9670;&nbsp;</a></span>putData() <span class="overload">[3/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7ea9bfe5c52c00d37a798c65796157d">&#9670;&nbsp;</a></span>putData() <span class="overload">[4/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -402,7 +458,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="a945c3e0e5c15537fae842dbb5826b349"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a945c3e0e5c15537fae842dbb5826b349">&#9670;&nbsp;</a></span>putData() <span class="overload">[4/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a945c3e0e5c15537fae842dbb5826b349">&#9670;&nbsp;</a></span>putData() <span class="overload">[5/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -453,7 +509,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="a6135a27d7dfea7f341049ddd9e5c0ea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">&#9670;&nbsp;</a></span>putData() <span class="overload">[5/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">&#9670;&nbsp;</a></span>putData() <span class="overload">[6/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -504,7 +560,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="a486e4da3ecb4b54bceac8a9309b31dde"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a486e4da3ecb4b54bceac8a9309b31dde">&#9670;&nbsp;</a></span>putData() <span class="overload">[6/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a486e4da3ecb4b54bceac8a9309b31dde">&#9670;&nbsp;</a></span>putData() <span class="overload">[7/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -555,7 +611,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="a8a2d306512b91eede219eab5447c3424"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a2d306512b91eede219eab5447c3424">&#9670;&nbsp;</a></span>putData() <span class="overload">[7/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a2d306512b91eede219eab5447c3424">&#9670;&nbsp;</a></span>putData() <span class="overload">[8/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -606,7 +662,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="aa3897421afb6e3875c6a365e49a1d335"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3897421afb6e3875c6a365e49a1d335">&#9670;&nbsp;</a></span>putData() <span class="overload">[8/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3897421afb6e3875c6a365e49a1d335">&#9670;&nbsp;</a></span>putData() <span class="overload">[9/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -657,7 +713,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div>
 </div>
 <a id="a39c307e6317e44ced6f20be9ea387672"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39c307e6317e44ced6f20be9ea387672">&#9670;&nbsp;</a></span>putData() <span class="overload">[9/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a39c307e6317e44ced6f20be9ea387672">&#9670;&nbsp;</a></span>putData() <span class="overload">[10/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

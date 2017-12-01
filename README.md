@@ -1,17 +1,17 @@
 # CTlib_csharp
-A simple version of the CloudTurbine library written in C#.  CTwriter (the only currently implemented class) writes floating-point data in CloudTurbine format.
+A simple CloudTurbine library written in C#.
 
-CTwriter class documentation is available at https://jpw-erigo.github.io/CTlib_csharp/class_c_tlib_1_1_c_twriter.html
+CTwriter is currently supported; see the class documentation at https://jpw-erigo.github.io/CTlib_csharp/class_c_tlib_1_1_c_twriter.html
 
 Notes on using CTwriter:
 
-* An array of channel names is given to the class constructor.  A corresponding data array must be given to each putData() call.  For example, if channel "foo.csv" is at index=3 in the channel name array given to the constructor, then data for channel "foo.csv" must be at index=3 in the data array given to putData().  The same number of entries must be supplied in the channel name array as in the data arrays.
+* Supports various types of data: byte arrays, double, float, long, int, short, char.
 
-* Only double-precision floating point data is currently supported.
+* Data can optionally be packed and/or ZIP'ed at the block level.
 
-* Timestamps are automatically supplied; they can either be in milliseconds or seconds, as specified by the "bOutputTimesAreMillisI" boolean argument to the constructor.
+* Timestamps are automatically generated; they can either be in milliseconds or seconds format.
 
-* Old data can optionally be deleted from an existing source folder at startup by setting the "bDeleteOldDataAtStartupI" boolean argument to the constructor to true.
+* Old data can optionally be deleted from an existing source folder at startup by setting.
 
 For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github.com/cycronix/cloudturbine.
 
@@ -27,21 +27,14 @@ A C# example which uses the CTwriter class from the CTlib.dll library is shown b
 
 ```C#
 //
-// Use the CTwriter class from the CTlib.dll library to write data out in
+// Use the CTwriter class from the C# CTlib library to write data out in
 // CloudTurbine format.
-//
-// This sample program writes out 2 channels:
-//   o "chan1.csv" (contains an incrementing index)
-//   o "chan2.csv" (waveform with random noise)
 //
 // The period between samples (in msec) is specified by dataPeriodMsec.
 //
-// Each output file ("chan1.csv" and "chan2.csv") contains the number of points
-// specified by numPtsPerCTFile in CSV format.
-//
-// Each output CloudTurbine "block" contains one output file per channel; i.e.,
-// each block will contain one "chan1.csv" file and one "chan2.csv" file,
-// where each file contains a number of points in CSV format.
+// The number of loop iterations between calls to flush is set by
+// numLoopsPerBlock; thus, we will call flush approximagely every
+// dataPeriodMsec * numLoopsPerBlock msec.
 //
 // The number of blocks per segment is specified by numBlocksPerSegment.
 // Set this to 0 to not have a segment layer.
@@ -56,52 +49,87 @@ A C# example which uses the CTwriter class from the CTlib.dll library is shown b
 
 using System;
 using System.IO;
+using System.Net;
 using System.Threading;
 
 namespace CTdemo
 {
     class CTdemo
     {
+        static byte[] dartmouthImage = null;  // image fetched by a separate thread
+        static bool bNewImage = false;        // for synchronized access to the image
+
         static void Main(string[] args)
         {
-            // Configure the CloudTurbine writer
-            int numCTChans = 2;
-            String[] ctChanNames = new String[numCTChans];
+            // Settings for data to be written to CT
+            String[] ctChanNames = new String[2];
             ctChanNames[0] = "chan1.csv";
             ctChanNames[1] = "chan2.csv";
-            double[] ctChanData = new double[numCTChans];
+            double[] ctChanData = new double[2];
+            // Settings for the CloudTurbine writer
             int dataPeriodMsec = 100;      // Period between data points
-            int numPtsPerCTFile = 10;      // Number of points per channel per file
+            int numLoopsPerBlock = 10;     // Number of loops to perform between calls to flush
             int numBlocksPerSegment = 10;  // Number of blocks in each segment (0 for no segment layer)
             int numSegmentsToKeep = 3;     // Number of segments to keep, older segment folders are trimmed (0 for no trim, keep all)
-            String baseCTOutputFolder = ".\\CTdata\\CTdemo\\";
-            CTlib.CTwriter ctw =
-                new CTlib.CTwriter(baseCTOutputFolder, ctChanNames, numBlocksPerSegment, numSegmentsToKeep, true, false);
+            bool bOutputTimesAreMillis = true;
+            bool bPack = true;
+            bool bZip = true;
+            bool bDeleteOldDataAtStartup = true;
+            String baseCTOutputFolder = ".";
+            if (args.Length > 0)
+            {
+                baseCTOutputFolder = args[0];
+            }
+            Console.WriteLine("\nSource output folder = \"{0}\"\n", baseCTOutputFolder);
+            CTlib.CTwriter ctw = null;
+            try
+            {
+                ctw = new CTlib.CTwriter(baseCTOutputFolder, numBlocksPerSegment, numSegmentsToKeep, bOutputTimesAreMillis, bPack, bZip, bDeleteOldDataAtStartup);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Caught exception trying to create CTwriter:\n{0}", e);
+                return;
+            }
 
             // To add a random element to chan2.csv
             Random rnd = new Random();
 
+            // Kick off fetching the first image
+            Thread imageThread = new Thread(new ThreadStart(FetchImage));
+            imageThread.Start();
+
             // Write data to the CloudTurbine source
-            for (int i = 0; i < 10000; ++i)
+            for (int i = 1; i < 10000; ++i)
             {
-                ctChanData[0] = (double)i;
-                ctChanData[1] = Math.Pow(1.1, (double)(i % 30)) + rnd.NextDouble();
-                ctw.putData(ctChanData);
-                if ((i % numPtsPerCTFile) == 0)
+                // Image from Dartmouth College webcam
+                if (bNewImage)
                 {
-                    Console.Write("\n");
+                    bNewImage = false;
+                    ctw.putData("dartmouth.jpg", dartmouthImage);
+                    // Launch thread to fetch another image
+                    imageThread = new Thread(new ThreadStart(FetchImage));
+                    imageThread.Start();
+                }
+                double testVal = (double)(i % 30);
+                ctChanData[0] = 1.0 * testVal;
+                ctChanData[1] = Math.Pow(1.1, (double)(i % 30)) + rnd.NextDouble();
+                ctw.putData(ctChanNames,ctChanData);
+                ctw.putData("double_binary.f64", 2.0 * testVal);
+                ctw.putData("double_csv.csv", 3.0 * testVal);
+                ctw.putData("int_binary.i32", i);
+                ctw.putData("int_text.txt", String.Format("loop index = {0}",i));
+                if ((i % numLoopsPerBlock) == 0)
+                {
                     // Close the data block by calling flush()
+                    Console.Write("\n");
                     try
                     {
                         ctw.flush();
                     }
                     catch (IOException ioe)
                     {
-                        Console.WriteLine("\nCaught IOException from CTwriter on flush");
-                        if (ioe.Source != null)
-                        {
-                            Console.WriteLine("IOException source: {0}", ioe.Source);
-                        }
+                        Console.WriteLine("\nCaught IOException from CTwriter on flush:\n{0}",ioe);
                     }
                 }
                 Console.Write(".");
@@ -121,6 +149,18 @@ namespace CTdemo
                     Console.WriteLine("IOException source: {0}", ioe.Source);
                 }
             }
+        }
+
+        static void FetchImage()
+        {
+            dartmouthImage = null;
+            // Pace ourselves...
+            Thread.Sleep(750);
+            using (var webClient = new WebClient())
+            {
+                dartmouthImage = webClient.DownloadData("http://wc2.dartmouth.edu/jpg/image.jpg");
+            }
+            bNewImage = true;
         }
     }
 }

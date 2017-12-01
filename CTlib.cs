@@ -18,6 +18,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 
 /// <summary>
@@ -187,6 +188,7 @@ namespace CTlib
         /// <param name="channamesI">The names of the channels to which new data will be added.</param>
         /// <param name="dataI">Array containing one new data point per channel.</param>
         /// <exception cref="System.ArgumentException">Thrown if the channel or data arrays are empty of their sizes don't match.</exception>
+        /// <seealso cref="putData(string[] channamesI, float[] dataI)"/>
         ///
         public void putData(string[] channamesI, double[] dataI)
         {
@@ -206,6 +208,42 @@ namespace CTlib
             for (int i=0; i<channamesI.Length; ++i)
             {
                 if ( (channamesI[i] != null) && (channamesI[i].Length > 0) )
+                {
+                    putData(channamesI[i], dataI[i]);
+                }
+            }
+
+            // Reset synchronizedTimestamp so we stop using it
+            synchronizedTimestamp = -1;
+        }
+
+        ///
+        /// <summary>
+        /// Store an additional single-precision float data point in each of the specified channels.
+        /// </summary>
+        /// <param name="channamesI">The names of the channels to which new data will be added.</param>
+        /// <param name="dataI">Array containing one new data point per channel.</param>
+        /// <exception cref="System.ArgumentException">Thrown if the channel or data arrays are empty of their sizes don't match.</exception>
+        /// <seealso cref="putData(string[] channamesI, double[] dataI)"/>
+        ///
+        public void putData(string[] channamesI, float[] dataI)
+        {
+            if ((channamesI == null) || (channamesI.Length == 0))
+            {
+                throw new System.ArgumentException("No channel names were supplied.", "channamesI");
+            }
+            if ((dataI == null) || (dataI.Length != channamesI.Length))
+            {
+                throw new System.ArgumentException("Data array is the wrong size.", "dataI");
+            }
+
+            // Use the same timestamp for all channels
+            synchronizedTimestamp = getTimestamp();
+
+            // Save data
+            for (int i = 0; i < channamesI.Length; ++i)
+            {
+                if ((channamesI[i] != null) && (channamesI[i].Length > 0))
                 {
                     putData(channamesI[i], dataI[i]);
                 }
@@ -559,27 +597,79 @@ namespace CTlib
 
             //
             // Write out data for all channels
+            // 2 cases: writing to regular files or creating a ZIP file
             //
-            foreach (string channame in blockData.Keys)
+            if (!bZip)
             {
-                ChanBlockData cbd = blockData[channame];
-                // iterate over the data samples in this channel
-                for (int i=0; i<cbd.timestamps.Count; ++i)
+                // Write regular/non-compressed files
+                foreach (string channame in blockData.Keys)
                 {
-                    long timestamp = cbd.timestamps[i];
-                    byte[] data = cbd.data[i];
-                    // Create the output folder
-                    long pointTimeRel = timestamp - blockStartTime;
-                    String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
-                    if (numBlocksPerSegment > 0)
+                    ChanBlockData cbd = blockData[channame];
+                    // iterate over the data samples in this channel
+                    for (int i = 0; i < cbd.timestamps.Count; ++i)
                     {
-                        // We are using Segment layer
-                        directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
+                        long timestamp = cbd.timestamps[i];
+                        byte[] data = cbd.data[i];
+                        // Create the output folder
+                        long pointTimeRel = timestamp - blockStartTime;
+                        String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
+                        if (numBlocksPerSegment > 0)
+                        {
+                            // We are using Segment layer
+                            directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
+                        }
+                        System.IO.Directory.CreateDirectory(directoryName);
+                        // Write out binary data to the channel file in this new folder
+                        File.WriteAllBytes(directoryName + channame, data);
                     }
-                    System.IO.Directory.CreateDirectory(directoryName);
-                    // Write out binary data to the channel file in this new folder
-                    File.WriteAllBytes(directoryName + channame, data);
                 }
+            }
+            else
+            {
+                // All block data is written to one compressed ZIP file
+                // The ZipArchive code found below was largely copied from
+                //     https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
+                // I've seen a somewhat alternative solution using MemoryStream in place of FileStream at different sites; for example
+                //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
+                // To avoid CT sink applications from catching the ZIP files when they are only partially written,
+                // what we do below is write the ZIP file to a temporary location and then move the file to its
+                // final location within the CT hierarchy.
+                // Temporary location where the ZIP file will be written
+                String tempDir = Path.GetTempPath();
+                using (FileStream hZip = new FileStream(tempDir + blockStartTimeRel.ToString() + ".zip", FileMode.CreateNew))
+                {
+                    using (ZipArchive archive = new ZipArchive(hZip, ZipArchiveMode.Create, true))
+                    {
+                        foreach (string channame in blockData.Keys)
+                        {
+                            ChanBlockData cbd = blockData[channame];
+                            // iterate over the data samples in this channel
+                            for (int i = 0; i < cbd.timestamps.Count; ++i)
+                            {
+                                long timestamp = cbd.timestamps[i];
+                                byte[] data = cbd.data[i];
+                                long pointTimeRel = timestamp - blockStartTime;
+                                // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                                ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
+                                using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
+                                {
+                                    writer.Write(data);
+                                    writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
+                                }
+                            }
+                        }
+                    }
+                }
+                // Create the destination directory where the ZIP file will go
+                String zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar;
+                if (numBlocksPerSegment > 0)
+                {
+                    // We are using Segment layer
+                    zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar;
+                }
+                System.IO.Directory.CreateDirectory(zipDir);
+                // Move the ZIP file to the destination directory
+                File.Move(tempDir + blockStartTimeRel.ToString() + ".zip", zipDir + blockStartTimeRel.ToString() + ".zip");
             }
 
             // Reset data and block start time
