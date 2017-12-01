@@ -11,7 +11,7 @@ Notes on using CTwriter:
 
 * Timestamps are automatically generated; they can either be in milliseconds or seconds format.
 
-* Old data can optionally be deleted from an existing source folder at startup by setting.
+* Old data can optionally be deleted from an existing source folder at startup.
 
 For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github.com/cycronix/cloudturbine.
 
