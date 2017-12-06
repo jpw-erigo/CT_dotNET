@@ -21,6 +21,11 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 
+#if UNITY_5_3_OR_NEWER
+// ZIP library used in Unity 3D projects; see ZIP code below for details
+using Ionic.Zip;
+#endif
+
 /// <summary>
 /// A C# implementation of CloudTurbine.
 /// </summary>
@@ -597,7 +602,7 @@ namespace CTlib
 
             //
             // Write out data for all channels
-            // 2 cases: writing to regular files or creating a ZIP file
+            // 2 cases: (1) regular files or (2) ZIP files (each block is ZIP'ed)
             //
             if (!bZip)
             {
@@ -626,16 +631,55 @@ namespace CTlib
             }
             else
             {
-                // All block data is written to one compressed ZIP file
+                // Write each block of data to a separate ZIP file
+                // To avoid CT sink applications from catching the ZIP files
+                // when they are only partially written, write the ZIP file to
+                // a temporary location first and then move the file to its
+                // final location within the CT hierarchy.
+                // Temporary location where the ZIP file will be written
+                String tempDir = Path.GetTempPath();
+#if UNITY_5_3_OR_NEWER
+                // Create ZIP files in a Unity game application
+                // As of 2017-12-06, Unity supports the .NET 4.6 API, but they
+                // don't include support for ZipArchive.  In place of this, we
+                // use the DotNetZip Ionic.Zip library.  The original code for
+                // this library is at http://dotnetzip.codeplex.com/, but using
+                // Ionic.Zip.dll from this site causes "IBM437 not supported"
+                // errors (a user's program will run fine from the Unity editor
+                // but exceptions are thrown when running the .exe).  Two ways
+                // to fix this problem:
+                // 1. See the solution at https://answers.unity.com/questions/17870/whats-the-best-way-to-implement-file-compression.html;
+                //    need to "copy the I18N*.dll files to your Assets folder".
+                // 2. Use the compiled binary at https://github.com/r2d2rigo/dotnetzip-for-unity;
+                //    this version is custom built for use in Unity and it
+                //    fixes the "IBM437" exceptions.  The "License.Combined.rtf"
+                //    license file at this GitHub repo is a convenient combined
+                //    file which includes all the needed licenses.
+                // Thus, we use the Ionic.Zip library from https://github.com/r2d2rigo/dotnetzip-for-unity
+                using (ZipFile archive = new ZipFile(tempDir + blockStartTimeRel.ToString() + ".zip"))
+                {
+                    foreach (string channame in blockData.Keys)
+                    {
+                        ChanBlockData cbd = blockData[channame];
+                        // iterate over the data samples in this channel
+                        for (int i = 0; i < cbd.timestamps.Count; ++i)
+                        {
+                            long timestamp = cbd.timestamps[i];
+                            byte[] data = cbd.data[i];
+                            long pointTimeRel = timestamp - blockStartTime;
+                            // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                            //archive.AddDirectory(pointTimeRel.ToString());
+                            archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                        }
+                    }
+                    archive.Save();
+                }
+#else
+                // Zip code using the standard .NET ZipArchive class
                 // The ZipArchive code found below was largely copied from
                 //     https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
                 // I've seen a somewhat alternative solution using MemoryStream in place of FileStream at different sites; for example
                 //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
-                // To avoid CT sink applications from catching the ZIP files when they are only partially written,
-                // what we do below is write the ZIP file to a temporary location and then move the file to its
-                // final location within the CT hierarchy.
-                // Temporary location where the ZIP file will be written
-                String tempDir = Path.GetTempPath();
                 using (FileStream hZip = new FileStream(tempDir + blockStartTimeRel.ToString() + ".zip", FileMode.CreateNew))
                 {
                     using (ZipArchive archive = new ZipArchive(hZip, ZipArchiveMode.Create, true))
@@ -660,6 +704,7 @@ namespace CTlib
                         }
                     }
                 }
+#endif
                 // Create the destination directory where the ZIP file will go
                 String zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar;
                 if (numBlocksPerSegment > 0)
