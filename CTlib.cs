@@ -58,6 +58,7 @@ namespace CTlib
         private bool bUseMilliseconds = false;    // Output times are milliseconds?
         private bool bPack = false;               // Pack primitive data channels at the block folder level
         private bool bZip = false;                // ZIP data at the block folder level
+        private bool bUseTmpZipFiles = true;     // If creating ZIP output files, should we write to a temporary file (".tmp") first and then move this to the final ZIP file (".zip")?  If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation.
         private long synchronizedTimestamp = -1;  // A timestamp to use across multiple channels (instead of generating a new timestamp for each channel)
         // List of segment folders
         private List<long> masterSegmentList = new List<long>();
@@ -169,6 +170,20 @@ namespace CTlib
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// If writing output ZIP files, should we write data first to
+        /// a temporary file (".tmp") and then rename this to the final
+        /// ".zip" file?  If false, we write directly to the output
+        /// ZIP file using (what is intended to be) a quick stream
+        /// operation; this has the possible advantage that an extra
+        /// intermediary ".tmp" file isn't created temporarily.
+        /// </summary>
+        /// <param name="bUseTmpZipFilesI">Write ZIP data first to a temporary file?</param>
+        public void UseTmpFileForZipData(bool bUseTmpZipFilesI)
+        {
+            bUseTmpZipFiles = bUseTmpZipFilesI;
         }
 
         /// <summary>
@@ -632,57 +647,41 @@ namespace CTlib
             else
             {
                 // Write each block of data to a separate ZIP file
-                // To avoid CT sink applications from catching the ZIP files
-                // when they are only partially written, write the ZIP file to
-                // a temporary location first and then move the file to its
-                // final location within the CT hierarchy.
-                // Temporary location where the ZIP file will be written
-                String tempDir = Path.GetTempPath();
-#if UNITY_5_3_OR_NEWER
-                // Create ZIP files in a Unity game application
-                // As of 2017-12-06, Unity supports the .NET 4.6 API, but they
-                // don't include support for ZipArchive.  In place of this, we
-                // use the DotNetZip Ionic.Zip library.  The original code for
-                // this library is at http://dotnetzip.codeplex.com/, but using
-                // Ionic.Zip.dll from this site causes "IBM437 not supported"
-                // errors (a user's program will run fine from the Unity editor
-                // but exceptions are thrown when running the .exe).  Two ways
-                // to fix this problem:
-                // 1. See the solution at https://answers.unity.com/questions/17870/whats-the-best-way-to-implement-file-compression.html;
-                //    need to "copy the I18N*.dll files to your Assets folder".
-                // 2. Use the compiled binary at https://github.com/r2d2rigo/dotnetzip-for-unity;
-                //    this version is custom built for use in Unity and it
-                //    fixes the "IBM437" exceptions.  The "License.Combined.rtf"
-                //    license file at this GitHub repo is a convenient combined
-                //    file which includes all the needed licenses.
-                // Thus, we use the Ionic.Zip library from https://github.com/r2d2rigo/dotnetzip-for-unity
-                using (ZipFile archive = new ZipFile(tempDir + blockStartTimeRel.ToString() + ".zip"))
+                // Create the destination directory where the ZIP file will go
+                String zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar;
+                if (numBlocksPerSegment > 0)
                 {
-                    foreach (string channame in blockData.Keys)
-                    {
-                        ChanBlockData cbd = blockData[channame];
-                        // iterate over the data samples in this channel
-                        for (int i = 0; i < cbd.timestamps.Count; ++i)
-                        {
-                            long timestamp = cbd.timestamps[i];
-                            byte[] data = cbd.data[i];
-                            long pointTimeRel = timestamp - blockStartTime;
-                            // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
-                            //archive.AddDirectory(pointTimeRel.ToString());
-                            archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
-                        }
-                    }
-                    archive.Save();
+                    // We are using Segment layer
+                    zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar;
                 }
-#else
-                // Zip code using the standard .NET ZipArchive class
-                // The ZipArchive code found below was largely copied from
-                //     https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
-                // I've seen a somewhat alternative solution using MemoryStream in place of FileStream at different sites; for example
-                //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
-                using (FileStream hZip = new FileStream(tempDir + blockStartTimeRel.ToString() + ".zip", FileMode.CreateNew))
+                System.IO.Directory.CreateDirectory(zipDir);
+                String fileNameNoSuffix = zipDir + blockStartTimeRel.ToString();
+                if (bUseTmpZipFiles)
                 {
-                    using (ZipArchive archive = new ZipArchive(hZip, ZipArchiveMode.Create, true))
+                    // To avoid CT sink applications from catching the ZIP files
+                    // when they are only partially written, write the ZIP as
+                    // a temporary (".tmp") file first and then rename it as
+                    // a ZIP file.  Both files will be in the standard CT
+                    // folder hierarchy.
+#if UNITY_5_3_OR_NEWER
+                    // Create ZIP files in a Unity game application
+                    // As of 2017-12-06, Unity supports the .NET 4.6 API, but they
+                    // don't include support for ZipArchive.  In place of this, we
+                    // use the DotNetZip Ionic.Zip library.  The original code for
+                    // this library is at http://dotnetzip.codeplex.com/, but using
+                    // Ionic.Zip.dll from this site causes "IBM437 not supported"
+                    // errors (a user's program will run fine from the Unity editor
+                    // but exceptions are thrown when running the .exe).  Two ways
+                    // to fix this problem:
+                    // 1. See the solution at https://answers.unity.com/questions/17870/whats-the-best-way-to-implement-file-compression.html;
+                    //    need to "copy the I18N*.dll files to your Assets folder".
+                    // 2. Use the compiled binary at https://github.com/r2d2rigo/dotnetzip-for-unity;
+                    //    this version is custom built for use in Unity and it
+                    //    fixes the "IBM437" exceptions.  The "License.Combined.rtf"
+                    //    license file at this GitHub repo is a convenient combined
+                    //    file which includes all the needed licenses.
+                    // Thus, we use the Ionic.Zip library from https://github.com/r2d2rigo/dotnetzip-for-unity
+                    using (ZipFile archive = new ZipFile(fileNameNoSuffix + ".tmp"))
                     {
                         foreach (string channame in blockData.Keys)
                         {
@@ -694,27 +693,107 @@ namespace CTlib
                                 byte[] data = cbd.data[i];
                                 long pointTimeRel = timestamp - blockStartTime;
                                 // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
-                                ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
-                                using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
+                                //archive.AddDirectory(pointTimeRel.ToString());
+                                archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                            }
+                        }
+                        archive.Save();
+                    }
+#else
+                    // Zip code using the standard .NET ZipArchive class
+                    // The ZipArchive code found below was largely copied from
+                    //     https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
+                    // I've seen a somewhat alternative solution using MemoryStream in place of FileStream at different sites; for example
+                    //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
+                    using (FileStream hZip = new FileStream(fileNameNoSuffix + ".tmp", FileMode.CreateNew))
+                    {
+                        using (ZipArchive archive = new ZipArchive(hZip, ZipArchiveMode.Create, true))
+                        {
+                            foreach (string channame in blockData.Keys)
+                            {
+                                ChanBlockData cbd = blockData[channame];
+                                // iterate over the data samples in this channel
+                                for (int i = 0; i < cbd.timestamps.Count; ++i)
                                 {
-                                    writer.Write(data);
-                                    writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
+                                    long timestamp = cbd.timestamps[i];
+                                    byte[] data = cbd.data[i];
+                                    long pointTimeRel = timestamp - blockStartTime;
+                                    // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                                    ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
+                                    using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
+                                    {
+                                        writer.Write(data);
+                                        writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
+                                    }
                                 }
                             }
                         }
                     }
-                }
 #endif
-                // Create the destination directory where the ZIP file will go
-                String zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar;
-                if (numBlocksPerSegment > 0)
-                {
-                    // We are using Segment layer
-                    zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar;
+                    // Give the temporary file its final name
+                    File.Move(fileNameNoSuffix + ".tmp", fileNameNoSuffix + ".zip");
                 }
-                System.IO.Directory.CreateDirectory(zipDir);
-                // Move the ZIP file to the destination directory
-                File.Move(tempDir + blockStartTimeRel.ToString() + ".zip", zipDir + blockStartTimeRel.ToString() + ".zip");
+                else
+                {
+                    // Collect data in a MemoryStream first and then dump it
+                    // all at once directly to the output ZIP file.
+                    using (MemoryStream memOutputStream = new MemoryStream())
+                    {
+#if UNITY_5_3_OR_NEWER
+                        // Zip code using the Ionic.Zip library; see above for details
+                        using (ZipFile archive = new ZipFile())
+                        {
+                            foreach (string channame in blockData.Keys)
+                            {
+                                ChanBlockData cbd = blockData[channame];
+                                // iterate over the data samples in this channel
+                                for (int i = 0; i < cbd.timestamps.Count; ++i)
+                                {
+                                    long timestamp = cbd.timestamps[i];
+                                    byte[] data = cbd.data[i];
+                                    long pointTimeRel = timestamp - blockStartTime;
+                                    // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                                    //archive.AddDirectory(pointTimeRel.ToString());
+                                    archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                                }
+                            }
+                            archive.Save(memOutputStream);
+                        }
+#else
+                        // Zip code using the standard .NET ZipArchive class
+                        // The code here is inspired by:
+                        //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
+                        //     https://stackoverflow.com/questions/17232414/creating-a-zip-archive-in-memory-using-system-io-compression
+                        using (ZipArchive archive = new ZipArchive(memOutputStream, ZipArchiveMode.Create, true))
+                        {
+                            foreach (string channame in blockData.Keys)
+                            {
+                                ChanBlockData cbd = blockData[channame];
+                                // iterate over the data samples in this channel
+                                for (int i = 0; i < cbd.timestamps.Count; ++i)
+                                {
+                                    long timestamp = cbd.timestamps[i];
+                                    byte[] data = cbd.data[i];
+                                    long pointTimeRel = timestamp - blockStartTime;
+                                    // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                                    ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
+                                    using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
+                                    {
+                                        writer.Write(data);
+                                        writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
+                                    }
+                                }
+                            }
+                        }
+#endif
+                        String outputZipFilename = fileNameNoSuffix + ".zip";
+                        using (var fileStream = new FileStream(outputZipFilename, FileMode.Create))
+                        {
+                            memOutputStream.Position = 0;
+                            memOutputStream.WriteTo(fileStream);
+                        }
+                    }
+                }
             }
 
             // Reset data and block start time

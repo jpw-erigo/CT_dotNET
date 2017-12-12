@@ -88,6 +88,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a938eecadeebc04554ffb367238aceacd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a938eecadeebc04554ffb367238aceacd">CTwriter</a> (String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI)</td></tr>
 <tr class="memdesc:a938eecadeebc04554ffb367238aceacd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a938eecadeebc04554ffb367238aceacd">More...</a><br /></td></tr>
 <tr class="separator:a938eecadeebc04554ffb367238aceacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91081409aa424268834fa18b3490f093"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a91081409aa424268834fa18b3490f093">UseTmpFileForZipData</a> (bool bUseTmpZipFilesI)</td></tr>
+<tr class="memdesc:a91081409aa424268834fa18b3490f093"><td class="mdescLeft">&#160;</td><td class="mdescRight">If writing output ZIP files, should we write data first to a temporary file (".tmp") and then rename this to the final ".zip" file? If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation; this has the possible advantage that an extra intermediary ".tmp" file isn't created temporarily.  <a href="#a91081409aa424268834fa18b3490f093">More...</a><br /></td></tr>
+<tr class="separator:a91081409aa424268834fa18b3490f093"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6">putData</a> (string[] channamesI, double[] dataI)</td></tr>
 <tr class="memdesc:af2e84f24be1d330409de4c9dbb0f6df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an additional double data point in each of the specified channels.  <a href="#af2e84f24be1d330409de4c9dbb0f6df6">More...</a><br /></td></tr>
 <tr class="separator:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -757,6 +760,40 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the specified channel name or data array is empty.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a91081409aa424268834fa18b3490f093"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91081409aa424268834fa18b3490f093">&#9670;&nbsp;</a></span>UseTmpFileForZipData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.UseTmpFileForZipData </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bUseTmpZipFilesI</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If writing output ZIP files, should we write data first to a temporary file (".tmp") and then rename this to the final ".zip" file? If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation; this has the possible advantage that an extra intermediary ".tmp" file isn't created temporarily. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bUseTmpZipFilesI</td><td>Write ZIP data first to a temporary file?</td></tr>
   </table>
   </dd>
 </dl>
