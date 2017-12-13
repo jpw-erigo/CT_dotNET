@@ -5,9 +5,9 @@ CTwriter is currently supported; see the class documentation at https://jpw-erig
 
 CTwriter notes:
 
-* Supports various data types: byte arrays, double, float, long, int, short, char.
+* Supports various data types: byte arrays, double, float, long, int, short, char and string.
 
-* Data can optionally be packed and/or ZIP'ed at the block level.
+* Data can optionally be CSV-packed and/or ZIP'ed at the block level.
 
 * Timestamps are automatically generated; they can either be in milliseconds or seconds format.
 
