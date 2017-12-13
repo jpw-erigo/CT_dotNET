@@ -58,7 +58,7 @@ namespace CTlib
         private bool bUseMilliseconds = false;    // Output times are milliseconds?
         private bool bPack = false;               // Pack primitive data channels at the block folder level
         private bool bZip = false;                // ZIP data at the block folder level
-        private bool bUseTmpZipFiles = true;     // If creating ZIP output files, should we write to a temporary file (".tmp") first and then move this to the final ZIP file (".zip")?  If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation.
+        private bool bUseTmpZipFiles = false;     // If creating ZIP output files, should we write data to a temporary file (".tmp") and then, when complete, move this file to be ".zip"?  If false (which is the default), stream the complete data set in one dump directly to the output ZIP file.
         private long synchronizedTimestamp = -1;  // A timestamp to use across multiple channels (instead of generating a new timestamp for each channel)
         // List of segment folders
         private List<long> masterSegmentList = new List<long>();

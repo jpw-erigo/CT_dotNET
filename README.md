@@ -3,9 +3,9 @@ A simple CloudTurbine library written in C#.
 
 CTwriter is currently supported; see the class documentation at https://jpw-erigo.github.io/CTlib_csharp/class_c_tlib_1_1_c_twriter.html
 
-Notes on using CTwriter:
+CTwriter notes:
 
-* Supports various types of data: byte arrays, double, float, long, int, short, char.
+* Supports various data types: byte arrays, double, float, long, int, short, char.
 
 * Data can optionally be packed and/or ZIP'ed at the block level.
 
@@ -71,11 +71,11 @@ namespace CTdemo
             int numLoopsPerBlock = 10;     // Number of loops to perform between calls to flush
             int numBlocksPerSegment = 10;  // Number of blocks in each segment (0 for no segment layer)
             int numSegmentsToKeep = 3;     // Number of segments to keep, older segment folders are trimmed (0 for no trim, keep all)
-            bool bOutputTimesAreMillis = true;
-            bool bPack = true;
-            bool bZip = true;
-            bool bDeleteOldDataAtStartup = true;
-            String baseCTOutputFolder = ".";
+            bool bOutputTimesAreMillis = true;      // When true, the output time format is milliseconds since epoch
+            bool bPack = true;             // When true, channel output data files contain multiple points in CSV format
+            bool bZip = true;              // When true, block-level folders are ZIP'ed
+            bool bDeleteOldDataAtStartup = true;    // When true, old source data is deleted when the new source starts
+            String baseCTOutputFolder = ".";        // Output data folder name
             if (args.Length > 0)
             {
                 baseCTOutputFolder = args[0];
