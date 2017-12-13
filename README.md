@@ -13,6 +13,8 @@ CTwriter notes:
 
 * Old data can optionally be deleted from an existing source folder at startup.
 
+* An optional "trim" feature maintains only the newest desired number of output segment-level data folders (older data folders will be deleted).
+
 For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github.com/cycronix/cloudturbine.
 
 To compile and use this library:
