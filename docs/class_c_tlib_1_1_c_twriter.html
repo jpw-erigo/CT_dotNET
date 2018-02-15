@@ -74,6 +74,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="class_c_tlib_1_1_c_twriter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">CTlib.CTwriter Class Reference</div>  </div>
@@ -82,12 +83,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. All timestamps are auto-generated (i.e., the user cannot supply timestamps).  
  <a href="class_c_tlib_1_1_c_twriter.html#details">More...</a></p>
+<div class="dynheader">
+Inheritance diagram for CTlib.CTwriter:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="class_c_tlib_1_1_c_twriter.png" usemap="#CTlib.CTwriter_map" alt=""/>
+  <map id="CTlib.CTwriter_map" name="CTlib.CTwriter_map">
+<area href="class_c_tlib_1_1_c_thttp.html" title="CThttp " alt="CTlib.CThttp" shape="rect" coords="0,56,93,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a938eecadeebc04554ffb367238aceacd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a938eecadeebc04554ffb367238aceacd">CTwriter</a> (String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI)</td></tr>
-<tr class="memdesc:a938eecadeebc04554ffb367238aceacd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a938eecadeebc04554ffb367238aceacd">More...</a><br /></td></tr>
-<tr class="separator:a938eecadeebc04554ffb367238aceacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cb04d46e0465beb53ede137a15fad3e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a1cb04d46e0465beb53ede137a15fad3e">CTwriter</a> (String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI, bool bVerifyOutputFolderI=true)</td></tr>
+<tr class="memdesc:a1cb04d46e0465beb53ede137a15fad3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a1cb04d46e0465beb53ede137a15fad3e">More...</a><br /></td></tr>
+<tr class="separator:a1cb04d46e0465beb53ede137a15fad3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91081409aa424268834fa18b3490f093"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a91081409aa424268834fa18b3490f093">UseTmpFileForZipData</a> (bool bUseTmpZipFilesI)</td></tr>
 <tr class="memdesc:a91081409aa424268834fa18b3490f093"><td class="mdescLeft">&#160;</td><td class="mdescRight">If writing output ZIP files, should we write data first to a temporary file (".tmp") and then rename this to the final ".zip" file? If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation; this has the possible advantage that an extra intermediary ".tmp" file isn't created temporarily.  <a href="#a91081409aa424268834fa18b3490f093">More...</a><br /></td></tr>
 <tr class="separator:a91081409aa424268834fa18b3490f093"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,13 +138,19 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#adf9112dd0456d4f26e59722076c98189">close</a> ()</td></tr>
 <tr class="memdesc:adf9112dd0456d4f26e59722076c98189"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush any remaining data to the output source. <br /></td></tr>
 <tr class="separator:adf9112dd0456d4f26e59722076c98189"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:abf8728bbc2339827ae456c7aaeac43f1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#abf8728bbc2339827ae456c7aaeac43f1">writeToStream</a> (String outputDirI, String chanNameI, byte[] dataI)</td></tr>
+<tr class="memdesc:abf8728bbc2339827ae456c7aaeac43f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Low-level method to write data to the channel.  <a href="#abf8728bbc2339827ae456c7aaeac43f1">More...</a><br /></td></tr>
+<tr class="separator:abf8728bbc2339827ae456c7aaeac43f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. All timestamps are auto-generated (i.e., the user cannot supply timestamps). </p>
 <p><a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a938eecadeebc04554ffb367238aceacd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a938eecadeebc04554ffb367238aceacd">&#9670;&nbsp;</a></span>CTwriter()</h2>
+<a id="a1cb04d46e0465beb53ede137a15fad3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cb04d46e0465beb53ede137a15fad3e">&#9670;&nbsp;</a></span>CTwriter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -182,7 +198,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>bDeleteOldDataAtStartupI</em>&#160;</td>
+          <td class="paramname"><em>bDeleteOldDataAtStartupI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bVerifyOutputFolderI</em> = <code>true</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -207,6 +229,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
     <tr><td class="paramname">bPackI</td><td>Pack data at the block folder level? Packed data times are linearly interpolated from the block start time to the time of the final datapoint in the packed channel.</td></tr>
     <tr><td class="paramname">bZipI</td><td>ZIP data at the block folder level?</td></tr>
     <tr><td class="paramname">bDeleteOldDataAtStartupI</td><td>Delete old data from this source at startup?</td></tr>
+    <tr><td class="paramname">bVerifyOutputFolderI</td><td>An optional argument, default value is true; if true, verify that baseCTOutputFolderI is at the same level as the application working directory or a sub-directory under it. Should be set false for HTTP or FTP output types.</td></tr>
   </table>
   </dd>
 </dl>
@@ -797,6 +820,60 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="abf8728bbc2339827ae456c7aaeac43f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf8728bbc2339827ae456c7aaeac43f1">&#9670;&nbsp;</a></span>writeToStream()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void CTlib.CTwriter.writeToStream </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>outputDirI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>chanNameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">byte []&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Low-level method to write data to the channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">outputDirI</td><td></td></tr>
+    <tr><td class="paramname">chanNameI</td><td></td></tr>
+    <tr><td class="paramname">dataI</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented in <a class="el" href="class_c_tlib_1_1_c_thttp.html#abb2aabffef9610033f8e32f4074647b2">CTlib.CThttp</a>.</p>
 
 </div>
 </div>

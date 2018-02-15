@@ -1,9 +1,9 @@
 var indexSectionsWithContent =
 {
-  0: "cfpu",
+  0: "cfpuw",
   1: "c",
   2: "c",
-  3: "cfpu",
+  3: "cfpuw",
   4: "c"
 };
 
