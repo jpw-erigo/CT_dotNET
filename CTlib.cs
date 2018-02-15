@@ -50,7 +50,7 @@ namespace CTlib
         private int numBlocksPerSegment;          // Number of blocks to store in each segment
         private int numSegmentsToKeep;            // Number of full segments to maintain; older segments will be trimmed
         private int currentBlockNum = 0;          // The current block number in the current segment
-        // List of CTbinary objects, for storing byte array channel data
+        // Collection of channel names and their associated data blocks (data is stored as byte arrays in a ChanBlockData object)
         private IDictionary<string, ChanBlockData> blockData = new Dictionary<string, ChanBlockData>();
         private long startTime = -1;              // Absolute start time for the whole source
         private long segmentStartTime = -1;       // Absolute start time for an individual segment
@@ -76,8 +76,9 @@ namespace CTlib
         /// <param name="bPackI">Pack data at the block folder level?  Packed data times are linearly interpolated from the block start time to the time of the final datapoint in the packed channel.</param>
         /// <param name="bZipI">ZIP data at the block folder level?</param>
         /// <param name="bDeleteOldDataAtStartupI">Delete old data from this source at startup?</param>
+        /// <param name="bVerifyOutputFolderI">An optional argument, default value is true; if true, verify that baseCTOutputFolderI is at the same level as the application working directory or a sub-directory under it.  Should be set false for HTTP or FTP output types.</param>
         ///
-        public CTwriter(String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI)
+        public CTwriter(String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI, bool bVerifyOutputFolderI = true)
         {
             baseCTOutputFolder = baseCTOutputFolderI;
             // If baseCTOutputFolder ends in a directory separator character, remove it (it will be added later)
@@ -91,39 +92,42 @@ namespace CTlib
             bPack = bPackI;
             bZip = bZipI;
 
-            //
-            // Firewall: baseCTOutputFolder must be at the same level as the application working directory or a sub-directory under it
-            //
-            bool bVerifiedDirectories = false;
-            string appWorkingDir = Directory.GetCurrentDirectory();
-            // First, test if the application's working directory is the same as the source directory
-            string absWorking = Path.GetFullPath(appWorkingDir);
-            string absSource = Path.GetFullPath(baseCTOutputFolder);
-            if (absWorking.Equals(absSource))
+            if (bVerifyOutputFolderI)
             {
-                // The working directory is the same as the source directory, this is OK
-                bVerifiedDirectories = true;
-            }
-            else
-            {
-                // Second, make sure the source directory is a sub-folder under the application's working directory;
-                // do this by crawling up the source folder hierarchy.
-                // This code was copied from https://stackoverflow.com/questions/5617320/given-full-path-check-if-path-is-subdirectory-of-some-other-path-or-otherwise
-                DirectoryInfo workingDirInfo = new DirectoryInfo(appWorkingDir);
-                DirectoryInfo sourceDirInfo = new DirectoryInfo(baseCTOutputFolder);
-                while (sourceDirInfo.Parent != null)
+                //
+                // Firewall: baseCTOutputFolder must be at the same level as the application working directory or a sub-directory under it
+                //
+                bool bVerifiedDirectories = false;
+                string appWorkingDir = Directory.GetCurrentDirectory();
+                // First, test if the application's working directory is the same as the source directory
+                string absWorking = Path.GetFullPath(appWorkingDir);
+                string absSource = Path.GetFullPath(baseCTOutputFolder);
+                if (absWorking.Equals(absSource))
                 {
-                    if (sourceDirInfo.Parent.FullName.Equals(workingDirInfo.FullName))
-                    {
-                        bVerifiedDirectories = true;
-                        break;
-                    }
-                    else sourceDirInfo = sourceDirInfo.Parent;
+                    // The working directory is the same as the source directory, this is OK
+                    bVerifiedDirectories = true;
                 }
-            }
-            if (!bVerifiedDirectories)
-            {
-                throw new Exception("The source folder must be in or under the application's working directory (i.e., at or under the folder where the application starts)");
+                else
+                {
+                    // Second, make sure the source directory is a sub-folder under the application's working directory;
+                    // do this by crawling up the source folder hierarchy.
+                    // This code was copied from https://stackoverflow.com/questions/5617320/given-full-path-check-if-path-is-subdirectory-of-some-other-path-or-otherwise
+                    DirectoryInfo workingDirInfo = new DirectoryInfo(appWorkingDir);
+                    DirectoryInfo sourceDirInfo = new DirectoryInfo(baseCTOutputFolder);
+                    while (sourceDirInfo.Parent != null)
+                    {
+                        if (sourceDirInfo.Parent.FullName.Equals(workingDirInfo.FullName))
+                        {
+                            bVerifiedDirectories = true;
+                            break;
+                        }
+                        else sourceDirInfo = sourceDirInfo.Parent;
+                    }
+                }
+                if (!bVerifiedDirectories)
+                {
+                    throw new Exception("The source folder must be in or under the application's working directory (i.e., at or under the folder where the application starts)");
+                }
             }
 
             //
@@ -184,6 +188,15 @@ namespace CTlib
         public void UseTmpFileForZipData(bool bUseTmpZipFilesI)
         {
             bUseTmpZipFiles = bUseTmpZipFilesI;
+            String classTypeStr = this.GetType().ToString();
+            if ( !classTypeStr.Equals("CTwriter") && bUseTmpZipFiles)
+            {
+                // Only use this method of writing ZIP files when working directly with
+                // the base class (i.e., writing local files); not to be used when writing
+                // to HTTP, FTP, etc.
+                bUseTmpZipFiles = false;
+                Console.WriteLine("Writing to a local .tmp file not supported for CTwriters of type {0}; setting value false.",classTypeStr);
+            }
         }
 
         /// <summary>
@@ -638,9 +651,7 @@ namespace CTlib
                             // We are using Segment layer
                             directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
                         }
-                        System.IO.Directory.CreateDirectory(directoryName);
-                        // Write out binary data to the channel file in this new folder
-                        File.WriteAllBytes(directoryName + channame, data);
+                        writeToStream(directoryName, channame, data);
                     }
                 }
             }
@@ -654,15 +665,22 @@ namespace CTlib
                     // We are using Segment layer
                     zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar;
                 }
-                System.IO.Directory.CreateDirectory(zipDir);
-                String fileNameNoSuffix = zipDir + blockStartTimeRel.ToString();
-                if (bUseTmpZipFiles)
+                // Only use the ".tmp" method if this is a CTwriter; if this is a derived class
+                // (such as CThttp) then don't use this method.
+                bool bIsBaseClass = false;
+                if (this.GetType().ToString().Equals("CTwriter"))
+                {
+                    bIsBaseClass = true;
+                }
+                if (bUseTmpZipFiles && bIsBaseClass) // NOTE: This method should only be used for creating ZIP when using the base class, not for writing to HTTP, FTP, etc.
                 {
                     // To avoid CT sink applications from catching the ZIP files
                     // when they are only partially written, write the ZIP as
                     // a temporary (".tmp") file first and then rename it as
                     // a ZIP file.  Both files will be in the standard CT
                     // folder hierarchy.
+                    System.IO.Directory.CreateDirectory(zipDir);
+                    String fileNameNoSuffix = zipDir + blockStartTimeRel.ToString();
 #if UNITY_5_3_OR_NEWER
                     // Create ZIP files in a Unity game application
                     // As of 2017-12-06, Unity supports the .NET 4.6 API, but they
@@ -786,12 +804,14 @@ namespace CTlib
                             }
                         }
 #endif
-                        String outputZipFilename = fileNameNoSuffix + ".zip";
-                        using (var fileStream = new FileStream(outputZipFilename, FileMode.Create))
-                        {
-                            memOutputStream.Position = 0;
-                            memOutputStream.WriteTo(fileStream);
-                        }
+                        // String outputZipFilename = fileNameNoSuffix + ".zip";
+                        // using (var fileStream = new FileStream(outputZipFilename, FileMode.Create))
+                        // {
+                        //     memOutputStream.Position = 0;
+                        //     memOutputStream.WriteTo(fileStream);
+                        // }
+                        byte[] zipData = memOutputStream.ToArray();
+                        writeToStream(zipDir, blockStartTimeRel.ToString() + ".zip", zipData);
                     }
                 }
             }
@@ -872,6 +892,19 @@ namespace CTlib
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Low-level method to write data to the channel.
+        /// </summary>
+        /// <param name="outputDirI"></param>
+        /// <param name="chanNameI"></param>
+        /// <param name="dataI"></param>
+        protected virtual void writeToStream(String outputDirI, String chanNameI, byte[] dataI)
+        {
+            System.IO.Directory.CreateDirectory(outputDirI);
+            // Write out binary data to the channel file in this folder
+            File.WriteAllBytes(outputDirI + chanNameI, dataI);
         }
 
         ///
@@ -974,7 +1007,7 @@ namespace CTlib
             /// </summary>
             /// <param name="newData">The new data to add.</param>
             /// <returns>The combined data array.</returns>
-            public byte[] appendData(byte[] newData)
+            private byte[] appendData(byte[] newData)
             {
                 byte[] origData = data[0];
                 byte[] ret = new byte[origData.Length + newData.Length];
