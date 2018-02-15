@@ -1,7 +1,7 @@
 # CTlib_csharp
 A simple CloudTurbine library written in C#.
 
-CTwriter is currently supported; see the class documentation at https://jpw-erigo.github.io/CTlib_csharp/class_c_tlib_1_1_c_twriter.html
+CTwriter is currently supported; see the class documentation at https://jpw-erigo.github.io/CTlib_csharp/namespace_c_tlib.html
 
 CTwriter notes:
 
@@ -11,9 +11,11 @@ CTwriter notes:
 
 * Timestamps are automatically generated; they can either be in milliseconds or seconds format.
 
-* Old data can optionally be deleted from an existing source folder at startup.
+* Write data to local file system or HTTP server (HTTP PUT).
 
-* An optional "trim" feature maintains only the newest desired number of output segment-level data folders (older data folders will be deleted).
+* When writing to local file system (i.e., not using HTTP output):
+    * Old data can optionally be deleted from an existing source folder at startup.
+    * An optional "trim" feature maintains only the newest desired number of output segment-level data folders (older data folders will be deleted).
 
 For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github.com/cycronix/cloudturbine.
 
@@ -25,7 +27,7 @@ To compile and use this library:
 
 * Use the simple C# program shown below to try out the library.  Create a new "Console application" project in Visual Studio; add a Reference in the project to the compiled library, CTlib.dll.
 
-A C# example which uses the CTwriter class from the CTlib.dll library is shown below.
+A C# example which uses the CTwriter or CThttp class from the CTlib.dll library is shown below.
 
 ```C#
 //
@@ -41,12 +43,18 @@ A C# example which uses the CTwriter class from the CTlib.dll library is shown b
 // The number of blocks per segment is specified by numBlocksPerSegment.
 // Set this to 0 to not have a segment layer.
 //
-// The desired number of segment folders is specified by numSegmentsToKeep.
-// Older segment folders are deleted.  To keep all segment folders, set this
-// value to 0.
+// When using standard CTwriter (ie, not CThttp): The desired number of
+// segment folders is specified by numSegmentsToKeep. Older segment
+// folders are deleted. To keep all segment folders, set this value to 0.
 //
-// For information on the CloudTurbine file hierarchy, see
-// http://www.cloudturbine.com/structure/.
+// To startup in HTTP PUT mode:
+//     CTdemo.exe  <source_name>  http
+//
+// For further information on C#/CTlib implementation:
+// http://www.cloudturbine.com/ctlib_csharp/
+//
+// For information on the CloudTurbine file hierarchy:
+// http://www.cloudturbine.com/structure/
 //
 
 using System;
@@ -58,35 +66,56 @@ namespace CTdemo
 {
     class CTdemo
     {
-        static byte[] dartmouthImage = null;  // image fetched by a separate thread
-        static bool bNewImage = false;        // for synchronized access to the image
+        static byte[] dartmouthImage = null; // image fetched by a separate thread
+        static bool bNewImage = false; // for synchronized access to the image
 
         static void Main(string[] args)
         {
+            // Does the user want to use HTTP PUT for writing data?
+            bool bHttp = false;
+
             // Settings for data to be written to CT
             String[] ctChanNames = new String[2];
             ctChanNames[0] = "chan1.csv";
             ctChanNames[1] = "chan2.csv";
             double[] ctChanData = new double[2];
             // Settings for the CloudTurbine writer
-            int dataPeriodMsec = 100;      // Period between data points
-            int numLoopsPerBlock = 10;     // Number of loops to perform between calls to flush
-            int numBlocksPerSegment = 10;  // Number of blocks in each segment (0 for no segment layer)
-            int numSegmentsToKeep = 3;     // Number of segments to keep, older segment folders are trimmed (0 for no trim, keep all)
-            bool bOutputTimesAreMillis = true;      // When true, the output time format is milliseconds since epoch
-            bool bPack = true;             // When true, channel output data files contain multiple points in CSV format
-            bool bZip = true;              // When true, block-level folders are ZIP'ed
-            bool bDeleteOldDataAtStartup = true;    // When true, old source data is deleted when the new source starts
-            String baseCTOutputFolder = ".";        // Output data folder name
+            int dataPeriodMsec = 100; // Period between data points
+            int numLoopsPerBlock = 10; // Number of loops to perform between calls to flush
+            int numBlocksPerSegment = 10; // Number of blocks in each segment (0 for no segment layer)
+            int numSegmentsToKeep = 3; // Number of segments to keep, older segment folders are trimmed (0 for no trim, keep all)
+            bool bOutputTimesAreMillis = true; // When true, the output time format is milliseconds since epoch
+            bool bPack = true; // When true, channel output data files contain multiple points in CSV format
+            bool bZip = true; // When true, block-level folders are ZIP'ed
+            bool bDeleteOldDataAtStartup = true; // When true, old source data is deleted when the new source starts
+            String baseCTOutputFolder = "."; // Output data folder name
             if (args.Length > 0)
             {
                 baseCTOutputFolder = args[0];
+
+                if ( (args.Length > 1) && (args[1].Equals("http")) )
+                {
+                    bHttp = true;
+                    // NOTE: When using HTTP PUT method, can't delete any data (either at startup or during the run)
+                    numSegmentsToKeep = 0;
+                    bDeleteOldDataAtStartup = false;
+                }
+
             }
             Console.WriteLine("\nSource output folder = \"{0}\"\n", baseCTOutputFolder);
             CTlib.CTwriter ctw = null;
             try
             {
-                ctw = new CTlib.CTwriter(baseCTOutputFolder, numBlocksPerSegment, numSegmentsToKeep, bOutputTimesAreMillis, bPack, bZip, bDeleteOldDataAtStartup);
+                if (!bHttp)
+                {
+                    ctw = new CTlib.CTwriter(baseCTOutputFolder, numBlocksPerSegment, numSegmentsToKeep, bOutputTimesAreMillis, bPack, bZip, bDeleteOldDataAtStartup);
+                    Console.WriteLine("\nUsing the standard C# CTwriter class");
+                }
+                else
+                {
+                    ctw = new CTlib.CThttp(baseCTOutputFolder, numBlocksPerSegment, bOutputTimesAreMillis, bPack, bZip);
+                    Console.WriteLine("\nUsing the C# CThttp class to write data using HTTP PUT");
+                }
             }
             catch (Exception e)
             {
@@ -102,7 +131,7 @@ namespace CTdemo
             imageThread.Start();
 
             // Write data to the CloudTurbine source
-            for (int i = 1; i < 10000; ++i)
+            for (int i = 1; i < 1000; ++i)
             {
                 // Image from Dartmouth College webcam
                 if (bNewImage)
@@ -116,11 +145,11 @@ namespace CTdemo
                 double testVal = (double)(i % 30);
                 ctChanData[0] = 1.0 * testVal;
                 ctChanData[1] = Math.Pow(1.1, (double)(i % 30)) + rnd.NextDouble();
-                ctw.putData(ctChanNames,ctChanData);
+                ctw.putData(ctChanNames, ctChanData);
                 ctw.putData("double_binary.f64", 2.0 * testVal);
                 ctw.putData("double_csv.csv", 3.0 * testVal);
                 ctw.putData("int_binary.i32", i);
-                ctw.putData("int_text.txt", String.Format("loop index = {0}",i));
+                ctw.putData("int_text.txt", String.Format("loop index = {0}", i));
                 if ((i % numLoopsPerBlock) == 0)
                 {
                     // Close the data block by calling flush()
@@ -131,7 +160,7 @@ namespace CTdemo
                     }
                     catch (IOException ioe)
                     {
-                        Console.WriteLine("\nCaught IOException from CTwriter on flush:\n{0}",ioe);
+                        Console.WriteLine("\nCaught IOException from CTwriter on flush:\n{0}", ioe);
                     }
                 }
                 Console.Write(".");
