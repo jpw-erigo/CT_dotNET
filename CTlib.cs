@@ -81,6 +81,10 @@ namespace CTlib
         public CTwriter(String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI, bool bVerifyOutputFolderI = true)
         {
             baseCTOutputFolder = baseCTOutputFolderI;
+            if ( (baseCTOutputFolder == null) || (baseCTOutputFolder.Length == 0) )
+            {
+                throw new Exception("Must supply a base output folder.");
+            }
             // If baseCTOutputFolder ends in a directory separator character, remove it (it will be added later)
             if (baseCTOutputFolder.EndsWith(Char.ToString(Path.DirectorySeparatorChar)))
             {
@@ -909,12 +913,17 @@ namespace CTlib
 
         ///
         /// <summary>
+        /// Close the source.
         /// Flush any remaining data to the output source.
         /// </summary>
         /// 
-        public void close()
+        public virtual void close()
         {
-            flush();
+            // If there is data to flush, do it
+            if (blockData.Count > 0)
+            {
+                flush();
+            }
         }
 
         ///
