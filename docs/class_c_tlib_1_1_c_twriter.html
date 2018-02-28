@@ -89,7 +89,10 @@ Inheritance diagram for CTlib.CTwriter:</div>
  <div class="center">
   <img src="class_c_tlib_1_1_c_twriter.png" usemap="#CTlib.CTwriter_map" alt=""/>
   <map id="CTlib.CTwriter_map" name="CTlib.CTwriter_map">
-<area href="class_c_tlib_1_1_c_thttp.html" title="CThttp " alt="CTlib.CThttp" shape="rect" coords="0,56,93,80"/>
+<area href="class_c_tlib_1_1_c_thttp__base.html" alt="CTlib.CThttp_base" shape="rect" coords="152,56,294,80"/>
+<area href="class_c_tlib_1_1_c_thttp.html" alt="CTlib.CThttp" shape="rect" coords="0,112,142,136"/>
+<area href="class_c_tlib_1_1_c_thttp.html" alt="CTlib.CThttp" shape="rect" coords="152,112,294,136"/>
+<area href="class_c_tlib_1_1_c_thttp___http_client.html" alt="CTlib.CThttp_HttpClient" shape="rect" coords="304,112,446,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -131,16 +134,70 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a39c307e6317e44ced6f20be9ea387672"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a39c307e6317e44ced6f20be9ea387672">putData</a> (string channameI, byte[] dataI)</td></tr>
 <tr class="memdesc:a39c307e6317e44ced6f20be9ea387672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store binary data array for the given channel.  <a href="#a39c307e6317e44ced6f20be9ea387672">More...</a><br /></td></tr>
 <tr class="separator:a39c307e6317e44ced6f20be9ea387672"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5aafdbfe2569148093d4c99be1ea22af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af">flush</a> ()</td></tr>
-<tr class="memdesc:a5aafdbfe2569148093d4c99be1ea22af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write out all data that has been queued up for this block.  <a href="#a5aafdbfe2569148093d4c99be1ea22af">More...</a><br /></td></tr>
+<tr class="memitem:ae62176ebceba5af62dca4bcb805d3d74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ae62176ebceba5af62dca4bcb805d3d74">setAsync</a> (bool bAsyncI)</td></tr>
+<tr class="memdesc:ae62176ebceba5af62dca4bcb805d3d74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specify whether flushes should be executed asynchronously.  <a href="#ae62176ebceba5af62dca4bcb805d3d74">More...</a><br /></td></tr>
+<tr class="separator:ae62176ebceba5af62dca4bcb805d3d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5aafdbfe2569148093d4c99be1ea22af"><td class="memItemLeft" align="right" valign="top"><a id="a5aafdbfe2569148093d4c99be1ea22af"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af">flush</a> ()</td></tr>
+<tr class="memdesc:a5aafdbfe2569148093d4c99be1ea22af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write out all data that has been queued up for this block. <br /></td></tr>
 <tr class="separator:a5aafdbfe2569148093d4c99be1ea22af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf9112dd0456d4f26e59722076c98189"><td class="memItemLeft" align="right" valign="top"><a id="adf9112dd0456d4f26e59722076c98189"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#adf9112dd0456d4f26e59722076c98189">close</a> ()</td></tr>
-<tr class="memdesc:adf9112dd0456d4f26e59722076c98189"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flush any remaining data to the output source. <br /></td></tr>
-<tr class="separator:adf9112dd0456d4f26e59722076c98189"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e4b0b54ce4dedf4205eb3d406d9a45a"><td class="memItemLeft" align="right" valign="top"><a id="a2e4b0b54ce4dedf4205eb3d406d9a45a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a2e4b0b54ce4dedf4205eb3d406d9a45a">close</a> ()</td></tr>
+<tr class="memdesc:a2e4b0b54ce4dedf4205eb3d406d9a45a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the source. Flush any remaining data to the output source. <br /></td></tr>
+<tr class="separator:a2e4b0b54ce4dedf4205eb3d406d9a45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cb04d46e0465beb53ede137a15fad3e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a1cb04d46e0465beb53ede137a15fad3e">CTwriter</a> (String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI, bool bVerifyOutputFolderI=true)</td></tr>
+<tr class="memdesc:a1cb04d46e0465beb53ede137a15fad3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a1cb04d46e0465beb53ede137a15fad3e">More...</a><br /></td></tr>
+<tr class="separator:a1cb04d46e0465beb53ede137a15fad3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91081409aa424268834fa18b3490f093"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a91081409aa424268834fa18b3490f093">UseTmpFileForZipData</a> (bool bUseTmpZipFilesI)</td></tr>
+<tr class="memdesc:a91081409aa424268834fa18b3490f093"><td class="mdescLeft">&#160;</td><td class="mdescRight">If writing output ZIP files, should we write data first to a temporary file (".tmp") and then rename this to the final ".zip" file? If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation; this has the possible advantage that an extra intermediary ".tmp" file isn't created temporarily.  <a href="#a91081409aa424268834fa18b3490f093">More...</a><br /></td></tr>
+<tr class="separator:a91081409aa424268834fa18b3490f093"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6">putData</a> (string[] channamesI, double[] dataI)</td></tr>
+<tr class="memdesc:af2e84f24be1d330409de4c9dbb0f6df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an additional double data point in each of the specified channels.  <a href="#af2e84f24be1d330409de4c9dbb0f6df6">More...</a><br /></td></tr>
+<tr class="separator:af2e84f24be1d330409de4c9dbb0f6df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55b28cbc530c73b4d0b4d06be1c0fa74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a55b28cbc530c73b4d0b4d06be1c0fa74">putData</a> (string[] channamesI, float[] dataI)</td></tr>
+<tr class="memdesc:a55b28cbc530c73b4d0b4d06be1c0fa74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an additional single-precision float data point in each of the specified channels.  <a href="#a55b28cbc530c73b4d0b4d06be1c0fa74">More...</a><br /></td></tr>
+<tr class="separator:a55b28cbc530c73b4d0b4d06be1c0fa74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac54badfe2bda9513813c130247209b80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ac54badfe2bda9513813c130247209b80">putData</a> (string channameI, String dataI)</td></tr>
+<tr class="memdesc:ac54badfe2bda9513813c130247209b80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a new string in the given channel.  <a href="#ac54badfe2bda9513813c130247209b80">More...</a><br /></td></tr>
+<tr class="separator:ac54badfe2bda9513813c130247209b80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7ea9bfe5c52c00d37a798c65796157d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ac7ea9bfe5c52c00d37a798c65796157d">putData</a> (string channameI, double dataI)</td></tr>
+<tr class="memdesc:ac7ea9bfe5c52c00d37a798c65796157d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a double-precision float data value for the given channel.  <a href="#ac7ea9bfe5c52c00d37a798c65796157d">More...</a><br /></td></tr>
+<tr class="separator:ac7ea9bfe5c52c00d37a798c65796157d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a945c3e0e5c15537fae842dbb5826b349"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a945c3e0e5c15537fae842dbb5826b349">putData</a> (string channameI, float dataI)</td></tr>
+<tr class="memdesc:a945c3e0e5c15537fae842dbb5826b349"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a single-precision float data value for the given channel.  <a href="#a945c3e0e5c15537fae842dbb5826b349">More...</a><br /></td></tr>
+<tr class="separator:a945c3e0e5c15537fae842dbb5826b349"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6135a27d7dfea7f341049ddd9e5c0ea5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a6135a27d7dfea7f341049ddd9e5c0ea5">putData</a> (string channameI, long dataI)</td></tr>
+<tr class="memdesc:a6135a27d7dfea7f341049ddd9e5c0ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a long integer data value for the given channel.  <a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">More...</a><br /></td></tr>
+<tr class="separator:a6135a27d7dfea7f341049ddd9e5c0ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a486e4da3ecb4b54bceac8a9309b31dde"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a486e4da3ecb4b54bceac8a9309b31dde">putData</a> (string channameI, int dataI)</td></tr>
+<tr class="memdesc:a486e4da3ecb4b54bceac8a9309b31dde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store an integer data value for the given channel.  <a href="#a486e4da3ecb4b54bceac8a9309b31dde">More...</a><br /></td></tr>
+<tr class="separator:a486e4da3ecb4b54bceac8a9309b31dde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a2d306512b91eede219eab5447c3424"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a8a2d306512b91eede219eab5447c3424">putData</a> (string channameI, short dataI)</td></tr>
+<tr class="memdesc:a8a2d306512b91eede219eab5447c3424"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a short integer data value for the given channel.  <a href="#a8a2d306512b91eede219eab5447c3424">More...</a><br /></td></tr>
+<tr class="separator:a8a2d306512b91eede219eab5447c3424"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3897421afb6e3875c6a365e49a1d335"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#aa3897421afb6e3875c6a365e49a1d335">putData</a> (string channameI, char dataI)</td></tr>
+<tr class="memdesc:aa3897421afb6e3875c6a365e49a1d335"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store a character data value for the given channel.  <a href="#aa3897421afb6e3875c6a365e49a1d335">More...</a><br /></td></tr>
+<tr class="separator:aa3897421afb6e3875c6a365e49a1d335"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39c307e6317e44ced6f20be9ea387672"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a39c307e6317e44ced6f20be9ea387672">putData</a> (string channameI, byte[] dataI)</td></tr>
+<tr class="memdesc:a39c307e6317e44ced6f20be9ea387672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store binary data array for the given channel.  <a href="#a39c307e6317e44ced6f20be9ea387672">More...</a><br /></td></tr>
+<tr class="separator:a39c307e6317e44ced6f20be9ea387672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae62176ebceba5af62dca4bcb805d3d74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ae62176ebceba5af62dca4bcb805d3d74">setAsync</a> (bool bAsyncI)</td></tr>
+<tr class="memdesc:ae62176ebceba5af62dca4bcb805d3d74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specify whether flushes should be executed asynchronously.  <a href="#ae62176ebceba5af62dca4bcb805d3d74">More...</a><br /></td></tr>
+<tr class="separator:ae62176ebceba5af62dca4bcb805d3d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5aafdbfe2569148093d4c99be1ea22af"><td class="memItemLeft" align="right" valign="top"><a id="a5aafdbfe2569148093d4c99be1ea22af"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af">flush</a> ()</td></tr>
+<tr class="memdesc:a5aafdbfe2569148093d4c99be1ea22af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write out all data that has been queued up for this block. <br /></td></tr>
+<tr class="separator:a5aafdbfe2569148093d4c99be1ea22af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e4b0b54ce4dedf4205eb3d406d9a45a"><td class="memItemLeft" align="right" valign="top"><a id="a2e4b0b54ce4dedf4205eb3d406d9a45a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a2e4b0b54ce4dedf4205eb3d406d9a45a">close</a> ()</td></tr>
+<tr class="memdesc:a2e4b0b54ce4dedf4205eb3d406d9a45a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the source. Flush any remaining data to the output source. <br /></td></tr>
+<tr class="separator:a2e4b0b54ce4dedf4205eb3d406d9a45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:abf8728bbc2339827ae456c7aaeac43f1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#abf8728bbc2339827ae456c7aaeac43f1">writeToStream</a> (String outputDirI, String chanNameI, byte[] dataI)</td></tr>
+<tr class="memdesc:abf8728bbc2339827ae456c7aaeac43f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Low-level method to write data to the channel.  <a href="#abf8728bbc2339827ae456c7aaeac43f1">More...</a><br /></td></tr>
+<tr class="separator:abf8728bbc2339827ae456c7aaeac43f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abf8728bbc2339827ae456c7aaeac43f1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#abf8728bbc2339827ae456c7aaeac43f1">writeToStream</a> (String outputDirI, String chanNameI, byte[] dataI)</td></tr>
 <tr class="memdesc:abf8728bbc2339827ae456c7aaeac43f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Low-level method to write data to the channel.  <a href="#abf8728bbc2339827ae456c7aaeac43f1">More...</a><br /></td></tr>
 <tr class="separator:abf8728bbc2339827ae456c7aaeac43f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,7 +207,94 @@ Protected Member Functions</h2></td></tr>
 <p><a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1cb04d46e0465beb53ede137a15fad3e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cb04d46e0465beb53ede137a15fad3e">&#9670;&nbsp;</a></span>CTwriter()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cb04d46e0465beb53ede137a15fad3e">&#9670;&nbsp;</a></span>CTwriter() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">CTlib.CTwriter.CTwriter </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>baseCTOutputFolderI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numBlocksPerSegmentI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numSegmentsToKeepI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bOutputTimesAreMillisI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bPackI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bZipI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bDeleteOldDataAtStartupI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bVerifyOutputFolderI</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">baseCTOutputFolderI</td><td>The root folder where the output source is to be written. This must be at the same level as the application working directory or a sub-directory under it.</td></tr>
+    <tr><td class="paramname">numBlocksPerSegmentI</td><td>Number of blocks per segment in the source folder hierarchy. Use 0 to not include a segment layer.</td></tr>
+    <tr><td class="paramname">numSegmentsToKeepI</td><td>When using a segment layer, this specifies the number of full segments to keep. Older segments will be trimmed. Set to 0 to keep all segments.</td></tr>
+    <tr><td class="paramname">bOutputTimesAreMillisI</td><td>Output times should be in milliseconds? Needed if blocks are written (i.e., <a class="el" href="class_c_tlib_1_1_c_twriter.html#a5aafdbfe2569148093d4c99be1ea22af" title="Write out all data that has been queued up for this block. ">flush()</a> is called) at a rate greater than 1Hz.</td></tr>
+    <tr><td class="paramname">bPackI</td><td>Pack data at the block folder level? Packed data times are linearly interpolated from the block start time to the time of the final datapoint in the packed channel.</td></tr>
+    <tr><td class="paramname">bZipI</td><td>ZIP data at the block folder level?</td></tr>
+    <tr><td class="paramname">bDeleteOldDataAtStartupI</td><td>Delete old data from this source at startup?</td></tr>
+    <tr><td class="paramname">bVerifyOutputFolderI</td><td>An optional argument, default value is true; if true, verify that baseCTOutputFolderI is at the same level as the application working directory or a sub-directory under it. Should be set false for HTTP or FTP output types.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1cb04d46e0465beb53ede137a15fad3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cb04d46e0465beb53ede137a15fad3e">&#9670;&nbsp;</a></span>CTwriter() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -237,8 +381,8 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a5aafdbfe2569148093d4c99be1ea22af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5aafdbfe2569148093d4c99be1ea22af">&#9670;&nbsp;</a></span>flush()</h2>
+<a id="af2e84f24be1d330409de4c9dbb0f6df6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2e84f24be1d330409de4c9dbb0f6df6">&#9670;&nbsp;</a></span>putData() <span class="overload">[1/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -247,10 +391,21 @@ Protected Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void CTlib.CTwriter.flush </td>
+          <td class="memname">void CTlib.CTwriter.putData </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">string []&#160;</td>
+          <td class="paramname"><em>channamesI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">double []&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -260,25 +415,26 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Write out all data that has been queued up for this block. </p>
-<p>The folder hierarchy in which the data files reside is made up of the following parts:</p><ol type="1">
-<li>base folder name (given to the <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> constructor)</li>
-<li>source start time (absolute epoch time of the first data point for the entire source)</li>
-<li>[optional] segment start time (relative to the source start time)</li>
-<li>block start time (relative to either the source start time or the relative segment start time)</li>
-<li>channel data files are in point folders, whose times are relative to the block start time </li>
-</ol>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">System.IO.IOException</td><td>Thrown when there is no data to flush to file.</td></tr>
+<p>Store an additional double data point in each of the specified channels. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channamesI</td><td>The names of the channels to which new data will be added.</td></tr>
+    <tr><td class="paramname">dataI</td><td>Array containing one new data point per channel.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the channel or data arrays are empty of their sizes don't match.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_tlib_1_1_c_twriter.html#a55b28cbc530c73b4d0b4d06be1c0fa74" title="Store an additional single-precision float data point in each of the specified channels. ">putData(string[] channamesI, float[] dataI)</a></dd></dl>
 
 </div>
 </div>
 <a id="af2e84f24be1d330409de4c9dbb0f6df6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2e84f24be1d330409de4c9dbb0f6df6">&#9670;&nbsp;</a></span>putData() <span class="overload">[1/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af2e84f24be1d330409de4c9dbb0f6df6">&#9670;&nbsp;</a></span>putData() <span class="overload">[2/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -330,7 +486,59 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a55b28cbc530c73b4d0b4d06be1c0fa74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55b28cbc530c73b4d0b4d06be1c0fa74">&#9670;&nbsp;</a></span>putData() <span class="overload">[2/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a55b28cbc530c73b4d0b4d06be1c0fa74">&#9670;&nbsp;</a></span>putData() <span class="overload">[3/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string []&#160;</td>
+          <td class="paramname"><em>channamesI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float []&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store an additional single-precision float data point in each of the specified channels. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channamesI</td><td>The names of the channels to which new data will be added.</td></tr>
+    <tr><td class="paramname">dataI</td><td>Array containing one new data point per channel.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the channel or data arrays are empty of their sizes don't match.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData(string[] channamesI, double[] dataI)</a></dd></dl>
+
+</div>
+</div>
+<a id="a55b28cbc530c73b4d0b4d06be1c0fa74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55b28cbc530c73b4d0b4d06be1c0fa74">&#9670;&nbsp;</a></span>putData() <span class="overload">[4/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -382,7 +590,58 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac54badfe2bda9513813c130247209b80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac54badfe2bda9513813c130247209b80">&#9670;&nbsp;</a></span>putData() <span class="overload">[3/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac54badfe2bda9513813c130247209b80">&#9670;&nbsp;</a></span>putData() <span class="overload">[5/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store a new string in the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Re-throws any exception that is thrown by the underlying putData(string,byte[]) call.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac54badfe2bda9513813c130247209b80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac54badfe2bda9513813c130247209b80">&#9670;&nbsp;</a></span>putData() <span class="overload">[6/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -433,7 +692,58 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac7ea9bfe5c52c00d37a798c65796157d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7ea9bfe5c52c00d37a798c65796157d">&#9670;&nbsp;</a></span>putData() <span class="overload">[4/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7ea9bfe5c52c00d37a798c65796157d">&#9670;&nbsp;</a></span>putData() <span class="overload">[7/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store a double-precision float data value for the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Re-throws any exception that is thrown by the underlying putData(string,byte[]) call.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac7ea9bfe5c52c00d37a798c65796157d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7ea9bfe5c52c00d37a798c65796157d">&#9670;&nbsp;</a></span>putData() <span class="overload">[8/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -484,7 +794,58 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a945c3e0e5c15537fae842dbb5826b349"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a945c3e0e5c15537fae842dbb5826b349">&#9670;&nbsp;</a></span>putData() <span class="overload">[5/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a945c3e0e5c15537fae842dbb5826b349">&#9670;&nbsp;</a></span>putData() <span class="overload">[9/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store a single-precision float data value for the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Re-throws any exception that is thrown by the underlying putData(string,byte[]) call.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a945c3e0e5c15537fae842dbb5826b349"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a945c3e0e5c15537fae842dbb5826b349">&#9670;&nbsp;</a></span>putData() <span class="overload">[10/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -535,7 +896,58 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a6135a27d7dfea7f341049ddd9e5c0ea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">&#9670;&nbsp;</a></span>putData() <span class="overload">[6/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">&#9670;&nbsp;</a></span>putData() <span class="overload">[11/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store a long integer data value for the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Re-throws any exception that is thrown by the underlying putData(string,byte[]) call.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6135a27d7dfea7f341049ddd9e5c0ea5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6135a27d7dfea7f341049ddd9e5c0ea5">&#9670;&nbsp;</a></span>putData() <span class="overload">[12/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -586,7 +998,58 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a486e4da3ecb4b54bceac8a9309b31dde"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a486e4da3ecb4b54bceac8a9309b31dde">&#9670;&nbsp;</a></span>putData() <span class="overload">[7/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a486e4da3ecb4b54bceac8a9309b31dde">&#9670;&nbsp;</a></span>putData() <span class="overload">[13/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store an integer data value for the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Re-throws any exception that is thrown by the underlying putData(string,byte[]) call.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a486e4da3ecb4b54bceac8a9309b31dde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a486e4da3ecb4b54bceac8a9309b31dde">&#9670;&nbsp;</a></span>putData() <span class="overload">[14/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -637,7 +1100,58 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a8a2d306512b91eede219eab5447c3424"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a2d306512b91eede219eab5447c3424">&#9670;&nbsp;</a></span>putData() <span class="overload">[8/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a2d306512b91eede219eab5447c3424">&#9670;&nbsp;</a></span>putData() <span class="overload">[15/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">short&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store a short integer data value for the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Re-throws any exception that is thrown by the underlying putData(string,byte[]) call.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8a2d306512b91eede219eab5447c3424"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a2d306512b91eede219eab5447c3424">&#9670;&nbsp;</a></span>putData() <span class="overload">[16/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -688,7 +1202,58 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="aa3897421afb6e3875c6a365e49a1d335"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3897421afb6e3875c6a365e49a1d335">&#9670;&nbsp;</a></span>putData() <span class="overload">[9/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3897421afb6e3875c6a365e49a1d335">&#9670;&nbsp;</a></span>putData() <span class="overload">[17/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store a character data value for the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Re-throws any exception that is thrown by the underlying putData(string,byte[]) call.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa3897421afb6e3875c6a365e49a1d335"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3897421afb6e3875c6a365e49a1d335">&#9670;&nbsp;</a></span>putData() <span class="overload">[18/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -739,7 +1304,7 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a39c307e6317e44ced6f20be9ea387672"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39c307e6317e44ced6f20be9ea387672">&#9670;&nbsp;</a></span>putData() <span class="overload">[10/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a39c307e6317e44ced6f20be9ea387672">&#9670;&nbsp;</a></span>putData() <span class="overload">[19/20]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -789,8 +1354,161 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a39c307e6317e44ced6f20be9ea387672"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39c307e6317e44ced6f20be9ea387672">&#9670;&nbsp;</a></span>putData() <span class="overload">[20/20]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.putData </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>channameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">byte []&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Store binary data array for the given channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channameI</td><td>Channel to store the given data in.</td></tr>
+    <tr><td class="paramname">dataI</td><td>The data to store.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if the specified channel name or data array is empty.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae62176ebceba5af62dca4bcb805d3d74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae62176ebceba5af62dca4bcb805d3d74">&#9670;&nbsp;</a></span>setAsync() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.setAsync </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bAsyncI</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Specify whether flushes should be executed asynchronously. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bAsyncI</td><td>Should flush calls be asynchronous?</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae62176ebceba5af62dca4bcb805d3d74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae62176ebceba5af62dca4bcb805d3d74">&#9670;&nbsp;</a></span>setAsync() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.setAsync </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bAsyncI</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Specify whether flushes should be executed asynchronously. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bAsyncI</td><td>Should flush calls be asynchronous?</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a91081409aa424268834fa18b3490f093"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91081409aa424268834fa18b3490f093">&#9670;&nbsp;</a></span>UseTmpFileForZipData()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a91081409aa424268834fa18b3490f093">&#9670;&nbsp;</a></span>UseTmpFileForZipData() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.UseTmpFileForZipData </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bUseTmpZipFilesI</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If writing output ZIP files, should we write data first to a temporary file (".tmp") and then rename this to the final ".zip" file? If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation; this has the possible advantage that an extra intermediary ".tmp" file isn't created temporarily. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bUseTmpZipFilesI</td><td>Write ZIP data first to a temporary file?</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a91081409aa424268834fa18b3490f093"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91081409aa424268834fa18b3490f093">&#9670;&nbsp;</a></span>UseTmpFileForZipData() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -824,7 +1542,7 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="abf8728bbc2339827ae456c7aaeac43f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf8728bbc2339827ae456c7aaeac43f1">&#9670;&nbsp;</a></span>writeToStream()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abf8728bbc2339827ae456c7aaeac43f1">&#9670;&nbsp;</a></span>writeToStream() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -873,12 +1591,67 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="class_c_tlib_1_1_c_thttp.html#abb2aabffef9610033f8e32f4074647b2">CTlib.CThttp</a>.</p>
+<p>Reimplemented in <a class="el" href="class_c_tlib_1_1_c_thttp.html#abb2aabffef9610033f8e32f4074647b2">CTlib.CThttp</a>, <a class="el" href="class_c_tlib_1_1_c_thttp__base.html#adeffdf11181f705c6ac3091680070a20">CTlib.CThttp_base</a>, <a class="el" href="class_c_tlib_1_1_c_thttp___http_client.html#ae51227372218038dd373ca04983d1fa5">CTlib.CThttp_HttpClient</a>, and <a class="el" href="class_c_tlib_1_1_c_thttp.html#abb2aabffef9610033f8e32f4074647b2">CTlib.CThttp</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a id="abf8728bbc2339827ae456c7aaeac43f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf8728bbc2339827ae456c7aaeac43f1">&#9670;&nbsp;</a></span>writeToStream() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void CTlib.CTwriter.writeToStream </td>
+          <td>(</td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>outputDirI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">String&#160;</td>
+          <td class="paramname"><em>chanNameI</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">byte []&#160;</td>
+          <td class="paramname"><em>dataI</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Low-level method to write data to the channel. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">outputDirI</td><td></td></tr>
+    <tr><td class="paramname">chanNameI</td><td></td></tr>
+    <tr><td class="paramname">dataI</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented in <a class="el" href="class_c_tlib_1_1_c_thttp.html#abb2aabffef9610033f8e32f4074647b2">CTlib.CThttp</a>, <a class="el" href="class_c_tlib_1_1_c_thttp__base.html#adeffdf11181f705c6ac3091680070a20">CTlib.CThttp_base</a>, <a class="el" href="class_c_tlib_1_1_c_thttp___http_client.html#ae51227372218038dd373ca04983d1fa5">CTlib.CThttp_HttpClient</a>, and <a class="el" href="class_c_tlib_1_1_c_thttp.html#abb2aabffef9610033f8e32f4074647b2">CTlib.CThttp</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>CTlib.cs</li>
+<li>CTlib_BAK.cs</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

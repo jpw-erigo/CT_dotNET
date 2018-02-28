@@ -53,8 +53,7 @@ namespace CTlib
         private int currentBlockNum = 0;          // The current block number in the current segment
         // Collection of channel names and their associated data blocks (data is stored as byte arrays in a ChanBlockData object)
         private IDictionary<string, ChanBlockData> blockData = new Dictionary<string, ChanBlockData>();
-        private long previousTime = -1;           // To check for time not advancing
-        private long startTime = -1;              // Absolute start time for the whole source; this is only set once
+        private long startTime = -1;              // Absolute start time for the whole source
         private long segmentStartTime = -1;       // Absolute start time for an individual segment
         private long blockStartTime = -1;         // Absolute start time for an individual block
         private bool bUseMilliseconds = false;    // Output times are milliseconds?
@@ -75,7 +74,7 @@ namespace CTlib
         static EventWaitHandle _waitHandle = new AutoResetEvent(false);  // To alert the asynchronous flush loop that we want a flush performed.
 
         // For thread safe coordination to access the data blocks; used when doing asynchronous flushes
-        private Object dataLock = new Object();
+        private readonly object dataLock = new object();
 
         ///
         /// <summary>
@@ -250,23 +249,20 @@ namespace CTlib
                 throw new System.ArgumentException("Data array is the wrong size.", "dataI");
             }
 
-            lock (dataLock)
+            // Use the same timestamp for all channels
+            synchronizedTimestamp = getTimestamp();
+
+            // Save data
+            for (int i=0; i<channamesI.Length; ++i)
             {
-                // Use the same timestamp for all channels
-                synchronizedTimestamp = getTimestamp();
-
-                // Save data
-                for (int i = 0; i < channamesI.Length; ++i)
+                if ( (channamesI[i] != null) && (channamesI[i].Length > 0) )
                 {
-                    if ((channamesI[i] != null) && (channamesI[i].Length > 0))
-                    {
-                        putData(channamesI[i], dataI[i]);
-                    }
+                    putData(channamesI[i], dataI[i]);
                 }
-
-                // Reset synchronizedTimestamp so we stop using it
-                synchronizedTimestamp = -1;
             }
+
+            // Reset synchronizedTimestamp so we stop using it
+            synchronizedTimestamp = -1;
         }
 
         ///
@@ -289,23 +285,20 @@ namespace CTlib
                 throw new System.ArgumentException("Data array is the wrong size.", "dataI");
             }
 
-            lock (dataLock)
+            // Use the same timestamp for all channels
+            synchronizedTimestamp = getTimestamp();
+
+            // Save data
+            for (int i = 0; i < channamesI.Length; ++i)
             {
-                // Use the same timestamp for all channels
-                synchronizedTimestamp = getTimestamp();
-
-                // Save data
-                for (int i = 0; i < channamesI.Length; ++i)
+                if ((channamesI[i] != null) && (channamesI[i].Length > 0))
                 {
-                    if ((channamesI[i] != null) && (channamesI[i].Length > 0))
-                    {
-                        putData(channamesI[i], dataI[i]);
-                    }
+                    putData(channamesI[i], dataI[i]);
                 }
-
-                // Reset synchronizedTimestamp so we stop using it
-                synchronizedTimestamp = -1;
             }
+
+            // Reset synchronizedTimestamp so we stop using it
+            synchronizedTimestamp = -1;
         }
 
         ///
@@ -581,9 +574,6 @@ namespace CTlib
         ///    seconds or milliseconds (depending on the value of
         ///    bUseMilliseconds). As needed, we will set startTime,
         ///    segmentStartTime and blockStartTime.
-        /// 
-        /// NOTE: This method is not thread safe.  Calls to this method should be within
-        ///       appropriate lock blocks.
         /// </summary>
         /// <returns>The next timestamp.</returns>
         /// 
@@ -607,19 +597,9 @@ namespace CTlib
             {
                 nextTime = (long)deltaTime.TotalSeconds;
             }
-
-            // Check for time not advancing
-            if (previousTime >= nextTime)
-            {
-                Console.WriteLine("Note, time not advancing: previousTime = {0}, nextTime = {1}",previousTime,nextTime);
-                // We could potentially correct this here, but don't implement this now
-                // nextTime = previousTime+1;
-            }
-            previousTime = nextTime;
-
             if (startTime == -1)
             {
-                // Start time for the whole source; this is only set once
+                // Start time for the whole source
                 startTime = nextTime;
             }
             if ((numBlocksPerSegment > 0) && (segmentStartTime == -1))
@@ -648,7 +628,7 @@ namespace CTlib
                 {
                     // We are currently executing flushes asynchronously;
                     // if we are in the middle of a flush, have that finish before proceeding.
-                    finishAndKillFlushThread();
+                    waitForFlushToFinish();
                 }
                 else
                 {
@@ -682,7 +662,10 @@ namespace CTlib
             while (!bExitDoFlush)
             {
                 _waitHandle.WaitOne(); // Wait for notification
-                doFlush();
+                // lock (dataLock)
+                // {
+                    doFlush();
+                // }
                 doFlushActive = false;
             }
         }
@@ -709,7 +692,7 @@ namespace CTlib
             else if (bAsync)
             {
                 // Must be that a flush is currently in process; ignore this flush request.
-                // Console.WriteLine("Flush currently in process; ignoring flush request.");
+                Console.WriteLine("Flush currently in process; ignoring flush request.");
             }
         }
 
@@ -733,255 +716,232 @@ namespace CTlib
                 return;
             }
 
-            // For thread safety, make local copy of the needed block data and timestamps
-            IDictionary<string, ChanBlockData> local_blockData = new Dictionary<string, ChanBlockData>();
-            // Times used in constructing the output data folders
-            long segmentStartTimeRel;
-            long blockStartTimeRel;
-            // In the "lock" block we will use blockStartTime, but elsewhere in this method we will use local_blockStartTime
-            long local_blockStartTime;
+            // Make local copy of the needed block data and timestamps
+            IDictionary<string, ChanBlockData> localBlockData = new Dictionary<string, ChanBlockData>();
+
             lock (dataLock)
             {
-                local_blockStartTime = blockStartTime;
-                // copy ChanBlockData
                 foreach (string channame in blockData.Keys)
                 {
-                    String local_channame = String.Copy(channame);
-                    ChanBlockData cbd_orig = blockData[local_channame];
-                    local_blockData.Add(local_channame, new ChanBlockData(cbd_orig));
+                    ChanBlockData cbd_orig = blockData[channame];
+                    localBlockData.Add(channame, new ChanBlockData(cbd_orig));
                 }
-                // Times used in constructing the output data folders
-                segmentStartTimeRel = segmentStartTime - startTime;
-                blockStartTimeRel = blockStartTime - startTime;
-                if (numBlocksPerSegment > 0)
-                {
-                    // We are using Segment layer
-                    blockStartTimeRel = blockStartTime - segmentStartTime;
-                }
-                // Reset data and block start time
-                // blockData.Clear();
-                blockData = new Dictionary<string, ChanBlockData>();
-                blockStartTime = -1;
-
-                if (numBlocksPerSegment > 0)
-                {
-                    // We are using segments
-                    ++currentBlockNum;
-                    if (currentBlockNum == numBlocksPerSegment)
-                    {
-                        // Start a new segment
-                        currentBlockNum = 0;
-                        segmentStartTime = -1;
-                    }
-                }
-
             }
 
             //
-            // Write out data for all channels
-            // 2 cases: (1) regular files or (2) ZIP files (each block is ZIP'ed)
+            // Times used in constructing the output data folders
             //
-            if (!bZip)
+            long segmentStartTimeRel = segmentStartTime - startTime;
+            long blockStartTimeRel = blockStartTime - startTime;
+            if (numBlocksPerSegment > 0)
             {
-                // Write regular/non-compressed files
-                foreach (string channame in local_blockData.Keys)
-                {
-                    ChanBlockData cbd = local_blockData[channame];
-                    // iterate over the data samples in this channel
-                    for (int i = 0; i < cbd.timestamps.Count; ++i)
-                    {
-                        long timestamp = cbd.timestamps[i];
-                        byte[] data = cbd.data[i];
-                        // Create the output folder
-                        long pointTimeRel = timestamp - local_blockStartTime;
-                        String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
-                        if (numBlocksPerSegment > 0)
-                        {
-                            // We are using Segment layer
-                            directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
-                        }
-                        writeToStream(directoryName, channame, data);
-                    }
-                }
+                // We are using Segment layer
+                blockStartTimeRel = blockStartTime - segmentStartTime;
             }
-            else
-            {
-                // Write each block of data to a separate ZIP file
-                // Create the destination directory where the ZIP file will go
-                String zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar;
-                if (numBlocksPerSegment > 0)
+
+                //
+                // Write out data for all channels
+                // 2 cases: (1) regular files or (2) ZIP files (each block is ZIP'ed)
+                //
+                if (!bZip)
                 {
-                    // We are using Segment layer
-                    zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar;
-                }
-                // Only use the ".tmp" method if this is a CTwriter; if this is a derived class
-                // (such as CThttp) then don't use this method.
-                bool bIsBaseClass = false;
-                if (this.GetType().ToString().Equals("CTwriter"))
-                {
-                    bIsBaseClass = true;
-                }
-                if (bUseTmpZipFiles && bIsBaseClass) // NOTE: This method should only be used for creating ZIP when using the base class, not for writing to HTTP, FTP, etc.
-                {
-                    // To avoid CT sink applications from catching the ZIP files
-                    // when they are only partially written, write the ZIP as
-                    // a temporary (".tmp") file first and then rename it as
-                    // a ZIP file.  Both files will be in the standard CT
-                    // folder hierarchy.
-                    System.IO.Directory.CreateDirectory(zipDir);
-                    String fileNameNoSuffix = zipDir + blockStartTimeRel.ToString();
-#if UNITY_5_3_OR_NEWER
-                    // Create ZIP files in a Unity game application
-                    // As of 2017-12-06, Unity supports the .NET 4.6 API, but they
-                    // don't include support for ZipArchive.  In place of this, we
-                    // use the DotNetZip Ionic.Zip library.  The original code for
-                    // this library is at http://dotnetzip.codeplex.com/, but using
-                    // Ionic.Zip.dll from this site causes "IBM437 not supported"
-                    // errors (a user's program will run fine from the Unity editor
-                    // but exceptions are thrown when running the .exe).  Two ways
-                    // to fix this problem:
-                    // 1. See the solution at https://answers.unity.com/questions/17870/whats-the-best-way-to-implement-file-compression.html;
-                    //    need to "copy the I18N*.dll files to your Assets folder".
-                    // 2. Use the compiled binary at https://github.com/r2d2rigo/dotnetzip-for-unity;
-                    //    this version is custom built for use in Unity and it
-                    //    fixes the "IBM437" exceptions.  The "License.Combined.rtf"
-                    //    license file at this GitHub repo is a convenient combined
-                    //    file which includes all the needed licenses.
-                    // Thus, we use the Ionic.Zip library from https://github.com/r2d2rigo/dotnetzip-for-unity
-                    using (ZipFile archive = new ZipFile(fileNameNoSuffix + ".tmp"))
+                    // Write regular/non-compressed files
+                    foreach (string channame in blockData.Keys)
                     {
-                        foreach (string channame in local_blockData.Keys)
+                        ChanBlockData cbd = blockData[channame];
+                        // iterate over the data samples in this channel
+                        for (int i = 0; i < cbd.timestamps.Count; ++i)
                         {
-                            ChanBlockData cbd = local_blockData[channame];
-                            // iterate over the data samples in this channel
-                            for (int i = 0; i < cbd.timestamps.Count; ++i)
+                            long timestamp = cbd.timestamps[i];
+                            byte[] data = cbd.data[i];
+                            // Create the output folder
+                            long pointTimeRel = timestamp - blockStartTime;
+                            String directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
+                            if (numBlocksPerSegment > 0)
                             {
-                                long timestamp = cbd.timestamps[i];
-                                byte[] data = cbd.data[i];
-                                long pointTimeRel = timestamp - local_blockStartTime;
-                                // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
-                                //archive.AddDirectory(pointTimeRel.ToString());
-                                archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                                // We are using Segment layer
+                                directoryName = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar + blockStartTimeRel.ToString() + sepChar + pointTimeRel.ToString() + sepChar;
                             }
-                        }
-                        archive.Save();
-                    }
-#else
-                    // Zip code using the standard .NET ZipArchive class
-                    // The ZipArchive code found below was largely copied from
-                    //     https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
-                    // I've seen a somewhat alternative solution using MemoryStream in place of FileStream at different sites; for example
-                    //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
-                    using (FileStream hZip = new FileStream(fileNameNoSuffix + ".tmp", FileMode.CreateNew))
-                    {
-                        using (ZipArchive archive = new ZipArchive(hZip, ZipArchiveMode.Create, true))
-                        {
-                            foreach (string channame in local_blockData.Keys)
-                            {
-                                ChanBlockData cbd = local_blockData[channame];
-                                // iterate over the data samples in this channel
-                                for (int i = 0; i < cbd.timestamps.Count; ++i)
-                                {
-                                    long timestamp = cbd.timestamps[i];
-                                    byte[] data = cbd.data[i];
-                                    long pointTimeRel = timestamp - local_blockStartTime;
-                                    // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
-                                    ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
-                                    using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
-                                    {
-                                        writer.Write(data);
-                                        writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
-                                    }
-                                }
-                            }
+                            writeToStream(directoryName, channame, data);
                         }
                     }
-#endif
-                    // Give the temporary file its final name
-                    File.Move(fileNameNoSuffix + ".tmp", fileNameNoSuffix + ".zip");
                 }
                 else
                 {
-                    // Collect data in a MemoryStream first and then dump it
-                    // all at once directly to the output ZIP file.
-                    using (MemoryStream memOutputStream = new MemoryStream())
+                    // Write each block of data to a separate ZIP file
+                    // Create the destination directory where the ZIP file will go
+                    String zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar;
+                    if (numBlocksPerSegment > 0)
                     {
+                        // We are using Segment layer
+                        zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar + segmentStartTimeRel.ToString() + sepChar;
+                    }
+                    // Only use the ".tmp" method if this is a CTwriter; if this is a derived class
+                    // (such as CThttp) then don't use this method.
+                    bool bIsBaseClass = false;
+                    if (this.GetType().ToString().Equals("CTwriter"))
+                    {
+                        bIsBaseClass = true;
+                    }
+                    if (bUseTmpZipFiles && bIsBaseClass) // NOTE: This method should only be used for creating ZIP when using the base class, not for writing to HTTP, FTP, etc.
+                    {
+                        // To avoid CT sink applications from catching the ZIP files
+                        // when they are only partially written, write the ZIP as
+                        // a temporary (".tmp") file first and then rename it as
+                        // a ZIP file.  Both files will be in the standard CT
+                        // folder hierarchy.
+                        System.IO.Directory.CreateDirectory(zipDir);
+                        String fileNameNoSuffix = zipDir + blockStartTimeRel.ToString();
 #if UNITY_5_3_OR_NEWER
-                        // Zip code using the Ionic.Zip library; see above for details
-                        using (ZipFile archive = new ZipFile())
+                        // Create ZIP files in a Unity game application
+                        // As of 2017-12-06, Unity supports the .NET 4.6 API, but they
+                        // don't include support for ZipArchive.  In place of this, we
+                        // use the DotNetZip Ionic.Zip library.  The original code for
+                        // this library is at http://dotnetzip.codeplex.com/, but using
+                        // Ionic.Zip.dll from this site causes "IBM437 not supported"
+                        // errors (a user's program will run fine from the Unity editor
+                        // but exceptions are thrown when running the .exe).  Two ways
+                        // to fix this problem:
+                        // 1. See the solution at https://answers.unity.com/questions/17870/whats-the-best-way-to-implement-file-compression.html;
+                        //    need to "copy the I18N*.dll files to your Assets folder".
+                        // 2. Use the compiled binary at https://github.com/r2d2rigo/dotnetzip-for-unity;
+                        //    this version is custom built for use in Unity and it
+                        //    fixes the "IBM437" exceptions.  The "License.Combined.rtf"
+                        //    license file at this GitHub repo is a convenient combined
+                        //    file which includes all the needed licenses.
+                        // Thus, we use the Ionic.Zip library from https://github.com/r2d2rigo/dotnetzip-for-unity
+                        using (ZipFile archive = new ZipFile(fileNameNoSuffix + ".tmp"))
                         {
-                            foreach (string channame in local_blockData.Keys)
+                            foreach (string channame in blockData.Keys)
                             {
-                                ChanBlockData cbd = local_blockData[channame];
+                                ChanBlockData cbd = blockData[channame];
                                 // iterate over the data samples in this channel
                                 for (int i = 0; i < cbd.timestamps.Count; ++i)
                                 {
                                     long timestamp = cbd.timestamps[i];
                                     byte[] data = cbd.data[i];
-                                    long pointTimeRel = timestamp - local_blockStartTime;
+                                    long pointTimeRel = timestamp - blockStartTime;
                                     // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
                                     //archive.AddDirectory(pointTimeRel.ToString());
                                     archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
                                 }
                             }
-                            archive.Save(memOutputStream);
+                            archive.Save();
                         }
 #else
                         // Zip code using the standard .NET ZipArchive class
-                        // The code here is inspired by:
+                        // The ZipArchive code found below was largely copied from
+                        //     https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
+                        // I've seen a somewhat alternative solution using MemoryStream in place of FileStream at different sites; for example
                         //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
-                        //     https://stackoverflow.com/questions/17232414/creating-a-zip-archive-in-memory-using-system-io-compression
-                        using (ZipArchive archive = new ZipArchive(memOutputStream, ZipArchiveMode.Create, true))
+                        using (FileStream hZip = new FileStream(fileNameNoSuffix + ".tmp", FileMode.CreateNew))
                         {
-                            foreach (string channame in local_blockData.Keys)
+                            using (ZipArchive archive = new ZipArchive(hZip, ZipArchiveMode.Create, true))
                             {
-                                ChanBlockData cbd = local_blockData[channame];
-                                // iterate over the data samples in this channel
-                                for (int i = 0; i < cbd.timestamps.Count; ++i)
+                                foreach (string channame in blockData.Keys)
                                 {
-                                    long timestamp = cbd.timestamps[i];
-                                    byte[] data = cbd.data[i];
-                                    long pointTimeRel = timestamp - local_blockStartTime;
-                                    // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
-                                    ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
-                                    using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
+                                    ChanBlockData cbd = blockData[channame];
+                                    // iterate over the data samples in this channel
+                                    for (int i = 0; i < cbd.timestamps.Count; ++i)
                                     {
-                                        writer.Write(data);
-                                        writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
+                                        long timestamp = cbd.timestamps[i];
+                                        byte[] data = cbd.data[i];
+                                        long pointTimeRel = timestamp - blockStartTime;
+                                        // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                                        ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
+                                        using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
+                                        {
+                                            writer.Write(data);
+                                            writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
+                                        }
                                     }
                                 }
                             }
                         }
 #endif
-                        // String outputZipFilename = fileNameNoSuffix + ".zip";
-                        // using (var fileStream = new FileStream(outputZipFilename, FileMode.Create))
-                        // {
-                        //     memOutputStream.Position = 0;
-                        //     memOutputStream.WriteTo(fileStream);
-                        // }
-                        byte[] zipData = memOutputStream.ToArray();
-                        writeToStream(zipDir, blockStartTimeRel.ToString() + ".zip", zipData);
+                        // Give the temporary file its final name
+                        File.Move(fileNameNoSuffix + ".tmp", fileNameNoSuffix + ".zip");
+                    }
+                    else
+                    {
+                        // Collect data in a MemoryStream first and then dump it
+                        // all at once directly to the output ZIP file.
+                        using (MemoryStream memOutputStream = new MemoryStream())
+                        {
+#if UNITY_5_3_OR_NEWER
+                            // Zip code using the Ionic.Zip library; see above for details
+                            using (ZipFile archive = new ZipFile())
+                            {
+                                foreach (string channame in blockData.Keys)
+                                {
+                                    ChanBlockData cbd = blockData[channame];
+                                    // iterate over the data samples in this channel
+                                    for (int i = 0; i < cbd.timestamps.Count; ++i)
+                                    {
+                                        long timestamp = cbd.timestamps[i];
+                                        byte[] data = cbd.data[i];
+                                        long pointTimeRel = timestamp - blockStartTime;
+                                        // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                                        //archive.AddDirectory(pointTimeRel.ToString());
+                                        archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                                    }
+                                }
+                                archive.Save(memOutputStream);
+                            }
+#else
+                            // Zip code using the standard .NET ZipArchive class
+                            // The code here is inspired by:
+                            //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
+                            //     https://stackoverflow.com/questions/17232414/creating-a-zip-archive-in-memory-using-system-io-compression
+                            using (ZipArchive archive = new ZipArchive(memOutputStream, ZipArchiveMode.Create, true))
+                            {
+                                foreach (string channame in blockData.Keys)
+                                {
+                                    ChanBlockData cbd = blockData[channame];
+                                    // iterate over the data samples in this channel
+                                    for (int i = 0; i < cbd.timestamps.Count; ++i)
+                                    {
+                                        long timestamp = cbd.timestamps[i];
+                                        byte[] data = cbd.data[i];
+                                        long pointTimeRel = timestamp - blockStartTime;
+                                        // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
+                                        ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
+                                        using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
+                                        {
+                                            writer.Write(data);
+                                            writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
+                                        }
+                                    }
+                                }
+                            }
+#endif
+                            // String outputZipFilename = fileNameNoSuffix + ".zip";
+                            // using (var fileStream = new FileStream(outputZipFilename, FileMode.Create))
+                            // {
+                            //     memOutputStream.Position = 0;
+                            //     memOutputStream.WriteTo(fileStream);
+                            // }
+                            byte[] zipData = memOutputStream.ToArray();
+                            writeToStream(zipDir, blockStartTimeRel.ToString() + ".zip", zipData);
+                        }
                     }
                 }
-            }
 
-            // Reset data and block start time
-            // THIS IS NOW DONE ABOVE IN THE "lock" BLOCK
-            // blockData.Clear();
-            // blockStartTime = -1;
+                // Reset data and block start time
+                blockData.Clear();
+                blockStartTime = -1;
 
             // See if it is time to switch to a new Segment folder or trim/delete old segment folders.
             if (numBlocksPerSegment > 0)
             {
                 // We are using segments
-                // THIS IS NOW DONE ABOVE IN THE "lock" BLOCK
-                // ++currentBlockNum;
-                // if (currentBlockNum == numBlocksPerSegment)
-                // {
-                //     // Start a new segment
-                //     currentBlockNum = 0;
-                //     segmentStartTime = -1;
-                // }
+                ++currentBlockNum;
+                if (currentBlockNum == numBlocksPerSegment)
+                {
+                    // Start a new segment
+                    currentBlockNum = 0;
+                    segmentStartTime = -1;
+                }
                 if (numSegmentsToKeep > 0)
                 {
                     // Trim old segment folders
@@ -1061,7 +1021,7 @@ namespace CTlib
         /// <summary>
         /// Wait for current flush task to finish and then terminate the asynchronous flush thread.
         /// </summary>
-        private void finishAndKillFlushThread()
+        private void waitForFlushToFinish()
         {
             if (!bAsync)
             {
@@ -1069,7 +1029,7 @@ namespace CTlib
                 return;
             }
             bExitDoFlush = true;
-            int maxNumSecToWait = 10;
+            int maxNumSecToWait = 5;
             while (doFlushActive && (maxNumSecToWait > 0))
             {
                 System.Threading.Thread.Sleep(1000);
@@ -1078,14 +1038,8 @@ namespace CTlib
             if (doFlushActive)
             {
                 // There is still an active flush going on; just kill the thread
-                try
-                {
-                    flushThread.Interrupt();
-                    flushThread.Abort();
-                } catch (Exception)
-                {
-                    // Nothing to do
-                }
+                flushThread.Interrupt();
+                flushThread.Abort();
             }
             else
             {
@@ -1104,14 +1058,13 @@ namespace CTlib
         /// 
         public virtual void close()
         {
+            // If there is data to flush, do it
+            flush();
             if (bAsync)
             {
-                // Wait for the current flush to finish
-                finishAndKillFlushThread();
+                // Wait for the flush to finish
+                waitForFlushToFinish();
             }
-            // Finish with a synchronous flush
-            bAsync = false;
-            flush();
         }
 
         ///

@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CThttp.cs" />
+    <Compile Include="CThttp_base.cs" />
+    <Compile Include="CThttp_HttpClient.cs" />
     <Compile Include="CTlib.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
