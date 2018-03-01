@@ -624,7 +624,6 @@ namespace CTlib
 
         /// <summary>
         /// Process the next timestamp.  As needed, set startTime, segmentStartTime and blockStartTime.
-        /// This method also checks the given next timestamp against the previous timestamp.
         /// 
         /// NOTE: This method is not thread safe. Calls to this method should be from within a lock block.
         /// </summary>
@@ -632,13 +631,15 @@ namespace CTlib
         private void setStartTimes(long nextTimeI)
         {
             // Check for time not advancing
-            if (previousTime >= nextTimeI)
-            {
-                Console.WriteLine("Warning, time not advancing: previousTime = {0}, nextTime = {1}", previousTime, nextTimeI);
-                // We could potentially correct this here, but don't implement this now
-                // nextTime = previousTime+1;
-            }
-            previousTime = nextTimeI;
+            // If the user is making several putData calls to adds various channels and is using automatic timestamps,
+            // we'll get lots of these warning messages, which isn't very helpful or meaningful; remove this message.
+            // if (previousTime >= nextTimeI)
+            // {
+            //     Console.WriteLine("Warning, time not advancing: previousTime = {0}, nextTime = {1}", previousTime, nextTimeI);
+            //     // We could potentially correct this here, but don't implement this now
+            //     // nextTime = previousTime+1;
+            // }
+            // previousTime = nextTimeI;
 
             if (startTime == -1)
             {
