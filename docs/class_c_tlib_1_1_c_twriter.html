@@ -134,6 +134,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a39c307e6317e44ced6f20be9ea387672"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a39c307e6317e44ced6f20be9ea387672">putData</a> (string channameI, byte[] dataI)</td></tr>
 <tr class="memdesc:a39c307e6317e44ced6f20be9ea387672"><td class="mdescLeft">&#160;</td><td class="mdescRight">Store binary data array for the given channel.  <a href="#a39c307e6317e44ced6f20be9ea387672">More...</a><br /></td></tr>
 <tr class="separator:a39c307e6317e44ced6f20be9ea387672"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e42096634af52a9559351f4d999de30"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a0e42096634af52a9559351f4d999de30">setTime</a> ()</td></tr>
+<tr class="memdesc:a0e42096634af52a9559351f4d999de30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set time for subsequent <a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData()</a>. This method simply calls setTime(&lt;current_time_millis&gt;).  <a href="#a0e42096634af52a9559351f4d999de30">More...</a><br /></td></tr>
+<tr class="separator:a0e42096634af52a9559351f4d999de30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07435634fc18d386948723458431274b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a07435634fc18d386948723458431274b">setTime</a> (long timeI)</td></tr>
+<tr class="memdesc:a07435634fc18d386948723458431274b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set time for subsequent <a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData()</a>. To switch back to automatic timestamp mode, call this method with the argument equal to -1.  <a href="#a07435634fc18d386948723458431274b">More...</a><br /></td></tr>
+<tr class="separator:a07435634fc18d386948723458431274b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f9f604139987e3b9225c53a1ea1a7f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a6f9f604139987e3b9225c53a1ea1a7f6">setTime</a> (double timeI)</td></tr>
+<tr class="memdesc:a6f9f604139987e3b9225c53a1ea1a7f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set time for subsequent <a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData()</a>. To switch back to automatic timestamp mode, call this method with the argument equal to -1.0.  <a href="#a6f9f604139987e3b9225c53a1ea1a7f6">More...</a><br /></td></tr>
+<tr class="separator:a6f9f604139987e3b9225c53a1ea1a7f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae62176ebceba5af62dca4bcb805d3d74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#ae62176ebceba5af62dca4bcb805d3d74">setAsync</a> (bool bAsyncI)</td></tr>
 <tr class="memdesc:ae62176ebceba5af62dca4bcb805d3d74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specify whether flushes should be executed asynchronously.  <a href="#ae62176ebceba5af62dca4bcb805d3d74">More...</a><br /></td></tr>
 <tr class="separator:ae62176ebceba5af62dca4bcb805d3d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1467,6 +1476,102 @@ Protected Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">bAsyncI</td><td>Should flush calls be asynchronous?</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0e42096634af52a9559351f4d999de30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e42096634af52a9559351f4d999de30">&#9670;&nbsp;</a></span>setTime() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long CTlib.CTwriter.setTime </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set time for subsequent <a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData()</a>. This method simply calls setTime(&lt;current_time_millis&gt;). </p>
+<dl class="section return"><dt>Returns</dt><dd>The next timestamp.</dd></dl>
+
+</div>
+</div>
+<a id="a07435634fc18d386948723458431274b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07435634fc18d386948723458431274b">&#9670;&nbsp;</a></span>setTime() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.setTime </td>
+          <td>(</td>
+          <td class="paramtype">long&#160;</td>
+          <td class="paramname"><em>timeI</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set time for subsequent <a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData()</a>. To switch back to automatic timestamp mode, call this method with the argument equal to -1. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">timeI</td><td>Timestamp in msec</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6f9f604139987e3b9225c53a1ea1a7f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f9f604139987e3b9225c53a1ea1a7f6">&#9670;&nbsp;</a></span>setTime() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CTlib.CTwriter.setTime </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>timeI</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set time for subsequent <a class="el" href="class_c_tlib_1_1_c_twriter.html#af2e84f24be1d330409de4c9dbb0f6df6" title="Store an additional double data point in each of the specified channels. ">putData()</a>. To switch back to automatic timestamp mode, call this method with the argument equal to -1.0. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">timeI</td><td>Timestamp in sec</td></tr>
   </table>
   </dd>
 </dl>

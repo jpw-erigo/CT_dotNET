@@ -16,7 +16,6 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -53,7 +52,7 @@ namespace CTlib
         private int numSegmentsToKeep;            // Number of full segments to maintain; older segments will be trimmed
         private int currentBlockNum = 0;          // The current block number in the current segment
         // Collection of channel names and their associated data blocks (data is stored as byte arrays in a ChanBlockData object)
-        // NOTE: could also use ConcurrentDictionary (which is thread safe)
+        // NOTE: could use ConcurrentDictionary (which is thread safe) but System.Collections.Concurrent isn't supported in Unity at this time
         private IDictionary<string, ChanBlockData> blockData = new Dictionary<string, ChanBlockData>();
         private long previousTime = -1;           // To check for time not advancing
         private long startTime = -1;              // Absolute start time for the whole source; this is only set once
@@ -63,7 +62,8 @@ namespace CTlib
         private bool bPack = false;               // Pack primitive data channels at the block folder level
         private bool bZip = false;                // ZIP data at the block folder level
         private bool bUseTmpZipFiles = false;     // If creating ZIP output files, should we write data to a temporary file (".tmp") and then, when complete, move this file to be ".zip"?  If false (which is the default), stream the complete data set in one dump directly to the output ZIP file.
-        private long synchronizedTimestamp = -1;  // A timestamp to use across multiple channels (instead of generating a new timestamp for each channel)
+        private long userSuppliedTimestamp = -1;  // Timestamp supplied by the user in one of the setTime calls
+        private long synchronizedTimestamp = -1;  // A timestamp to use across multiple channels (instead of generating a new timestamp for each channel); only used with the putData(string[] channamesI, double[] dataI) and putData(string[] channamesI, float[] dataI) methods
         // List of segment folders
         private List<long> masterSegmentList = new List<long>();
         // character that separates folder segments in a full path name
@@ -584,20 +584,27 @@ namespace CTlib
         ///    bUseMilliseconds). As needed, we will set startTime,
         ///    segmentStartTime and blockStartTime.
         /// 
-        /// NOTE: This method is not thread safe.  Calls to this method should be within
-        ///       appropriate lock blocks.
+        /// NOTE: This method is not thread safe. Calls to this method should be from within a lock block.
         /// </summary>
         /// <returns>The next timestamp.</returns>
         /// 
         private long getTimestamp()
         {
 
-            if (synchronizedTimestamp > 0)
+            if (userSuppliedTimestamp > -1)
             {
-                // We are synchronizing time across multiple channels; use this value
+                // User has supplied their own timestamp; return this value.
+                return userSuppliedTimestamp;
+            }
+
+            if (synchronizedTimestamp > -1)
+            {
+                // We are synchronizing time across multiple channels; return this value.
+                // This is only used for the putData(string[] channamesI, double[] dataI) and putData(string[] channamesI, float[] dataI) methods.
                 return synchronizedTimestamp;
             }
 
+            // Generate epoch timestamp.
             long initialBlockStartTime = blockStartTime;
             long nextTime = -1;
             TimeSpan deltaTime = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -610,31 +617,123 @@ namespace CTlib
                 nextTime = (long)deltaTime.TotalSeconds;
             }
 
+            setStartTimes(nextTime);
+
+            return nextTime;
+        }
+
+        /// <summary>
+        /// Process the next timestamp.  As needed, set startTime, segmentStartTime and blockStartTime.
+        /// This method also checks the given next timestamp against the previous timestamp.
+        /// 
+        /// NOTE: This method is not thread safe. Calls to this method should be from within a lock block.
+        /// </summary>
+        /// <param name="nextTimeI">The next timestamp to be used.</param>
+        private void setStartTimes(long nextTimeI)
+        {
             // Check for time not advancing
-            if (previousTime >= nextTime)
+            if (previousTime >= nextTimeI)
             {
-                Console.WriteLine("Note, time not advancing: previousTime = {0}, nextTime = {1}",previousTime,nextTime);
+                Console.WriteLine("Warning, time not advancing: previousTime = {0}, nextTime = {1}", previousTime, nextTimeI);
                 // We could potentially correct this here, but don't implement this now
                 // nextTime = previousTime+1;
             }
-            previousTime = nextTime;
+            previousTime = nextTimeI;
 
             if (startTime == -1)
             {
                 // Start time for the whole source; this is only set once
-                startTime = nextTime;
+                startTime = nextTimeI;
             }
             if ((numBlocksPerSegment > 0) && (segmentStartTime == -1))
             {
                 // Start time of the next Segment
-                segmentStartTime = nextTime;
+                segmentStartTime = nextTimeI;
             }
             if (blockStartTime == -1)
             {
                 // Start time of this Block
-                blockStartTime = nextTime;
+                blockStartTime = nextTimeI;
             }
+        }
+
+        /// <summary>
+        /// Set time for subsequent putData().
+        /// This method simply calls setTime(<current_time_millis>).
+        /// </summary>
+        /// <returns>The next timestamp.</returns>
+        public long setTime()
+        {
+            TimeSpan deltaTime = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            long nextTime = (long)deltaTime.TotalMilliseconds;
+            setTime(nextTime);
             return nextTime;
+        }
+
+        /// <summary>
+        /// Set time for subsequent putData().
+        /// To switch back to automatic timestamp mode, call this method with the argument equal to -1.
+        /// </summary>
+        /// <param name="timeI">Timestamp in msec</param>
+        public void setTime(long timeI)
+        {
+            lock (dataLock)
+            {
+                if (timeI == -1)
+                {
+                    // Go back to automatic timestamps
+                    userSuppliedTimestamp = -1;
+                }
+                else if (timeI < 0)
+                {
+                    Console.WriteLine("Timestamp can't be less than 0.");
+                }
+                else
+                {
+                    if (bUseMilliseconds)
+                    {
+                        userSuppliedTimestamp = timeI;
+                    }
+                    else
+                    {
+                        userSuppliedTimestamp = (long)(((double)timeI)/1000.0);
+                    }
+                    setStartTimes(userSuppliedTimestamp);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set time for subsequent putData().
+        /// To switch back to automatic timestamp mode, call this method with the argument equal to -1.0.
+        /// </summary>
+        /// <param name="timeI">Timestamp in sec</param>
+        public void setTime(double timeI)
+        {
+            lock (dataLock)
+            {
+                if (timeI == -1.0)
+                {
+                    // Go back to automatic timestamps
+                    userSuppliedTimestamp = -1;
+                }
+                else if (timeI < 0.0)
+                {
+                    Console.WriteLine("Timestamp can't be less than 0.");
+                }
+                else
+                {
+                    if (bUseMilliseconds)
+                    {
+                        userSuppliedTimestamp = (long)(timeI*1000.0);
+                    }
+                    else
+                    {
+                        userSuppliedTimestamp = (long)(timeI);
+                    }
+                    setStartTimes(userSuppliedTimestamp);
+                }
+            }
         }
 
         /// <summary>
@@ -742,7 +841,7 @@ namespace CTlib
             }
 
             // For thread safety, make local copy of the needed block data and timestamps
-            // NOTE: could also use ConcurrentDictionary (which is thread safe)
+            // NOTE: could use ConcurrentDictionary (which is thread safe) but System.Collections.Concurrent isn't supported in Unity at this time
             IDictionary<string, ChanBlockData> local_blockData = new Dictionary<string, ChanBlockData>();
             // Times used in constructing the output data folders
             long segmentStartTimeRel;
