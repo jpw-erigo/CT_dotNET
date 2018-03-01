@@ -28,6 +28,11 @@ namespace CTlib
     /// 
     /// Child class of CThttp_base; uses HttpClient to perform asynchronous HTTP PUT.
     /// 
+    /// This class has been tested and works, but is still somewhat "experimental";
+    /// for example, the method used in closeHttpClient() to wait for pending
+    /// requests before closing the connection is kludgey (there's probably a
+    /// better way to do this).
+    /// 
     /// </summary>
     /// 
     public class CThttp_HttpClient : CThttp_base
@@ -127,19 +132,18 @@ namespace CTlib
                 if (requestList.Count > 0)
                 {
                     int pendingTaskCount = requestList.Count;
-                    for (int i = 0; i < 20; ++i)
+                    for (int i=0; i<30; ++i)
                     {
                         pendingTaskCount = requestList.Count;
                         Console.WriteLine("Waiting on " + pendingTaskCount + " async PUT tasks");
-                        System.Threading.Thread.Sleep(1000);
+                        System.Threading.Thread.Sleep(2000);
                         if (requestList.Count == 0)
                         {
                             break;
                         }
                         if (requestList.Count == pendingTaskCount)
                         {
-                            // The number isn't going down, wait one more second and then quit
-                            System.Threading.Thread.Sleep(1000);
+                            // The number isn't going down, just quit
                             Console.WriteLine("Closing connections; may lose " + pendingTaskCount + " PUTs");
                             break;
                         }

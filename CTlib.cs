@@ -16,6 +16,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -52,6 +53,7 @@ namespace CTlib
         private int numSegmentsToKeep;            // Number of full segments to maintain; older segments will be trimmed
         private int currentBlockNum = 0;          // The current block number in the current segment
         // Collection of channel names and their associated data blocks (data is stored as byte arrays in a ChanBlockData object)
+        // NOTE: could also use ConcurrentDictionary (which is thread safe)
         private IDictionary<string, ChanBlockData> blockData = new Dictionary<string, ChanBlockData>();
         private long previousTime = -1;           // To check for time not advancing
         private long startTime = -1;              // Absolute start time for the whole source; this is only set once
@@ -717,6 +719,12 @@ namespace CTlib
         /// <summary>
         /// This method does the real work of doing the flush.
         /// 
+        /// This method is thread safe, which is needed when CTlib is operating in async mode.
+        /// Being thread safe is achieved by making local copies of the blockData and
+        /// blockStartTime variables. If we didn't use local copies of these variables and we
+        /// were operating in async mode, then both doFlush and putData would be updating
+        /// these variables at the same time.
+        /// 
         /// The folder hierarchy in which the data files reside is made up of the following parts:
         /// 1. base folder name (given to the CTwriter constructor)
         /// 2. source start time (absolute epoch time of the first data point for the entire source)
@@ -734,6 +742,7 @@ namespace CTlib
             }
 
             // For thread safety, make local copy of the needed block data and timestamps
+            // NOTE: could also use ConcurrentDictionary (which is thread safe)
             IDictionary<string, ChanBlockData> local_blockData = new Dictionary<string, ChanBlockData>();
             // Times used in constructing the output data folders
             long segmentStartTimeRel;
@@ -759,8 +768,8 @@ namespace CTlib
                     blockStartTimeRel = blockStartTime - segmentStartTime;
                 }
                 // Reset data and block start time
-                // blockData.Clear();
-                blockData = new Dictionary<string, ChanBlockData>();
+                // blockData = new Dictionary<string, ChanBlockData>();
+                blockData.Clear();
                 blockStartTime = -1;
 
                 if (numBlocksPerSegment > 0)
@@ -774,7 +783,6 @@ namespace CTlib
                         segmentStartTime = -1;
                     }
                 }
-
             }
 
             //
@@ -946,6 +954,7 @@ namespace CTlib
                                     ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
                                     using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
                                     {
+                                        // Console.WriteLine("Write to ZIP " + BitConverter.ToDouble(data, 0));
                                         writer.Write(data);
                                         writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
                                     }
