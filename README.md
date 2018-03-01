@@ -9,13 +9,17 @@ CTwriter notes:
 
 * Data can optionally be CSV-packed and/or ZIP'ed at the block level.
 
-* Timestamps are automatically generated; they can either be in milliseconds or seconds format.
+* Timestamps can be supplied by the user or automatically generated; they can either be in milliseconds or seconds format.
 
 * Write data to local file system or HTTP server (HTTP PUT).
 
-* When writing to local file system (i.e., not using HTTP output):
+* When writing to local file system (not HTTP output):
     * Old data can optionally be deleted from an existing source folder at startup.
     * An optional "trim" feature maintains only the newest desired number of output segment-level data folders (older data folders will be deleted).
+
+* HTTP mode supports optional username/password login.
+
+* Flushing data (writing out the data block as CT files) can be done synchronously or asynchronously (in the background).
 
 For details on CloudTurbine, see http://www.cloudturbine.com/ and https://github.com/cycronix/cloudturbine.
 
@@ -62,6 +66,8 @@ using System.IO;
 using System.Net;
 using System.Threading;
 
+using CTlib;
+
 namespace CTdemo
 {
     class CTdemo
@@ -103,17 +109,23 @@ namespace CTdemo
 
             }
             Console.WriteLine("\nSource output folder = \"{0}\"\n", baseCTOutputFolder);
-            CTlib.CTwriter ctw = null;
+            CTwriter ctw = null;
             try
             {
                 if (!bHttp)
                 {
-                    ctw = new CTlib.CTwriter(baseCTOutputFolder, numBlocksPerSegment, numSegmentsToKeep, bOutputTimesAreMillis, bPack, bZip, bDeleteOldDataAtStartup);
+                    ctw = new CTwriter(baseCTOutputFolder, numBlocksPerSegment, numSegmentsToKeep, bOutputTimesAreMillis, bPack, bZip, bDeleteOldDataAtStartup);
+                    ctw.setAsync(true);
                     Console.WriteLine("\nUsing the standard C# CTwriter class");
                 }
                 else
                 {
-                    ctw = new CTlib.CThttp(baseCTOutputFolder, numBlocksPerSegment, bOutputTimesAreMillis, bPack, bZip);
+                    String hostStr = "http://localhost:8000";
+                    CThttp cthttp = new CThttp(baseCTOutputFolder, numBlocksPerSegment, bOutputTimesAreMillis, bPack, bZip, hostStr);
+                    // Only login when we are writing via HTTPS (eg if hostStr were "https://localhost:8443")
+                    // cthttp.login("jpw", "foo");
+                    ctw = (CTwriter)cthttp;
+                    ctw.setAsync(true);
                     Console.WriteLine("\nUsing the C# CThttp class to write data using HTTP PUT");
                 }
             }
@@ -131,7 +143,7 @@ namespace CTdemo
             imageThread.Start();
 
             // Write data to the CloudTurbine source
-            for (int i = 1; i < 1000; ++i)
+            for (int i = 1; i <= 1000; ++i)
             {
                 // Image from Dartmouth College webcam
                 if (bNewImage)
@@ -175,11 +187,17 @@ namespace CTdemo
             catch (IOException ioe)
             {
                 Console.WriteLine("\nCaught IOException from CT library on close");
+                Console.WriteLine(ioe);
                 if (ioe.Source != null)
                 {
                     Console.WriteLine("IOException source: {0}", ioe.Source);
                 }
             }
+
+            // Exit program
+            Console.WriteLine("Exiting");
+            Environment.Exit(0);
+
         }
 
         static void FetchImage()
