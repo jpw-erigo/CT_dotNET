@@ -1186,6 +1186,7 @@ namespace CTlib
             if (doFlushActive)
             {
                 // There is still an active flush going on; just kill the thread
+                Console.WriteLine("Flush isn't exiting, kill it.");
                 try
                 {
                     flushThread.Interrupt();
@@ -1197,9 +1198,11 @@ namespace CTlib
             }
             else
             {
-                // Flush isn't active; have the flush thread exit.
-                // Wake up the Waiter; with bExitDoFlush set true this will result in doFlushContinuous() exiting.
-                _waitHandle.Set();
+                // doFlushActive must have been set false in doFlushContinuous(); since bExitDoFlush is true, doFlushContinuous() must have exited and the thread stopped;
+                // therefore, I don't think we need to do anything else
+                // // Flush isn't active; have the flush thread exit.
+                // // Wake up the Waiter; with bExitDoFlush set true this will result in doFlushContinuous() exiting.
+                // _waitHandle.Set();
             }
             flushThread = null;
         }
