@@ -22,11 +22,10 @@ using System.Net;
 namespace CTlib
 {
     ///
-    /// <summary>
-    /// 
     /// CThttp_base
     /// 
-    /// Abstract base class which extends CTwriter to support writing data using HTTP PUT.
+    /// <summary>
+    /// Abstract base class which extends CTwriter to support HTTP PUT.
     /// 
     /// The .NET Framework offers 3 methods of supporting HTTP:
     /// 1. HttpWebRequest: lower level API; the original method in .NET
@@ -41,9 +40,24 @@ namespace CTlib
     /// 
     public abstract class CThttp_base : CTwriter
     {
+        /// <summary>
+        /// The web host data will be PUT to; for example, "http://localhost:8000"
+        /// </summary>
         protected String ctWebHost = "";
+
+        /// <summary>
+        /// Username/password credentials for logging into the server.
+        /// </summary>
         protected NetworkCredential credential = null;
+
+        /// <summary>
+        /// Flag to indicate that username/password credentials have changed.
+        /// </summary>
         protected bool bCredentialsChanged = false;
+
+        /// <summary>
+        /// The URL used for HTTP PUT.
+        /// </summary>
         protected String urlStr = "";
 
         ///

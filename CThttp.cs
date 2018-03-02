@@ -20,12 +20,10 @@ using System;
 namespace CTlib
 {
     ///
-    /// <summary>
-    /// 
     /// CThttp
     /// 
+    /// <summary>
     /// Child class of CThttp_base; uses WebClient to perform HTTP PUT.
-    /// 
     /// </summary>
     /// 
     public class CThttp : CThttp_base

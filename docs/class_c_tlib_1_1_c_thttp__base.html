@@ -81,7 +81,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p> 
+<p>Abstract base class which extends <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> to support HTTP PUT.  
  <a href="class_c_tlib_1_1_c_thttp__base.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for CTlib.CThttp_base:</div>
@@ -90,9 +90,9 @@ Inheritance diagram for CTlib.CThttp_base:</div>
   <img src="class_c_tlib_1_1_c_thttp__base.png" usemap="#CTlib.CThttp_5Fbase_map" alt=""/>
   <map id="CTlib.CThttp_5Fbase_map" name="CTlib.CThttp_5Fbase_map">
 <area href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP..." alt="CTlib.CTwriter" shape="rect" coords="152,0,294,24"/>
-<area href="class_c_tlib_1_1_c_thttp.html" alt="CTlib.CThttp" shape="rect" coords="0,112,142,136"/>
-<area href="class_c_tlib_1_1_c_thttp.html" alt="CTlib.CThttp" shape="rect" coords="152,112,294,136"/>
-<area href="class_c_tlib_1_1_c_thttp___http_client.html" alt="CTlib.CThttp_HttpClient" shape="rect" coords="304,112,446,136"/>
+<area href="class_c_tlib_1_1_c_thttp.html" title="Child class of CThttp_base; uses WebClient to perform HTTP PUT. " alt="CTlib.CThttp" shape="rect" coords="0,112,142,136"/>
+<area href="class_c_tlib_1_1_c_thttp.html" title="Child class of CThttp_base; uses WebClient to perform HTTP PUT. " alt="CTlib.CThttp" shape="rect" coords="152,112,294,136"/>
+<area href="class_c_tlib_1_1_c_thttp___http_client.html" title="Child class of CThttp_base; uses HttpClient to perform asynchronous HTTP PUT. " alt="CTlib.CThttp_HttpClient" shape="rect" coords="304,112,446,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -213,26 +213,26 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a7271fc64f91f601eebd1285de8b31d56"><td class="memItemLeft" align="right" valign="top"><a id="a7271fc64f91f601eebd1285de8b31d56"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>ctWebHost</b> = &quot;&quot;</td></tr>
+<tr class="memitem:a7271fc64f91f601eebd1285de8b31d56"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_thttp__base.html#a7271fc64f91f601eebd1285de8b31d56">ctWebHost</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:a7271fc64f91f601eebd1285de8b31d56"><td class="mdescLeft">&#160;</td><td class="mdescRight">The web host data will be PUT to; for example, "http://localhost:8000"  <a href="#a7271fc64f91f601eebd1285de8b31d56">More...</a><br /></td></tr>
 <tr class="separator:a7271fc64f91f601eebd1285de8b31d56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f8dbc999140006ef81100dc943cb607"><td class="memItemLeft" align="right" valign="top"><a id="a9f8dbc999140006ef81100dc943cb607"></a>
-NetworkCredential&#160;</td><td class="memItemRight" valign="bottom"><b>credential</b> = null</td></tr>
+<tr class="memitem:a9f8dbc999140006ef81100dc943cb607"><td class="memItemLeft" align="right" valign="top">NetworkCredential&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_thttp__base.html#a9f8dbc999140006ef81100dc943cb607">credential</a> = null</td></tr>
+<tr class="memdesc:a9f8dbc999140006ef81100dc943cb607"><td class="mdescLeft">&#160;</td><td class="mdescRight">Username/password credentials for logging into the server.  <a href="#a9f8dbc999140006ef81100dc943cb607">More...</a><br /></td></tr>
 <tr class="separator:a9f8dbc999140006ef81100dc943cb607"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3a0fd77a524239cfad17fe200d491a4"><td class="memItemLeft" align="right" valign="top"><a id="ad3a0fd77a524239cfad17fe200d491a4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>bCredentialsChanged</b> = false</td></tr>
+<tr class="memitem:ad3a0fd77a524239cfad17fe200d491a4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_thttp__base.html#ad3a0fd77a524239cfad17fe200d491a4">bCredentialsChanged</a> = false</td></tr>
+<tr class="memdesc:ad3a0fd77a524239cfad17fe200d491a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag to indicate that username/password credentials have changed.  <a href="#ad3a0fd77a524239cfad17fe200d491a4">More...</a><br /></td></tr>
 <tr class="separator:ad3a0fd77a524239cfad17fe200d491a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6054de4997ad5aea4c8b87ccf782e7c"><td class="memItemLeft" align="right" valign="top"><a id="ab6054de4997ad5aea4c8b87ccf782e7c"></a>
-String&#160;</td><td class="memItemRight" valign="bottom"><b>urlStr</b> = &quot;&quot;</td></tr>
+<tr class="memitem:ab6054de4997ad5aea4c8b87ccf782e7c"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_thttp__base.html#ab6054de4997ad5aea4c8b87ccf782e7c">urlStr</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:ab6054de4997ad5aea4c8b87ccf782e7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The URL used for HTTP PUT.  <a href="#ab6054de4997ad5aea4c8b87ccf782e7c">More...</a><br /></td></tr>
 <tr class="separator:ab6054de4997ad5aea4c8b87ccf782e7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="class_c_tlib_1_1_c_thttp__base.html">CThttp_base</a></p>
-<p>Abstract base class which extends <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> to support writing data using HTTP PUT.</p>
+<div class="textblock"><p>Abstract base class which extends <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> to support HTTP PUT. </p>
+<p><a class="el" href="class_c_tlib_1_1_c_thttp__base.html" title="Abstract base class which extends CTwriter to support HTTP PUT. ">CThttp_base</a></p>
 <p>The .NET Framework offers 3 methods of supporting HTTP:</p><ol type="1">
 <li>HttpWebRequest: lower level API; the original method in .NET</li>
-<li>WebClient: simpler API, built on top of HttpWebRequest; used in <a class="el" href="class_c_tlib_1_1_c_thttp.html">CThttp</a></li>
-<li>HttpClient: newer API, requires .NET 4.5; used in <a class="el" href="class_c_tlib_1_1_c_thttp___http_client.html">CThttp_HttpClient</a>; has the advantage that I/O calls are asynchronous; see <a href="https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netframework-4.7.1">https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netframework-4.7.1</a> Articles comparing these methods: <a href="http://www.diogonunes.com/blog/webclient-vs-httpclient-vs-httpwebrequest/">http://www.diogonunes.com/blog/webclient-vs-httpclient-vs-httpwebrequest/</a> <a href="https://www.infoworld.com/article/3198673/web-development/my-two-cents-on-webclient-vs-httpclient-vs-httpwebrequest.html">https://www.infoworld.com/article/3198673/web-development/my-two-cents-on-webclient-vs-httpclient-vs-httpwebrequest.html</a> <a href="https://stackoverflow.com/questions/5140674/how-to-make-a-http-put-request">https://stackoverflow.com/questions/5140674/how-to-make-a-http-put-request</a></li>
+<li>WebClient: simpler API, built on top of HttpWebRequest; used in <a class="el" href="class_c_tlib_1_1_c_thttp.html" title="Child class of CThttp_base; uses WebClient to perform HTTP PUT. ">CThttp</a></li>
+<li>HttpClient: newer API, requires .NET 4.5; used in <a class="el" href="class_c_tlib_1_1_c_thttp___http_client.html" title="Child class of CThttp_base; uses HttpClient to perform asynchronous HTTP PUT. ">CThttp_HttpClient</a>; has the advantage that I/O calls are asynchronous; see <a href="https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netframework-4.7.1">https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=netframework-4.7.1</a> Articles comparing these methods: <a href="http://www.diogonunes.com/blog/webclient-vs-httpclient-vs-httpwebrequest/">http://www.diogonunes.com/blog/webclient-vs-httpclient-vs-httpwebrequest/</a> <a href="https://www.infoworld.com/article/3198673/web-development/my-two-cents-on-webclient-vs-httpclient-vs-httpwebrequest.html">https://www.infoworld.com/article/3198673/web-development/my-two-cents-on-webclient-vs-httpclient-vs-httpwebrequest.html</a> <a href="https://stackoverflow.com/questions/5140674/how-to-make-a-http-put-request">https://stackoverflow.com/questions/5140674/how-to-make-a-http-put-request</a></li>
 </ol>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab2d9e27d7d2de95c9fd91ba5c90f0982"></a>
@@ -409,6 +409,103 @@ String&#160;</td><td class="memItemRight" valign="bottom"><b>urlStr</b> = &quot;
 <p>Reimplemented from <a class="el" href="class_c_tlib_1_1_c_twriter.html#abf8728bbc2339827ae456c7aaeac43f1">CTlib.CTwriter</a>.</p>
 
 <p>Reimplemented in <a class="el" href="class_c_tlib_1_1_c_thttp___http_client.html#ae51227372218038dd373ca04983d1fa5">CTlib.CThttp_HttpClient</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ad3a0fd77a524239cfad17fe200d491a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3a0fd77a524239cfad17fe200d491a4">&#9670;&nbsp;</a></span>bCredentialsChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool CTlib.CThttp_base.bCredentialsChanged = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Flag to indicate that username/password credentials have changed. </p>
+
+</div>
+</div>
+<a id="a9f8dbc999140006ef81100dc943cb607"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f8dbc999140006ef81100dc943cb607">&#9670;&nbsp;</a></span>credential</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">NetworkCredential CTlib.CThttp_base.credential = null</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Username/password credentials for logging into the server. </p>
+
+</div>
+</div>
+<a id="a7271fc64f91f601eebd1285de8b31d56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7271fc64f91f601eebd1285de8b31d56">&#9670;&nbsp;</a></span>ctWebHost</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String CTlib.CThttp_base.ctWebHost = &quot;&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The web host data will be PUT to; for example, "http://localhost:8000" </p>
+
+</div>
+</div>
+<a id="ab6054de4997ad5aea4c8b87ccf782e7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6054de4997ad5aea4c8b87ccf782e7c">&#9670;&nbsp;</a></span>urlStr</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String CTlib.CThttp_base.urlStr = &quot;&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The URL used for HTTP PUT. </p>
 
 </div>
 </div>

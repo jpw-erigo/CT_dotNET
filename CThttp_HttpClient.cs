@@ -22,17 +22,15 @@ using System.Net.Http;
 namespace CTlib
 {
     ///
-    /// <summary>
-    /// 
     /// CThttp_HttpClient
     /// 
+    /// <summary>
     /// Child class of CThttp_base; uses HttpClient to perform asynchronous HTTP PUT.
     /// 
     /// This class has been tested and works, but is still somewhat "experimental";
     /// for example, the method used in closeHttpClient() to wait for pending
     /// requests before closing the connection is kludgey (there's probably a
     /// better way to do this).
-    /// 
     /// </summary>
     /// 
     public class CThttp_HttpClient : CThttp_base
@@ -92,12 +90,23 @@ namespace CTlib
                 httpClient.Timeout = new TimeSpan(0, 0, 30);
                 bCredentialsChanged = false;
             }
+
+            // The PutAsync method is "fire-and-forget": this async method will return
+            // before it has finished, but that is as we intend it; we just let
+            // PutAsync finish in the background.  If we wanted to call PutAsync and
+            // then wait here for it to finish, prefix this call with "await".
             PutAsync(urlStr, dataI);
             
         }
 
         /// <summary>
-        /// Asynchronous method to put data using HttpClient
+        /// Asynchronous method to put data using HttpClient.
+        /// 
+        /// This is intended to be a "fire-and-forget" method; that is, the caller calls
+        /// this method and then it lumbers on while this PutAsyn method does its stuff.
+        /// If we want the caller to keep track of this method or wait for it to be complete,
+        /// then this method could return System.Threading.Tasks.Task and the caller could
+        /// "await" on it.
         /// 
         /// Here's a good Microsoft article giving an overview of asynchronous programming
         /// using the "async" and "await" keywords:
@@ -106,7 +115,7 @@ namespace CTlib
         /// <param name="urlStrI">URL where to PUT the data.</param>
         /// <param name="dataI">The data to PUT.</param>
         /// <returns></returns>
-        private static async System.Threading.Tasks.Task PutAsync(String urlStrI, byte[] dataI)
+        private static async void PutAsync(String urlStrI, byte[] dataI)
         {
             long localIdx = ++putIdx;
             requestList.Add(localIdx);

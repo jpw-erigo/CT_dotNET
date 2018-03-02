@@ -54,7 +54,7 @@ namespace CTlib
         // Collection of channel names and their associated data blocks (data is stored as byte arrays in a ChanBlockData object)
         // NOTE: could use ConcurrentDictionary (which is thread safe) but System.Collections.Concurrent isn't supported in Unity at this time
         private IDictionary<string, ChanBlockData> blockData = new Dictionary<string, ChanBlockData>();
-        private long previousTime = -1;           // To check for time not advancing
+        // private long previousTime = -1;        // Used in setStartTimes to check for time not advancing; NOT CURRENTLY USED
         private long startTime = -1;              // Absolute start time for the whole source; this is only set once
         private long segmentStartTime = -1;       // Absolute start time for an individual segment
         private long blockStartTime = -1;         // Absolute start time for an individual block
@@ -326,7 +326,7 @@ namespace CTlib
             }
             catch (ArgumentException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -361,7 +361,7 @@ namespace CTlib
             }
             catch (ArgumentException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -396,7 +396,7 @@ namespace CTlib
             }
             catch (ArgumentException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -431,7 +431,7 @@ namespace CTlib
             }
             catch (ArgumentException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -466,7 +466,7 @@ namespace CTlib
             }
             catch (ArgumentException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -501,7 +501,7 @@ namespace CTlib
             }
             catch (ArgumentException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -527,7 +527,7 @@ namespace CTlib
             }
             catch (ArgumentException ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -787,6 +787,7 @@ namespace CTlib
                 doFlush();
                 doFlushActive = false;
             }
+            Console.WriteLine("doFlushContinuous is exiting");
         }
 
         ///
@@ -1203,7 +1204,8 @@ namespace CTlib
                 // therefore, I don't think we need to do anything else
                 // // Flush isn't active; have the flush thread exit.
                 // // Wake up the Waiter; with bExitDoFlush set true this will result in doFlushContinuous() exiting.
-                // _waitHandle.Set();
+                bExitDoFlush = true;
+                _waitHandle.Set();
             }
             flushThread = null;
         }
