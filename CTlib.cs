@@ -1169,62 +1169,64 @@ namespace CTlib
         }
 
         /// <summary>
-        /// Wait for current flush task to finish and then terminate the asynchronous flush thread.
+        /// Wait for current flush to finish, perform another flush (to flush currently waiting data)
+        /// and then have the asynchronous flush thread exit.
         /// </summary>
         private void finishAndKillFlushThread()
         {
-            if (!bAsync)
+            if (!bAsync || (flushThread == null))
             {
                 // Flush isn't running in a separate thread; just return.
                 return;
             }
-            int maxNumSecToWait = 10;
-            while (doFlushActive && (maxNumSecToWait > 0))
+            waitForFlushDone();
+            if (flushThread != null)
             {
-                System.Threading.Thread.Sleep(1000);
-                --maxNumSecToWait;
+                // Do a final flush
+                // After this flush, have the flush thread exit
+                bExitDoFlush = true;
+                flush();
+                waitForFlushDone();
+                flushThread = null;
+            }
+        }
+
+        ///
+        /// <summary>
+        /// Sleepy loop (up to a max number of iterations) waiting for the current flush to finish.
+        /// If flush did not finish during that time, we kill the flush thread and set variable
+        /// flushThread equal to null.
+        /// </summary>
+        /// 
+        private void waitForFlushDone()
+        {
+            if (!bAsync || (flushThread == null))
+            {
+                // Flush isn't running in a separate thread; just return.
+                return;
+            }
+            int maxNumIters = 100;
+            while (doFlushActive && (maxNumIters > 0))
+            {
+                System.Threading.Thread.Sleep(100);
+                --maxNumIters;
             }
             if (doFlushActive)
             {
-                // There is still an active flush going on; just kill the thread
+                // There is still an active flush going on; kill the thread
                 Console.WriteLine("Flush isn't exiting, kill it.");
                 try
                 {
                     flushThread.Interrupt();
                     flushThread.Abort();
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     // Nothing to do
                 }
+                flushThread = null;
+                doFlushActive = false;
             }
-            else
-            {
-                // Do a final flush after which we want the flush thread to exit.
-                bExitDoFlush = true;
-                flush();
-                // Once again, wait until flush is done
-                maxNumSecToWait = 10;
-                while (doFlushActive && (maxNumSecToWait > 0))
-                {
-                    System.Threading.Thread.Sleep(1000);
-                    --maxNumSecToWait;
-                }
-                if (doFlushActive)
-                {
-                    // There is still an active flush going on; just kill the thread
-                    Console.WriteLine("Flush isn't exiting, kill it.");
-                    try
-                    {
-                        flushThread.Interrupt();
-                        flushThread.Abort();
-                    }
-                    catch (Exception)
-                    {
-                        // Nothing to do
-                    }
-                }
-            }
-            flushThread = null;
         }
 
         ///

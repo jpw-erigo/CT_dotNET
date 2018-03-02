@@ -123,7 +123,7 @@ namespace CTdemo
                     String hostStr = "http://localhost:8000";
                     CThttp cthttp = new CThttp(baseCTOutputFolder, numBlocksPerSegment, bOutputTimesAreMillis, bPack, bZip, hostStr);
                     // Only login when we are writing via HTTPS (eg if hostStr were "https://localhost:8443")
-                    // cthttp.login("jpw", "foo");
+                    // cthttp.login("fee", "foo");
                     ctw = (CTwriter)cthttp;
                     ctw.setAsync(true);
                     Console.WriteLine("\nUsing the C# CThttp class to write data using HTTP PUT");
@@ -193,11 +193,6 @@ namespace CTdemo
                     Console.WriteLine("IOException source: {0}", ioe.Source);
                 }
             }
-
-            // Exit program
-            Console.WriteLine("Exiting");
-            Environment.Exit(0);
-
         }
 
         static void FetchImage()
