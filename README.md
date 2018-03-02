@@ -27,7 +27,7 @@ To compile and use this library:
 
 * Make a local clone of this GitHub repository (https://github.com/jpw-erigo/CTlib_csharp.git)
 
-* Compile the library (I used Microsoft Visual Studio Express 2015 for Windows Desktop); after performing a Release build, the library should be located at "<install_dir>\bin\Release\CTlib.dll".
+* Compile the library; I used Microsoft Visual Studio Express 2015 for Windows Desktop.  Set the project's Target framework to .NET Framework 4.5 or later when compiling.  After performing a Release build, the library should be located at "<install_dir>\bin\Release\CTlib.dll".
 
 * Use the simple C# program shown below to try out the library.  Create a new "Console application" project in Visual Studio; add a Reference in the project to the compiled library, CTlib.dll.
 

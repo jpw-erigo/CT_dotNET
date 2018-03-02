@@ -73,7 +73,7 @@ namespace CTlib
         private bool bAsync = false;              // Execute flush call in its own thread asynchronously?
         private Thread flushThread = null;        // Thread performing the asynchronous flushes
         private bool doFlushActive = false;       // Is an asynchronous flush currently executing?
-        private bool bExitDoFlush = false;        // Exit the asynchronous flush loop.
+        private static bool bExitDoFlush = false; // Exit the asynchronous flush loop; THIS VARIABLE MUST BE STATIC!
         static EventWaitHandle _waitHandle = new AutoResetEvent(false);  // To alert the asynchronous flush loop that we want a flush performed.
 
         // For thread safe coordination to access the data blocks; used when doing asynchronous flushes
@@ -781,13 +781,13 @@ namespace CTlib
         /// </summary>
         private void doFlushContinuous()
         {
-            while (!bExitDoFlush)
+            while (!bExitDoFlush)   // NOTE: bExitDoFlush must be static in order for this thread to access it
             {
                 _waitHandle.WaitOne(); // Wait for notification
                 doFlush();
                 doFlushActive = false;
             }
-            Console.WriteLine("doFlushContinuous is exiting");
+            Console.WriteLine("Exiting asynchronous flush loop");
         }
 
         ///
@@ -1178,7 +1178,6 @@ namespace CTlib
                 // Flush isn't running in a separate thread; just return.
                 return;
             }
-            bExitDoFlush = true;
             int maxNumSecToWait = 10;
             while (doFlushActive && (maxNumSecToWait > 0))
             {
@@ -1200,12 +1199,30 @@ namespace CTlib
             }
             else
             {
-                // doFlushActive must have been set false in doFlushContinuous(); since bExitDoFlush is true, doFlushContinuous() must have exited and the thread stopped;
-                // therefore, I don't think we need to do anything else
-                // // Flush isn't active; have the flush thread exit.
-                // // Wake up the Waiter; with bExitDoFlush set true this will result in doFlushContinuous() exiting.
+                // Do a final flush after which we want the flush thread to exit.
                 bExitDoFlush = true;
-                _waitHandle.Set();
+                flush();
+                // Once again, wait until flush is done
+                maxNumSecToWait = 10;
+                while (doFlushActive && (maxNumSecToWait > 0))
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    --maxNumSecToWait;
+                }
+                if (doFlushActive)
+                {
+                    // There is still an active flush going on; just kill the thread
+                    Console.WriteLine("Flush isn't exiting, kill it.");
+                    try
+                    {
+                        flushThread.Interrupt();
+                        flushThread.Abort();
+                    }
+                    catch (Exception)
+                    {
+                        // Nothing to do
+                    }
+                }
             }
             flushThread = null;
         }
@@ -1220,12 +1237,12 @@ namespace CTlib
         {
             if (bAsync)
             {
-                // Wait for the current flush to finish
                 finishAndKillFlushThread();
             }
-            // Finish with a synchronous flush
-            bAsync = false;
-            flush();
+            else
+            {
+                flush();
+            }
         }
 
         ///
