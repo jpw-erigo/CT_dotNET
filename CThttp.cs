@@ -76,7 +76,6 @@ namespace CTlib
         /// 
         public override void close()
         {
-            Console.WriteLine("CThttp closing");
             base.close();
         }
 

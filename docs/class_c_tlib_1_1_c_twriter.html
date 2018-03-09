@@ -100,6 +100,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1cb04d46e0465beb53ede137a15fad3e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a1cb04d46e0465beb53ede137a15fad3e">CTwriter</a> (String baseCTOutputFolderI, int numBlocksPerSegmentI, int numSegmentsToKeepI, bool bOutputTimesAreMillisI, bool bPackI, bool bZipI, bool bDeleteOldDataAtStartupI, bool bVerifyOutputFolderI=true)</td></tr>
 <tr class="memdesc:a1cb04d46e0465beb53ede137a15fad3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a1cb04d46e0465beb53ede137a15fad3e">More...</a><br /></td></tr>
 <tr class="separator:a1cb04d46e0465beb53ede137a15fad3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a515e373a1490f317b125654ca3dcbd08"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a515e373a1490f317b125654ca3dcbd08">getBaseCTOutputFolder</a> ()</td></tr>
+<tr class="memdesc:a515e373a1490f317b125654ca3dcbd08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get baseCTOutputFolder.  <a href="#a515e373a1490f317b125654ca3dcbd08">More...</a><br /></td></tr>
+<tr class="separator:a515e373a1490f317b125654ca3dcbd08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91081409aa424268834fa18b3490f093"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_c_tlib_1_1_c_twriter.html#a91081409aa424268834fa18b3490f093">UseTmpFileForZipData</a> (bool bUseTmpZipFilesI)</td></tr>
 <tr class="memdesc:a91081409aa424268834fa18b3490f093"><td class="mdescLeft">&#160;</td><td class="mdescRight">If writing output ZIP files, should we write data first to a temporary file (".tmp") and then rename this to the final ".zip" file? If false, we write directly to the output ZIP file using (what is intended to be) a quick stream operation; this has the possible advantage that an extra intermediary ".tmp" file isn't created temporarily.  <a href="#a91081409aa424268834fa18b3490f093">More...</a><br /></td></tr>
 <tr class="separator:a91081409aa424268834fa18b3490f093"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -252,6 +255,34 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a515e373a1490f317b125654ca3dcbd08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a515e373a1490f317b125654ca3dcbd08">&#9670;&nbsp;</a></span>getBaseCTOutputFolder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">String CTlib.CTwriter.getBaseCTOutputFolder </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get baseCTOutputFolder. </p>
+<dl class="section return"><dt>Returns</dt><dd>the base output folder, baseCTOutputFolder</dd></dl>
+
+</div>
+</div>
 <a id="af2e84f24be1d330409de4c9dbb0f6df6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af2e84f24be1d330409de4c9dbb0f6df6">&#9670;&nbsp;</a></span>putData() <span class="overload">[1/10]</span></h2>
 

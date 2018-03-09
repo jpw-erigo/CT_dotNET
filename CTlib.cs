@@ -73,8 +73,8 @@ namespace CTlib
         private bool bAsync = false;              // Execute flush call in its own thread asynchronously?
         private Thread flushThread = null;        // Thread performing the asynchronous flushes
         private bool doFlushActive = false;       // Is an asynchronous flush currently executing?
-        private static bool bExitDoFlush = false; // Exit the asynchronous flush loop; THIS VARIABLE MUST BE STATIC!
-        static EventWaitHandle _waitHandle = new AutoResetEvent(false);  // To alert the asynchronous flush loop that we want a flush performed.
+        private bool bExitDoFlush = false;        // Exit the asynchronous flush loop?
+        private EventWaitHandle _waitHandle = new AutoResetEvent(false);  // To alert the asynchronous flush loop that we want a flush performed.
 
         // For thread safe coordination to access the data blocks; used when doing asynchronous flushes
         private Object dataLock = new Object();
@@ -192,6 +192,15 @@ namespace CTlib
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Get baseCTOutputFolder.
+        /// </summary>
+        /// <returns>the base output folder, baseCTOutputFolder</returns>
+        public String getBaseCTOutputFolder()
+        {
+            return baseCTOutputFolder;
         }
 
         /// <summary>
@@ -781,13 +790,14 @@ namespace CTlib
         /// </summary>
         private void doFlushContinuous()
         {
-            while (!bExitDoFlush)   // NOTE: bExitDoFlush must be static in order for this thread to access it
+            while (!bExitDoFlush)
             {
                 _waitHandle.WaitOne(); // Wait for notification
+                // Console.WriteLine("Call flush for " + baseCTOutputFolder);
                 doFlush();
                 doFlushActive = false;
             }
-            Console.WriteLine("Exiting asynchronous flush loop");
+            // Console.WriteLine("Exiting asynchronous flush loop for " + baseCTOutputFolder);
         }
 
         ///
@@ -838,7 +848,7 @@ namespace CTlib
         {
             if (blockData.Count == 0)
             {
-                Console.WriteLine("No data to flush, just return");
+                // Console.WriteLine("No data to flush, just return");
                 return;
             }
 
@@ -1055,7 +1065,6 @@ namespace CTlib
                                     ZipArchiveEntry zipEntry = archive.CreateEntry(pointTimeRel.ToString() + "/" + channame);
                                     using (BinaryWriter writer = new BinaryWriter(zipEntry.Open()))
                                     {
-                                        // Console.WriteLine("Write to ZIP " + BitConverter.ToDouble(data, 0));
                                         writer.Write(data);
                                         writer.Close();  // Since this is in a "using" block, not sure we need the explicit call to Close()
                                     }
@@ -1138,7 +1147,7 @@ namespace CTlib
                                 masterSegmentList.Sort();
                                 // Remove this folder
                                 String dirToDelete = dirPath + sepChar + folderToDeleteLong.ToString();
-                                Console.WriteLine("Delete segment folder {0}", dirToDelete);
+                                Console.WriteLine("Source {0}, delete segment folder {1}", baseCTOutputFolder, dirToDelete);
                                 try
                                 {
                                     // BE CAREFUL...this does a recursive delete
@@ -1214,7 +1223,7 @@ namespace CTlib
             if (doFlushActive)
             {
                 // There is still an active flush going on; kill the thread
-                Console.WriteLine("Flush isn't exiting, kill it.");
+                Console.WriteLine("Source {0}, flush isn't exiting, kill it.", baseCTOutputFolder);
                 try
                 {
                     flushThread.Interrupt();
@@ -1237,6 +1246,7 @@ namespace CTlib
         /// 
         public virtual void close()
         {
+            Console.WriteLine("Close source " + baseCTOutputFolder);
             if (bAsync)
             {
                 finishAndKillFlushThread();
