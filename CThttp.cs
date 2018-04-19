@@ -60,13 +60,18 @@ namespace CTlib
         {
             base.writeToStream(outputDirI, chanNameI, dataI);
 
+            // Code to issue HTTP PUT using WebClient from response on Stack Overflow at
+            //     https://stackoverflow.com/questions/5140674/how-to-make-a-http-put-request
+            // Sample authors:
+            //     Danny Beckett, https://stackoverflow.com/users/1563422/danny-beckett
+            //     Marc Gravell, https://stackoverflow.com/users/23354/marc-gravell
+            // License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
             using (var client = new System.Net.WebClient())
             {
                 // Console.WriteLine("HTTP PUT: {0}", urlStr);
                 client.Credentials = credential;
                 client.UploadData(urlStr, "PUT", dataI);
             }
-
         }
 
         ///

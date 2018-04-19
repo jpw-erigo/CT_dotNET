@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 This NOTICE file includes a list of the third-party libraries and code which
-are used by CTlib_csharp.
+are used by the CTlib_csharp project.
 
 -----------------------------------------------------------------------------
 
@@ -26,6 +26,101 @@ Notes: Used for ZIP support when running in the Unity game engine. This library
        binary from at the above mentioned URL. Specifically, we use
        Ionic.Zip.Unity.dll available at the following URL:
        https://github.com/r2d2rigo/dotnetzip-for-unity/blob/master/Binaries/Release/Ionic.Zip.Unity.dll
+
+-----------------------------------------------------------------------------
+
+File: CThttp_base.cs
+Method: CThttp_base (constructor)
+Code to disable certificate validation was copied from Dominic Scheirlinck's response on Stack Overflow at
+    https://stackoverflow.com/questions/526711/using-a-self-signed-certificate-with-nets-httpwebrequest-response
+Sample author: Dominic Scheirlinck, https://stackoverflow.com/users/10831/dominic-scheirlinck
+License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
+
+-----------------------------------------------------------------------------
+
+File: CThttp.cs
+Method: writeToStream
+Code to issue HTTP PUT using WebClient from response on Stack Overflow at
+    https://stackoverflow.com/questions/5140674/how-to-make-a-http-put-request
+Sample authors:
+    Danny Beckett, https://stackoverflow.com/users/1563422/danny-beckett
+    Marc Gravell, https://stackoverflow.com/users/23354/marc-gravell
+License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
+
+-----------------------------------------------------------------------------
+
+File: CTlib.cs
+Method: CTwriter (constructor)
+Code to check if a given directory is a sub-folder under another directory was adapted from response on Stack Overflow at
+    https://stackoverflow.com/questions/5617320/given-full-path-check-if-path-is-subdirectory-of-some-other-path-or-otherwise
+Sample author: BrokenGlass, https://stackoverflow.com/users/329769/brokenglass
+License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
+
+-----------------------------------------------------------------------------
+
+File: CTlib.cs
+Method: doFlush
+Code which creates a ZIP file using the ZipArchive class is based on Example code from the ZipArchive Class documentation from Microsoft available at
+    https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
+License: Microsoft Limited Public License, available as "Exhibit B" at https://msdn.microsoft.com/en-us/cc300389
+This license is reproduced below.
+
+Microsoft Limited Public License
+
+This license governs use of code marked as “sample” or “example” available on this web site without a license agreement, as provided under the section above titled "NOTICE SPECIFIC TO SOFTWARE AVAILABLE ON THIS WEB SITE." If you use such code (the "software"), you accept this license. If you do not accept the license, do not use the software.
+
+1. Definitions
+
+The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under U.S. copyright law.
+
+A "contribution" is the original software, or any additions or changes to the software.
+
+A "contributor" is any person that distributes its contribution under this license.
+
+"Licensed patents" are a contributor's patent claims that read directly on its contribution.
+
+2. Grant of Rights
+
+(A) Copyright Grant - Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+
+(B) Patent Grant - Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+
+3. Conditions and Limitations
+
+(A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
+
+(B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.
+
+(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.
+
+(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
+
+(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+
+(F) Platform Limitation - The licenses granted in sections 2(A) and 2(B) extend only to the software or derivative works that you create that run on a Microsoft Windows operating system product.
+
+-----------------------------------------------------------------------------
+
+File: CTlib.cs
+Method: doFlush
+Code which creates a ZIP file using the ZipArchive class is based on the Stack Overflow post found at
+    https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
+Sample authors:
+    César Lourenço, https://stackoverflow.com/users/5243419/c%c3%a9sar-louren%c3%a7o
+    Michal Hainc, https://stackoverflow.com/users/970973/michal-hainc
+License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
+
+-----------------------------------------------------------------------------
+
+File: CTlib.cs
+Method: appendData
+Code to combine byte arrays copied from the following Stack Overflow page:
+    https://stackoverflow.com/questions/415291/best-way-to-combine-two-or-more-byte-arrays-in-c-sharp
+Sample authors:
+    Matt Davis, https://stackoverflow.com/users/51170/matt-davis
+    Peter Mortensen, https://stackoverflow.com/users/63550/peter-mortensen
+    Jon Skeet, https://stackoverflow.com/users/22656/jon-skeet
+License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
 
 -----------------------------------------------------------------------------
 

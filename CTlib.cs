@@ -129,7 +129,10 @@ namespace CTlib
                 {
                     // Second, make sure the source directory is a sub-folder under the application's working directory;
                     // do this by crawling up the source folder hierarchy.
-                    // This code was copied from https://stackoverflow.com/questions/5617320/given-full-path-check-if-path-is-subdirectory-of-some-other-path-or-otherwise
+                    // Code to check if a given directory is a sub-folder under another directory was adapted from response on Stack Overflow at
+                    //     https://stackoverflow.com/questions/5617320/given-full-path-check-if-path-is-subdirectory-of-some-other-path-or-otherwise
+                    // Sample author: BrokenGlass, https://stackoverflow.com/users/329769/brokenglass
+                    // License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
                     DirectoryInfo workingDirInfo = new DirectoryInfo(appWorkingDir);
                     DirectoryInfo sourceDirInfo = new DirectoryInfo(baseCTOutputFolder);
                     while (sourceDirInfo.Parent != null)
@@ -925,6 +928,21 @@ namespace CTlib
             }
             else
             {
+                //
+                // Code found below which creates a ZIP file using the ZipArchive class is based on the following:
+                // 1. Example code from the ZipArchive Class documentation from Microsoft available at
+                //        https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
+                //    License: Microsoft Limited Public License, available as "Exhibit B" at
+                //        https://msdn.microsoft.com/en-us/cc300389
+                //        (This license is reproduced in the NOTICE file associated with the CTlib/C# software.)
+                // 2. Stack Overflow post found at
+                //        https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
+                //    Sample authors:
+                //        César Lourenço, https://stackoverflow.com/users/5243419/c%c3%a9sar-louren%c3%a7o
+                //        Michal Hainc, https://stackoverflow.com/users/970973/michal-hainc
+                //    License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
+                //
+
                 // Write each block of data to a separate ZIP file
                 // Create the destination directory where the ZIP file will go
                 String zipDir = baseCTOutputFolder + sepChar + startTime.ToString() + sepChar;
@@ -986,11 +1004,7 @@ namespace CTlib
                         archive.Save();
                     }
 #else
-                    // Zip code using the standard .NET ZipArchive class
-                    // The ZipArchive code found below was largely copied from
-                    //     https://msdn.microsoft.com/en-us/library/system.io.compression.ziparchive(v=vs.110).aspx
-                    // I've seen a somewhat alternative solution using MemoryStream in place of FileStream at different sites; for example
-                    //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
+                    // Zip code using the standard .NET ZipArchive class, write to File
                     using (FileStream hZip = new FileStream(fileNameNoSuffix + ".tmp", FileMode.CreateNew))
                     {
                         using (ZipArchive archive = new ZipArchive(hZip, ZipArchiveMode.Create, true))
@@ -1046,10 +1060,7 @@ namespace CTlib
                             archive.Save(memOutputStream);
                         }
 #else
-                        // Zip code using the standard .NET ZipArchive class
-                        // The code here is inspired by:
-                        //     https://stackoverflow.com/questions/40175391/invalid-zip-file-after-creating-it-with-system-io-compression
-                        //     https://stackoverflow.com/questions/17232414/creating-a-zip-archive-in-memory-using-system-io-compression
+                        // Zip code using the standard .NET ZipArchive class; write to MemoryStream
                         using (ZipArchive archive = new ZipArchive(memOutputStream, ZipArchiveMode.Create, true))
                         {
                             foreach (string channame in local_blockData.Keys)
@@ -1072,12 +1083,6 @@ namespace CTlib
                             }
                         }
 #endif
-                        // String outputZipFilename = fileNameNoSuffix + ".zip";
-                        // using (var fileStream = new FileStream(outputZipFilename, FileMode.Create))
-                        // {
-                        //     memOutputStream.Position = 0;
-                        //     memOutputStream.WriteTo(fileStream);
-                        // }
                         byte[] zipData = memOutputStream.ToArray();
                         writeToStream(zipDir, blockStartTimeRel.ToString() + ".zip", zipData);
                     }
@@ -1355,7 +1360,13 @@ namespace CTlib
 
             /// <summary>
             /// Append new data to the existing packed channel data.
-            /// Code copied from https://stackoverflow.com/questions/415291/best-way-to-combine-two-or-more-byte-arrays-in-c-sharp
+            /// Code to combine byte arrays copied from the following Stack Overflow page:
+            ///     https://stackoverflow.com/questions/415291/best-way-to-combine-two-or-more-byte-arrays-in-c-sharp
+            /// Sample authors:
+            ///     Matt Davis, https://stackoverflow.com/users/51170/matt-davis
+            ///     Peter Mortensen, https://stackoverflow.com/users/63550/peter-mortensen
+            ///     Jon Skeet, https://stackoverflow.com/users/22656/jon-skeet
+            /// License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
             /// </summary>
             /// <param name="newData">The new data to add.</param>
             /// <returns>The combined data array.</returns>

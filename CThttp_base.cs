@@ -87,11 +87,11 @@ namespace CTlib
             }
             Console.WriteLine("HTTP PUT data to {0}", ctWebHost);
 
-            // Options for dealing with SSL certificates
-            // See https://stackoverflow.com/questions/526711/using-a-self-signed-certificate-with-nets-httpwebrequest-response for details.
-            // OPTION 1: register a method for custom validation of SSL server certificates
-            // ServicePointManager.ServerCertificateValidationCallback = ValidateServerCertficate;
-            // OPTION 2: Disable certificate validation (has the benefit of allowing acceptance of self-signed certificates)
+            // Disable certificate validation (has the benefit of allowing acceptance of self-signed certificates)
+            // Code to disable certificate validation was copied from Dominic Scheirlinck's response on Stack Overflow at
+            //     https://stackoverflow.com/questions/526711/using-a-self-signed-certificate-with-nets-httpwebrequest-response
+            // Sample author: Dominic Scheirlinck, https://stackoverflow.com/users/10831/dominic-scheirlinck
+            // License: Stack Overflow content is covered by the Creative Commons license, https://creativecommons.org/licenses/by-sa/3.0/legalcode
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         }
 
@@ -108,9 +108,6 @@ namespace CTlib
 
         /// <summary>
         /// Low-level method to write data to the channel using HTTP PUT.
-        /// 
-        /// See https://stackoverflow.com/questions/5140674/how-to-make-a-http-put-request
-        /// for some ideas how to use HTTP PUT from C#.
         /// </summary>
         /// <param name="outputDirI">Where the given data should be put on the server.</param>
         /// <param name="chanNameI">Channel name.</param>
@@ -124,7 +121,6 @@ namespace CTlib
             {
                 urlStr = urlStr.Replace(Path.DirectorySeparatorChar, '/');
             }
-            
         }
 
         ///
@@ -136,42 +132,6 @@ namespace CTlib
         {
             base.close();
         }
-
-        /// <summary>
-        /// Prompt user whether they want to install unknown certificates.
-        /// Code from https://stackoverflow.com/questions/526711/using-a-self-signed-certificate-with-nets-httpwebrequest-response
-        /// </summary>
-        /// <param name="sender">An object that contains state information for this validation.</param>
-        /// <param name="cert">The certificate used to authenticate the remote party.</param>
-        /// <param name="chain">The chain of certificate authorities associated with the remote certificate.</param>
-        /// <param name="sslPolicyErrors">One or more errors associated with the remote certificate.</param>
-        /// <returns>Returns a boolean value that determines whether the specified certificate is accepted for authentication; true to accept or false to reject.</returns>
-        /*
-        private static bool ValidateServerCertficate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            if (sslPolicyErrors == SslPolicyErrors.None)
-            {
-                // Good certificate.
-                return true;
-            }
-            Console.WriteLine(string.Format("SSL certificate error: {0}", sslPolicyErrors));
-            try
-            {
-                using (X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
-                {
-                    store.Open(OpenFlags.ReadWrite);
-                    store.Add(new X509Certificate2(cert));
-                    store.Close();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(string.Format("SSL certificate add Error: {0}", ex.Message));
-            }
-            return false;
-        }
-        */
 
     }
 }
