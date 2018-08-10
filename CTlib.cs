@@ -797,7 +797,14 @@ namespace CTlib
             {
                 _waitHandle.WaitOne(); // Wait for notification
                 // Console.WriteLine("Call flush for " + baseCTOutputFolder);
-                doFlush();
+                try
+                {
+                    doFlush();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("doFlushContinuous(): Exception caught from doFlush():\n{0}",e.Message);
+                }
                 doFlushActive = false;
             }
             // Console.WriteLine("Exiting asynchronous flush loop for " + baseCTOutputFolder);
@@ -813,7 +820,14 @@ namespace CTlib
             if (!bAsync)
             {
                 // SYNCHRONOUS
-                doFlush();
+                try
+                {
+                    doFlush();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("flush(): Exception caught from doFlush():\n{0}",e.Message);
+                }
             }
             else if (bAsync && !doFlushActive)
             {
@@ -998,7 +1012,14 @@ namespace CTlib
                                 long pointTimeRel = timestamp - local_blockStartTime;
                                 // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
                                 //archive.AddDirectory(pointTimeRel.ToString());
-                                archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                                try
+                                {
+                                    archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine("doFlush(): Exception caught from archive.AddEntry():\n{0}",e.Message);
+                                }
                             }
                         }
                         archive.Save();
@@ -1054,7 +1075,14 @@ namespace CTlib
                                     long pointTimeRel = timestamp - local_blockStartTime;
                                     // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
                                     //archive.AddDirectory(pointTimeRel.ToString());
-                                    archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                                    try
+                                    {
+                                        archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("doFlush(): Exception caught from archive.AddEntry():\n{0}",e.Message);
+                                    }
                                 }
                             }
                             archive.Save(memOutputStream);

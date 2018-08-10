@@ -70,7 +70,14 @@ namespace CTlib
             {
                 // Console.WriteLine("HTTP PUT: {0}", urlStr);
                 client.Credentials = credential;
-                client.UploadData(urlStr, "PUT", dataI);
+                try
+                {
+                    client.UploadData(urlStr, "PUT", dataI);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception caught from UploadData (HTTP PUT):\n{0}", e.Message);
+                }
             }
         }
 
