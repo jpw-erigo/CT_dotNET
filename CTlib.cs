@@ -237,7 +237,7 @@ namespace CTlib
         /// <returns>Return true if the data for this channel can be packed.</returns>
         private static bool canPack(string channameI)
         {
-            if (channameI.EndsWith(".bin") || channameI.EndsWith(".jpg") || channameI.EndsWith(".JPG") || channameI.EndsWith(".mp3") || channameI.EndsWith(".txt"))
+            if (channameI.EndsWith(".bin") || channameI.EndsWith(".jpg") || channameI.EndsWith(".JPG") || channameI.EndsWith(".mp3") || channameI.EndsWith(".txt") || channameI.EndsWith(".json"))
             {
                 return false;
             }
