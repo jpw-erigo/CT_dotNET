@@ -1,6 +1,6 @@
 ﻿
 /*
-Copyright 2017-2018 Erigo Technologies LLC
+Copyright 2017-2019 Erigo Technologies LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,11 +22,6 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading;
 
-#if UNITY_5_3_OR_NEWER
-// ZIP library used in Unity 3D projects; see ZIP code below for details
-using Ionic.Zip;
-#endif
-
 /// <summary>
 /// A C# implementation of CloudTurbine.
 /// </summary>
@@ -40,9 +35,33 @@ namespace CTlib
     /// implementation of the Java CTwriter API, this C# version provides basic
     /// functionality for storing different types of data.  Data can optionally
     /// be packed and/or ZIP'ed at the block level. Timestamps can either be
-    /// represented as milliseconds or seconds since epoch.  All timestamps
-    /// are auto-generated (i.e., the user cannot supply timestamps).
+    /// represented as milliseconds or seconds since epoch.  Timestamps
+    /// can be auto-generated or manually set.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// 2019-03-22  JPW
+    /// 
+    ///       Notes on referencing the standard Microsoft ZIP library from
+    ///       the CTrollaball Unity application:
+    ///       
+    ///       How to reference a standard Microsoft library which isn't by
+    ///       default included in Unity is described in the post "Using .NET
+    ///       4.x in Unity" found at:
+    ///       https://docs.microsoft.com/en-us/visualstudio/cross-platform/unity-scripting-upgrade?view=vs-2017
+    ///       
+    ///       For CTrollaball, we needed Unity to be able to access the
+    ///       System.IO.Compression library. This was accomplished as follows:
+    ///       1. In Player Settings, set Scripting Runtime Version to ".NET 4.x Equivalent"
+    ///       2. In Player Settings, set Api Compatibility Level to ".NET 4.x"
+    ///       3. Include a "csc.rsp" file in the CTrollaball "Assets" folder
+    ///          which includes the following single line (w/o the quotation
+    ///          marks): "-r:System.IO.Compression.dll"
+    ///       
+    ///       Since we no longer need to use the "DotNetZip"/Ionic.Zip.Unity.dll
+    ///       library (from https://github.com/r2d2rigo/dotnetzip-for-unity), the 
+    ///       "UNITY_5_3_OR_NEWER" sections in CTlib.cs have been removed.
+    /// </remarks>
     ///
     public class CTwriter
     {
@@ -981,50 +1000,6 @@ namespace CTlib
                     // folder hierarchy.
                     System.IO.Directory.CreateDirectory(zipDir);
                     String fileNameNoSuffix = zipDir + blockStartTimeRel.ToString();
-#if UNITY_5_3_OR_NEWER
-                    // Create ZIP files in a Unity game application
-                    // As of 2017-12-06, Unity supports the .NET 4.6 API, but they
-                    // don't include support for ZipArchive.  In place of this, we
-                    // use the DotNetZip Ionic.Zip library.  The original code for
-                    // this library is at http://dotnetzip.codeplex.com/, but using
-                    // Ionic.Zip.dll from this site causes "IBM437 not supported"
-                    // errors (a user's program will run fine from the Unity editor
-                    // but exceptions are thrown when running the .exe).  Two ways
-                    // to fix this problem:
-                    // 1. See the solution at https://answers.unity.com/questions/17870/whats-the-best-way-to-implement-file-compression.html;
-                    //    need to "copy the I18N*.dll files to your Assets folder".
-                    // 2. Use the compiled binary at https://github.com/r2d2rigo/dotnetzip-for-unity;
-                    //    this version is custom built for use in Unity and it
-                    //    fixes the "IBM437" exceptions.  The "License.Combined.rtf"
-                    //    license file at this GitHub repo is a convenient combined
-                    //    file which includes all the needed licenses.
-                    // Thus, we use the Ionic.Zip library from https://github.com/r2d2rigo/dotnetzip-for-unity
-                    using (ZipFile archive = new ZipFile(fileNameNoSuffix + ".tmp"))
-                    {
-                        foreach (string channame in local_blockData.Keys)
-                        {
-                            ChanBlockData cbd = local_blockData[channame];
-                            // iterate over the data samples in this channel
-                            for (int i = 0; i < cbd.timestamps.Count; ++i)
-                            {
-                                long timestamp = cbd.timestamps[i];
-                                byte[] data = cbd.data[i];
-                                long pointTimeRel = timestamp - local_blockStartTime;
-                                // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
-                                //archive.AddDirectory(pointTimeRel.ToString());
-                                try
-                                {
-                                    archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine("doFlush(): Exception caught from archive.AddEntry():\n{0}",e.Message);
-                                }
-                            }
-                        }
-                        archive.Save();
-                    }
-#else
                     // Zip code using the standard .NET ZipArchive class, write to File
                     using (FileStream hZip = new FileStream(fileNameNoSuffix + ".tmp", FileMode.CreateNew))
                     {
@@ -1050,7 +1025,6 @@ namespace CTlib
                             }
                         }
                     }
-#endif
                     // Give the temporary file its final name
                     File.Move(fileNameNoSuffix + ".tmp", fileNameNoSuffix + ".zip");
                 }
@@ -1060,34 +1034,6 @@ namespace CTlib
                     // all at once directly to the output ZIP file.
                     using (MemoryStream memOutputStream = new MemoryStream())
                     {
-#if UNITY_5_3_OR_NEWER
-                        // Zip code using the Ionic.Zip library; see above for details
-                        using (ZipFile archive = new ZipFile())
-                        {
-                            foreach (string channame in local_blockData.Keys)
-                            {
-                                ChanBlockData cbd = local_blockData[channame];
-                                // iterate over the data samples in this channel
-                                for (int i = 0; i < cbd.timestamps.Count; ++i)
-                                {
-                                    long timestamp = cbd.timestamps[i];
-                                    byte[] data = cbd.data[i];
-                                    long pointTimeRel = timestamp - local_blockStartTime;
-                                    // IMPORTANT: Use the forward slash, "/", to separate file paths in the ZIP file, regardless of what platform we are running on
-                                    //archive.AddDirectory(pointTimeRel.ToString());
-                                    try
-                                    {
-                                        archive.AddEntry(pointTimeRel.ToString() + "/" + channame, data);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Console.WriteLine("doFlush(): Exception caught from archive.AddEntry():\n{0}",e.Message);
-                                    }
-                                }
-                            }
-                            archive.Save(memOutputStream);
-                        }
-#else
                         // Zip code using the standard .NET ZipArchive class; write to MemoryStream
                         using (ZipArchive archive = new ZipArchive(memOutputStream, ZipArchiveMode.Create, true))
                         {
@@ -1110,7 +1056,6 @@ namespace CTlib
                                 }
                             }
                         }
-#endif
                         byte[] zipData = memOutputStream.ToArray();
                         writeToStream(zipDir, blockStartTimeRel.ToString() + ".zip", zipData);
                     }

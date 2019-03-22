@@ -19,16 +19,6 @@ are used by the CTlib_csharp project.
 
 -----------------------------------------------------------------------------
 
-Library: Ionic.Zip library (https://github.com/r2d2rigo/dotnetzip-for-unity)
-License: The full license terms are specified at https://github.com/r2d2rigo/dotnetzip-for-unity/blob/master/License.Combined.rtf
-Notes: Used for ZIP support when running in the Unity game engine. This library
-       is not distributed with CTlib_csharp but it is available in source or
-       binary from at the above mentioned URL. Specifically, we use
-       Ionic.Zip.Unity.dll available at the following URL:
-       https://github.com/r2d2rigo/dotnetzip-for-unity/blob/master/Binaries/Release/Ionic.Zip.Unity.dll
-
------------------------------------------------------------------------------
-
 File: CThttp_base.cs
 Method: CThttp_base (constructor)
 Code to disable certificate validation was copied from Dominic Scheirlinck's response on Stack Overflow at

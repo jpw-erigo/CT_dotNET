@@ -76,7 +76,7 @@ namespace CTlib
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Exception caught from UploadData (HTTP PUT):\n{0}", e.Message);
+                    Console.WriteLine("Exception caught from UploadData (HTTP PUT):\n{0}", e.InnerException);
                 }
             }
         }
