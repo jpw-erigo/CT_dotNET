@@ -24,6 +24,9 @@ using System.Threading;
 
 /// <summary>
 /// A C# implementation of CloudTurbine.
+/// The main repository for this C#/CTlib code: https://github.com/jpw-erigo/CTlib_csharp
+/// A copy of this code is also embedded in the CTrollaball application developed by Cycronix,
+/// located at https://github.com/cycronix/CTrollaball.
 /// </summary>
 namespace CTlib
 {

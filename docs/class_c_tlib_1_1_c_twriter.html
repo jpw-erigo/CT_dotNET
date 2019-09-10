@@ -81,7 +81,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. All timestamps are auto-generated (i.e., the user cannot supply timestamps).  
+<p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. Timestamps can be auto-generated or manually set.  
  <a href="class_c_tlib_1_1_c_twriter.html#details">More...</a></p>
 <div class="dynheader">
 Inheritance diagram for CTlib.CTwriter:</div>
@@ -164,9 +164,28 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:abf8728bbc2339827ae456c7aaeac43f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. All timestamps are auto-generated (i.e., the user cannot supply timestamps). </p>
-<p><a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<div class="textblock"><p>Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java <a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a> API, this C# version provides basic functionality for storing different types of data. Data can optionally be packed and/or ZIP'ed at the block level. Timestamps can either be represented as milliseconds or seconds since epoch. Timestamps can be auto-generated or manually set. </p>
+<p><a class="el" href="class_c_tlib_1_1_c_twriter.html" title="Write CloudTurbine-formatted data. While not a full one-to-one implementation of the Java CTwriter AP...">CTwriter</a></p>
+<p>2019-03-22 JPW </p><pre class="fragment">  Notes on referencing the standard Microsoft ZIP library from
+  the CTrollaball Unity application:
+
+  How to reference a standard Microsoft library which isn't by
+  default included in Unity is described in the post "Using .NET
+  4.x in Unity" found at:
+  https://docs.microsoft.com/en-us/visualstudio/cross-platform/unity-scripting-upgrade?view=vs-2017
+
+  For CTrollaball, we needed Unity to be able to access the
+  System.IO.Compression library. This was accomplished as follows:
+  1. In Player Settings, set Scripting Runtime Version to ".NET 4.x Equivalent"
+  2. In Player Settings, set Api Compatibility Level to ".NET 4.x"
+  3. Include a "csc.rsp" file in the CTrollaball "Assets" folder
+     which includes the following single line (w/o the quotation
+     marks): "-r:System.IO.Compression.dll"
+
+  Since we no longer need to use the "DotNetZip"/Ionic.Zip.Unity.dll
+  library (from https://github.com/r2d2rigo/dotnetzip-for-unity), the 
+  "UNITY_5_3_OR_NEWER" sections in CTlib.cs have been removed.
+</pre> </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1cb04d46e0465beb53ede137a15fad3e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1cb04d46e0465beb53ede137a15fad3e">&#9670;&nbsp;</a></span>CTwriter()</h2>
 
