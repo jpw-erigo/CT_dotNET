@@ -10,10 +10,13 @@
 # To generate the HTML documentation:
 #     doxygen doxygen_config.txt
 #
-# Search on "JPW" in this file to see fields I changed:
+# Fields I changed and other notes:
 #     
 #     DISABLE_INDEX was set to YES; disabling the index presents a cleaner interface
 #     HTML_OUTPUT was set to docs; this is the folder being used in GitHub for publishing content
+#     PROJECT_NAME specifies the name of the project
+#     Although it wasn't done for this project, if source code files are contained in subfolders, set RECURSIVE to YES
+#     While not appropriate for this *.cs project, if this were a Java project then OPTIMIZE_OUTPUT_JAVA should be set to YES
 #
 # If you want to limit the files that doxygen parses, use the INPUT field;
 # for example, to only parse the main source code file ("CTlib.cs"), use
